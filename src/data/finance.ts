@@ -83,3 +83,127 @@ export function getTotals() {
   const unknowns = [...PERSONAL_EXPENSES, ...BUSINESS_EXPENSES].filter(e => e.unknown).length
   return { totalIn, totalPersonal, totalBiz, totalProd, totalOut, net, unknowns }
 }
+
+// ── Unknown expense items (need real numbers) ─────────────────────
+
+export interface UnknownItem {
+  name: string
+  category: 'personal' | 'business'
+}
+
+export function getUnknownItems(): UnknownItem[] {
+  const items: UnknownItem[] = []
+  for (const e of PERSONAL_EXPENSES) {
+    if (e.unknown) items.push({ name: e.name, category: 'personal' })
+  }
+  for (const e of BUSINESS_EXPENSES) {
+    if (e.unknown) items.push({ name: e.name, category: 'business' })
+  }
+  return items
+}
+
+// ── Default transactions (seed data for Zustand/Supabase) ─────────
+
+import type { Transaction, IncomeStatus as TxnIncomeStatus } from '@/lib/types/transaction'
+
+function slug(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+}
+
+export function getDefaultTransactions(): Transaction[] {
+  const today = new Date().toISOString().slice(0, 10)
+  const txns: Transaction[] = []
+
+  // Income streams (skip inactive)
+  for (const item of INCOME) {
+    if (item.status === 'inactive') continue
+    txns.push({
+      id: `seed-income-${slug(item.name)}`,
+      date: today,
+      amount: item.monthly,
+      category: 'income',
+      subcategory: slug(item.name),
+      description: item.name,
+      vendor: null,
+      isRecurring: true,
+      recurrenceRule: item.name === 'Amazon Payouts' ? 'biweekly' : 'monthly',
+      recurrenceAnchor: today,
+      incomeStatus: item.status as TxnIncomeStatus,
+      isProjection: false,
+      parentRecurringId: null,
+      notes: item.notes || null,
+      createdAt: today,
+      updatedAt: today,
+    })
+  }
+
+  // Personal expenses (skip unknown — those become prompts)
+  for (const item of PERSONAL_EXPENSES) {
+    if (item.unknown || item.monthly === 0) continue
+    txns.push({
+      id: `seed-personal-${slug(item.name)}`,
+      date: today,
+      amount: -item.monthly,
+      category: 'personal',
+      subcategory: slug(item.name),
+      description: item.name,
+      vendor: null,
+      isRecurring: true,
+      recurrenceRule: 'monthly',
+      recurrenceAnchor: today,
+      incomeStatus: null,
+      isProjection: false,
+      parentRecurringId: null,
+      notes: item.notes || null,
+      createdAt: today,
+      updatedAt: today,
+    })
+  }
+
+  // Business expenses (skip unknown)
+  for (const item of BUSINESS_EXPENSES) {
+    if (item.unknown || item.monthly === 0) continue
+    txns.push({
+      id: `seed-business-${slug(item.name)}`,
+      date: today,
+      amount: -item.monthly,
+      category: 'business',
+      subcategory: slug(item.name),
+      description: item.name,
+      vendor: null,
+      isRecurring: true,
+      recurrenceRule: 'monthly',
+      recurrenceAnchor: today,
+      incomeStatus: null,
+      isProjection: false,
+      parentRecurringId: null,
+      notes: item.notes || null,
+      createdAt: today,
+      updatedAt: today,
+    })
+  }
+
+  // Production costs (per-run, not auto-projected)
+  for (const item of PRODUCTION_COSTS) {
+    txns.push({
+      id: `seed-production-${slug(item.name)}`,
+      date: today,
+      amount: -item.perRun,
+      category: 'production',
+      subcategory: slug(item.name),
+      description: item.name,
+      vendor: null,
+      isRecurring: true,
+      recurrenceRule: 'per-run',
+      recurrenceAnchor: null,
+      incomeStatus: null,
+      isProjection: false,
+      parentRecurringId: null,
+      notes: null,
+      createdAt: today,
+      updatedAt: today,
+    })
+  }
+
+  return txns
+}

@@ -21,7 +21,8 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { PROJECTS } from '@/data/projects'
-import { BALANCE, fmt } from '@/data/finance'
+import { fmt } from '@/data/finance'
+import { useTransactionStore } from '@/store/transaction-store'
 
 const NAV_MAIN = [
   { href: '/today', label: 'Today', icon: Inbox },
@@ -35,6 +36,7 @@ const NAV_VIEWS = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const balance = useTransactionStore(s => s.balance)
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -112,8 +114,8 @@ export function AppSidebar() {
       <SidebarFooter className="px-4 py-3">
         <div className="flex items-center justify-between text-xs">
           <span className="text-muted-foreground">Balance</span>
-          <span className={`font-semibold tabular-nums ${BALANCE >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-            ${fmt(BALANCE)}
+          <span className={`font-semibold tabular-nums ${balance >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+            ${fmt(balance)}
           </span>
         </div>
       </SidebarFooter>

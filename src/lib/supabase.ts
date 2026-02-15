@@ -16,3 +16,11 @@ export interface TodoRow {
   due_date: string | null
   sort_order: number
 }
+
+export type { TransactionRow } from '@/lib/types/transaction'
+
+export interface SettingsRow {
+  key: string
+  value: unknown
+  updated_at: string
+}
