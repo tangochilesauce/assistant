@@ -180,14 +180,13 @@ export function DashboardClient() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      {/* Projects Grid - 5 columns, equal height */}
+    <div className="min-h-screen bg-white text-black p-4">
+      {/* Projects Grid - 5 columns, equal height, no borders */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8" style={{ height: '50vh' }}>
         {projects.map((project) => (
           <div
             key={project.id}
-            className="border rounded-lg p-4 flex flex-col overflow-hidden"
-            style={{ borderColor: project.colorHex }}
+            className="p-4 flex flex-col overflow-hidden"
           >
             {/* Project Header */}
             <div className="flex items-center gap-2 mb-4">
@@ -199,23 +198,26 @@ export function DashboardClient() {
 
             {/* 12-month goal */}
             <div className="mb-3">
-              <div className="text-xs text-gray-500 uppercase mb-1">12-Month Goal</div>
-              <div className="text-sm text-gray-300">{project.yearlyGoal}</div>
+              <div className="text-xs text-gray-400 uppercase mb-1">12-Month Goal</div>
+              <div className="text-sm text-gray-600">{project.yearlyGoal}</div>
             </div>
 
             {/* 1-month goal */}
             <div className="mb-3">
-              <div className="text-xs text-gray-500 uppercase mb-1">This Month</div>
-              <div className="text-sm text-gray-300">{project.monthlyGoal}</div>
+              <div className="text-xs text-gray-400 uppercase mb-1">This Month</div>
+              <div className="text-sm text-gray-600">{project.monthlyGoal}</div>
             </div>
 
-            {/* Top 10 Actions */}
+            {/* Top 10 Actions as To-Do List */}
             <div className="flex-1 overflow-y-auto">
-              <div className="text-xs text-gray-500 uppercase mb-2">Top 10 Actions</div>
-              <ul className="space-y-2">
+              <div className="text-xs text-gray-400 uppercase mb-2">Top 10 Actions</div>
+              <ul className="space-y-1.5">
                 {project.topActions.map((action, idx) => (
-                  <li key={idx} className="text-xs text-gray-400 flex items-start gap-2">
-                    <span className="text-gray-600">{idx + 1}.</span>
+                  <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 accent-gray-400 shrink-0"
+                    />
                     <span>{action}</span>
                   </li>
                 ))}
@@ -233,12 +235,12 @@ export function DashboardClient() {
             {days.map((day, idx) => (
               <div
                 key={idx}
-                className="border border-gray-800 rounded-lg p-3 flex-shrink-0"
+                className="border border-gray-200 rounded-lg p-3 flex-shrink-0"
                 style={{ width: '140px', minHeight: '180px' }}
               >
                 {/* Day Header */}
                 <div className="text-center mb-3">
-                  <div className="text-xs text-gray-500">{day.dayName}</div>
+                  <div className="text-xs text-gray-400">{day.dayName}</div>
                   <div className="text-sm font-bold">{day.date}</div>
                 </div>
 
@@ -248,10 +250,10 @@ export function DashboardClient() {
                     <div
                       key={eventIdx}
                       className={`text-xs p-2 rounded ${
-                        event.isLocked ? 'bg-gray-900 font-bold' : 'bg-gray-800'
+                        event.isLocked ? 'bg-gray-100 font-bold' : 'bg-gray-50'
                       }`}
                     >
-                      <div className="text-gray-500 text-[10px] mb-1">{event.time}</div>
+                      <div className="text-gray-400 text-[10px] mb-1">{event.time}</div>
                       <div>{event.title}</div>
                     </div>
                   ))}
