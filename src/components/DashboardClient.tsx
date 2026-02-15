@@ -180,7 +180,7 @@ export function DashboardClient() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 pb-20 md:pb-4">
+    <div className="min-h-screen bg-black text-white p-4">
       {/* Projects Grid - 5 columns, equal height */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8" style={{ height: '50vh' }}>
         {projects.map((project) => (
