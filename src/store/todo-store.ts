@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { supabase, type TodoRow } from '@/lib/supabase'
-import { PROJECTS } from '@/data/projects'
+import { PROJECTS, getLastColumnId, getFirstColumnId } from '@/data/projects'
 
 export interface Todo {
   id: string
@@ -10,6 +10,7 @@ export interface Todo {
   createdAt: string
   dueDate: string | null
   sortOrder: number
+  status: string       // kanban column id: 'todo', 'in-progress', 'done', etc.
 }
 
 interface TodoState {
@@ -17,12 +18,16 @@ interface TodoState {
   loading: boolean
   initialized: boolean
   fetchTodos: () => Promise<void>
-  addTodo: (projectSlug: string, title: string) => Promise<void>
+  addTodo: (projectSlug: string, title: string, status?: string) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
   deleteTodo: (id: string) => Promise<void>
+  moveTodo: (id: string, newStatus: string, newSortOrder: number) => Promise<void>
+  reorderTodo: (id: string, newSortOrder: number) => Promise<void>
 }
 
 function rowToTodo(row: TodoRow): Todo {
+  // Migration: derive status from completed if not set
+  const status = row.status ?? (row.completed ? 'done' : 'todo')
   return {
     id: row.id,
     projectSlug: row.project_slug,
@@ -31,6 +36,7 @@ function rowToTodo(row: TodoRow): Todo {
     createdAt: row.created_at,
     dueDate: row.due_date,
     sortOrder: row.sort_order,
+    status,
   }
 }
 
@@ -42,6 +48,7 @@ function generateId() {
 function getDefaultTodos(): Todo[] {
   const todos: Todo[] = []
   for (const project of PROJECTS) {
+    const firstCol = getFirstColumnId(project.slug)
     for (let i = 0; i < project.defaultActions.length; i++) {
       todos.push({
         id: `${project.slug}-${i}`,
@@ -51,6 +58,7 @@ function getDefaultTodos(): Todo[] {
         createdAt: new Date().toISOString(),
         dueDate: null,
         sortOrder: i,
+        status: firstCol,
       })
     }
   }
@@ -82,17 +90,21 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     set({ todos: getDefaultTodos(), loading: false, initialized: true })
   },
 
-  addTodo: async (projectSlug: string, title: string) => {
+  addTodo: async (projectSlug: string, title: string, status?: string) => {
     const id = generateId()
-    const maxOrder = Math.max(0, ...get().todos.filter(t => t.projectSlug === projectSlug).map(t => t.sortOrder))
+    const firstCol = getFirstColumnId(projectSlug)
+    const targetStatus = status ?? firstCol
+    const sameTodos = get().todos.filter(t => t.projectSlug === projectSlug && t.status === targetStatus)
+    const maxOrder = Math.max(0, ...sameTodos.map(t => t.sortOrder))
     const newTodo: Todo = {
       id,
       projectSlug,
       title,
-      completed: false,
+      completed: targetStatus === getLastColumnId(projectSlug),
       createdAt: new Date().toISOString(),
       dueDate: null,
       sortOrder: maxOrder + 1,
+      status: targetStatus,
     }
 
     set(state => ({ todos: [...state.todos, newTodo] }))
@@ -102,10 +114,11 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         id,
         project_slug: projectSlug,
         title,
-        completed: false,
+        completed: newTodo.completed,
         created_at: newTodo.createdAt,
         due_date: null,
         sort_order: newTodo.sortOrder,
+        status: newTodo.status,
       })
     }
   },
@@ -114,12 +127,22 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     const todo = get().todos.find(t => t.id === id)
     if (!todo) return
 
+    const willComplete = !todo.completed
+    const newStatus = willComplete
+      ? getLastColumnId(todo.projectSlug)
+      : getFirstColumnId(todo.projectSlug)
+
     set(state => ({
-      todos: state.todos.map(t => t.id === id ? { ...t, completed: !t.completed } : t),
+      todos: state.todos.map(t =>
+        t.id === id ? { ...t, completed: willComplete, status: newStatus } : t
+      ),
     }))
 
     if (supabase) {
-      await supabase.from('todos').update({ completed: !todo.completed }).eq('id', id)
+      await supabase.from('todos').update({
+        completed: willComplete,
+        status: newStatus,
+      }).eq('id', id)
     }
   },
 
@@ -128,6 +151,45 @@ export const useTodoStore = create<TodoState>((set, get) => ({
 
     if (supabase) {
       await supabase.from('todos').delete().eq('id', id)
+    }
+  },
+
+  // Move a todo to a different column (and/or position)
+  moveTodo: async (id: string, newStatus: string, newSortOrder: number) => {
+    const todo = get().todos.find(t => t.id === id)
+    if (!todo) return
+
+    const isCompleted = newStatus === getLastColumnId(todo.projectSlug)
+
+    set(state => ({
+      todos: state.todos.map(t =>
+        t.id === id
+          ? { ...t, status: newStatus, sortOrder: newSortOrder, completed: isCompleted }
+          : t
+      ),
+    }))
+
+    if (supabase) {
+      await supabase.from('todos').update({
+        status: newStatus,
+        sort_order: newSortOrder,
+        completed: isCompleted,
+      }).eq('id', id)
+    }
+  },
+
+  // Reorder within the same column
+  reorderTodo: async (id: string, newSortOrder: number) => {
+    set(state => ({
+      todos: state.todos.map(t =>
+        t.id === id ? { ...t, sortOrder: newSortOrder } : t
+      ),
+    }))
+
+    if (supabase) {
+      await supabase.from('todos').update({
+        sort_order: newSortOrder,
+      }).eq('id', id)
     }
   },
 }))

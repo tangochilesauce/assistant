@@ -1,3 +1,19 @@
+// ── Kanban Column Definitions ─────────────────────────────────────
+
+export interface KanbanColumn {
+  id: string        // slug: 'todo', 'in-progress', 'done'
+  label: string     // display: 'To Do', 'In Progress', 'Done'
+  color?: string    // optional accent hex
+}
+
+export const DEFAULT_COLUMNS: KanbanColumn[] = [
+  { id: 'todo', label: 'To Do' },
+  { id: 'in-progress', label: 'In Progress' },
+  { id: 'done', label: 'Done' },
+]
+
+// ── Project Definition ────────────────────────────────────────────
+
 export interface Project {
   slug: string
   name: string
@@ -6,6 +22,7 @@ export interface Project {
   weight: number
   goal: string
   defaultActions: string[]
+  defaultColumns?: KanbanColumn[]  // undefined = use DEFAULT_COLUMNS
 }
 
 export const PROJECTS: Project[] = [
@@ -17,6 +34,13 @@ export const PROJECTS: Project[] = [
     weight: 65,
     goal: 'Ship EXP pallet, fix Amazon PPC, close DTC sales',
     defaultActions: ['Pay Foodies $1,100 (Feb 23)', 'EXP pickup (Feb 19)', 'Pause SD-REMARKETING'],
+    defaultColumns: [
+      { id: 'backlog', label: 'Backlog' },
+      { id: 'this-week', label: 'This Week' },
+      { id: 'in-progress', label: 'In Progress' },
+      { id: 'blocked', label: 'Blocked', color: '#EF4444' },
+      { id: 'done', label: 'Done' },
+    ],
   },
   {
     slug: 'ffeedd',
@@ -58,4 +82,19 @@ export const PROJECTS: Project[] = [
 
 export function getProject(slug: string): Project | undefined {
   return PROJECTS.find(p => p.slug === slug)
+}
+
+export function getColumns(slug: string): KanbanColumn[] {
+  const project = getProject(slug)
+  return project?.defaultColumns ?? DEFAULT_COLUMNS
+}
+
+export function getLastColumnId(slug: string): string {
+  const cols = getColumns(slug)
+  return cols[cols.length - 1].id
+}
+
+export function getFirstColumnId(slug: string): string {
+  const cols = getColumns(slug)
+  return cols[0].id
 }

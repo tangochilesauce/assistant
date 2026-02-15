@@ -5,6 +5,8 @@ import { Target } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { ActionLine } from '@/components/action-line'
 import { AddActionInput } from '@/components/add-action-input'
+import { KanbanBoard } from '@/components/kanban/kanban-board'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useTodoStore } from '@/store/todo-store'
 import { getProject } from '@/data/projects'
 
@@ -57,35 +59,45 @@ export function ProjectDetailClient({ slug }: Props) {
           </p>
         </div>
 
-        {/* Add action */}
-        <AddActionInput projectSlug={slug} />
-
-        {/* Action list */}
         {!initialized ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">Loading...</div>
         ) : (
-          <>
-            {incomplete.length === 0 && completed.length === 0 && (
-              <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                No actions yet. Add one above.
-              </div>
-            )}
+          <Tabs defaultValue="list" className="px-4 pt-4">
+            <TabsList className="mb-4">
+              <TabsTrigger value="list">List</TabsTrigger>
+              <TabsTrigger value="board">Board</TabsTrigger>
+            </TabsList>
 
-            {incomplete.map(todo => (
-              <ActionLine key={todo.id} todo={todo} />
-            ))}
+            <TabsContent value="list" className="-mx-4">
+              {/* Add action */}
+              <AddActionInput projectSlug={slug} />
 
-            {completed.length > 0 && (
-              <>
-                <div className="px-4 py-2 text-xs text-muted-foreground border-b border-border/50 bg-accent/30">
-                  Completed ({completed.length})
+              {incomplete.length === 0 && completed.length === 0 && (
+                <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+                  No actions yet. Add one above.
                 </div>
-                {completed.map(todo => (
-                  <ActionLine key={todo.id} todo={todo} />
-                ))}
-              </>
-            )}
-          </>
+              )}
+
+              {incomplete.map(todo => (
+                <ActionLine key={todo.id} todo={todo} />
+              ))}
+
+              {completed.length > 0 && (
+                <>
+                  <div className="px-4 py-2 text-xs text-muted-foreground border-b border-border/50 bg-accent/30">
+                    Completed ({completed.length})
+                  </div>
+                  {completed.map(todo => (
+                    <ActionLine key={todo.id} todo={todo} />
+                  ))}
+                </>
+              )}
+            </TabsContent>
+
+            <TabsContent value="board">
+              <KanbanBoard projectSlug={slug} />
+            </TabsContent>
+          </Tabs>
         )}
       </div>
     </>

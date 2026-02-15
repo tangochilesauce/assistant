@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   Inbox,
   ListChecks,
+  Kanban,
   DollarSign,
   Calendar,
 } from 'lucide-react'
@@ -30,6 +31,7 @@ const NAV_MAIN = [
 ]
 
 const NAV_VIEWS = [
+  { href: '/board', label: 'Board', icon: Kanban },
   { href: '/cash', label: 'Cash Flow', icon: DollarSign },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
 ]
