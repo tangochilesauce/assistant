@@ -27,70 +27,10 @@ export function DashboardClient() {
     // For now, mock data
     setProjects([
       {
-        id: '1',
-        name: 'Tango',
-        emoji: '🔥',
-        colorHex: '#ef4444',
-        yearlyGoal: '$25K/month across all Tango channels',
-        monthlyGoal: 'Ship EXP pallet ($3.4K), fix Amazon PPC, close DTC sales',
-        topActions: [
-          'Pay Foodies $1,100 (Feb 23)',
-          'EXP pickup (Feb 19)',
-          'Pause SD-REMARKETING campaign',
-          'Boost Sriracha Auto to $25/day',
-          'DTC site fixes + email blast'
-        ]
-      },
-      {
-        id: '2',
-        name: 'FFEEDD',
-        emoji: '📱',
-        colorHex: '#14b8a6',
-        yearlyGoal: '$5K/month from app subscriptions',
-        monthlyGoal: 'Launch app, get first 15 paid downloads ($150)',
-        topActions: [
-          'Submit to App Store (Feb 14)',
-          'Reddit marketing blitz (r/terminal, r/unixporn)',
-          'TikTok screen recording post',
-          'Product Hunt launch',
-          'Text 30 friends'
-        ]
-      },
-      {
-        id: '3',
-        name: 'Madder',
-        emoji: '🎸',
-        colorHex: '#a855f7',
-        yearlyGoal: '$5K/month from music production',
-        monthlyGoal: 'Drop single 2/22, build pre-save to 50+',
-        topActions: [
-          'Finish single arrangement (Feb 14)',
-          'DistroKid upload (Feb 16)',
-          'Studio session at Off Record (Feb 17)',
-          'Create Canvas loop + artwork',
-          'DM Sean Momberger on release day'
-        ]
-      },
-      {
-        id: '4',
-        name: 'Dream Beds',
-        emoji: '🎬',
-        colorHex: '#f97316',
-        yearlyGoal: '$5K/month from YouTube monetization',
-        monthlyGoal: 'Upload 28 videos (7/week), hit 100 subs',
-        topActions: [
-          'Batch 7 videos (Feb 15)',
-          'Cut 5 Shorts from existing videos',
-          'Cross-post to TikTok + Reels',
-          'Post to r/CozyPlaces',
-          'Batch 7 videos (Feb 22)'
-        ]
-      },
-      {
         id: '5',
         name: 'Life Admin',
-        emoji: '📋',
-        colorHex: '#000000',
+        emoji: '🌟',
+        colorHex: '#eab308',
         yearlyGoal: 'Stay on top of non-negotiables',
         monthlyGoal: 'Pay all bills on time, no rent delays',
         topActions: [
@@ -98,7 +38,92 @@ export function DashboardClient() {
           'Pay Off Record $300 (Mar 1)',
           'Amazon PPC monitoring',
           'DNS cleanup (SPF/DKIM)',
-          'Brand redesign (1-2 days)'
+          'Brand redesign (1-2 days)',
+          'Fix email deliverability',
+          'Organize financial statements',
+          'Review insurance renewals',
+          'Tax prep documents',
+          'Chase quarterly payments'
+        ]
+      },
+      {
+        id: '1',
+        name: 'Tango',
+        emoji: '🔥',
+        colorHex: '#f97316',
+        yearlyGoal: '$25K/month across all Tango channels',
+        monthlyGoal: 'Ship EXP pallet ($3.4K), fix Amazon PPC, close DTC sales',
+        topActions: [
+          'Pay Foodies $1,100 (Feb 23)',
+          'EXP pickup (Feb 19)',
+          'Pause SD-REMARKETING campaign',
+          'Boost Sriracha Auto to $25/day',
+          'DTC site fixes + email blast',
+          'Renew Truffle + Hot S&S coupons',
+          'Fix HOTT2 variation on Amazon',
+          'Kill 14 dead $3/day campaigns',
+          'Homepage CTA mobile fix',
+          'Email blast to DTC list'
+        ]
+      },
+      {
+        id: '2',
+        name: 'FFEEDD',
+        emoji: '🐇',
+        colorHex: '#84cc16',
+        yearlyGoal: '$5K/month from app subscriptions',
+        monthlyGoal: 'Launch app, get first 15 paid downloads ($150)',
+        topActions: [
+          'Submit to App Store (Feb 14)',
+          'Reddit marketing blitz (r/terminal, r/unixporn)',
+          'TikTok screen recording post',
+          'Product Hunt launch',
+          'Text 30 friends',
+          'Hacker News "Show HN" post',
+          'Screen capture video for socials',
+          'Write App Store description',
+          'Set up analytics tracking',
+          'Prep marketing assets (Reddit post copy)'
+        ]
+      },
+      {
+        id: '3',
+        name: 'Madder',
+        emoji: '💿',
+        colorHex: '#3b82f6',
+        yearlyGoal: '$5K/month from music production',
+        monthlyGoal: 'Drop single 2/22, build pre-save to 50+',
+        topActions: [
+          'Finish single arrangement (Feb 14)',
+          'DistroKid upload (Feb 16)',
+          'Studio session at Off Record (Feb 17)',
+          'Create Canvas loop + artwork',
+          'DM Sean Momberger on release day',
+          'Set up Spotify/Apple profiles',
+          'Create pre-save link',
+          'EP production sessions (Week 2)',
+          'Mix/master for 3/3 EP drop',
+          'Festival apps (Great Escape, LAUNCH)'
+        ]
+      },
+      {
+        id: '4',
+        name: 'Dream Beds',
+        emoji: '🌙',
+        colorHex: '#a855f7',
+        yearlyGoal: '$5K/month from YouTube monetization',
+        monthlyGoal: 'Upload 28 videos (7/week), hit 100 subs',
+        topActions: [
+          'Batch 7 videos (Feb 15)',
+          'Cut 5 Shorts from existing videos',
+          'Cross-post to TikTok + Reels',
+          'Post to r/CozyPlaces',
+          'Batch 7 videos (Feb 22)',
+          'Post stills to r/ImaginaryInteriors',
+          'Upload Shorts to YouTube',
+          'Test 8-10 hour video format',
+          'Thumbnail optimization',
+          'Playlist organization'
         ]
       }
     ])
@@ -184,9 +209,9 @@ export function DashboardClient() {
               <div className="text-sm text-gray-300">{project.monthlyGoal}</div>
             </div>
 
-            {/* Top 5 Actions */}
+            {/* Top 10 Actions */}
             <div className="flex-1 overflow-y-auto">
-              <div className="text-xs text-gray-500 uppercase mb-2">Top 5 Actions</div>
+              <div className="text-xs text-gray-500 uppercase mb-2">Top 10 Actions</div>
               <ul className="space-y-2">
                 {project.topActions.map((action, idx) => (
                   <li key={idx} className="text-xs text-gray-400 flex items-start gap-2">
