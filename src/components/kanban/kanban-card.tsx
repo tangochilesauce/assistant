@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useRef, useEffect } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Trash2 } from 'lucide-react'
@@ -14,7 +15,27 @@ interface KanbanCardProps {
 }
 
 export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
-  const { toggleTodo, deleteTodo } = useTodoStore()
+  const { toggleTodo, deleteTodo, updateTodo } = useTodoStore()
+  const [editing, setEditing] = useState(false)
+  const [editValue, setEditValue] = useState(todo.title)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (editing) {
+      inputRef.current?.focus()
+      inputRef.current?.select()
+    }
+  }, [editing])
+
+  const handleSave = () => {
+    const trimmed = editValue.trim()
+    if (trimmed && trimmed !== todo.title) {
+      updateTodo(todo.id, { title: trimmed })
+    } else {
+      setEditValue(todo.title)
+    }
+    setEditing(false)
+  }
 
   const {
     attributes,
@@ -26,7 +47,7 @@ export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
   } = useSortable({
     id: todo.id,
     data: { type: 'card', todo },
-    disabled: overlay,
+    disabled: overlay || editing,
   })
 
   const style = overlay ? undefined : {
@@ -58,12 +79,29 @@ export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
           className="mt-0.5 shrink-0"
         />
 
-        {/* Title */}
-        <span className={`text-sm flex-1 leading-tight ${
-          todo.completed ? 'line-through text-muted-foreground/50' : ''
-        }`}>
-          {todo.title}
-        </span>
+        {/* Title — editable on double-click */}
+        {editing ? (
+          <input
+            ref={inputRef}
+            value={editValue}
+            onChange={e => setEditValue(e.target.value)}
+            onBlur={handleSave}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleSave()
+              if (e.key === 'Escape') { setEditValue(todo.title); setEditing(false) }
+            }}
+            className="text-sm flex-1 leading-tight bg-transparent border-b border-foreground/20 outline-none py-0"
+          />
+        ) : (
+          <span
+            onDoubleClick={() => !overlay && setEditing(true)}
+            className={`text-sm flex-1 leading-tight cursor-text ${
+              todo.completed ? 'line-through text-muted-foreground/50' : ''
+            }`}
+          >
+            {todo.title}
+          </span>
+        )}
 
         {/* Delete */}
         <button

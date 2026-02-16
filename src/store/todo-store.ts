@@ -19,6 +19,7 @@ interface TodoState {
   initialized: boolean
   fetchTodos: () => Promise<void>
   addTodo: (projectSlug: string, title: string, status?: string) => Promise<void>
+  updateTodo: (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate'>>) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
   deleteTodo: (id: string) => Promise<void>
   moveTodo: (id: string, newStatus: string, newSortOrder: number) => Promise<void>
@@ -120,6 +121,21 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         sort_order: newTodo.sortOrder,
         status: newTodo.status,
       })
+    }
+  },
+
+  updateTodo: async (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate'>>) => {
+    set(state => ({
+      todos: state.todos.map(t =>
+        t.id === id ? { ...t, ...changes } : t
+      ),
+    }))
+
+    if (supabase) {
+      const row: Record<string, unknown> = {}
+      if (changes.title !== undefined) row.title = changes.title
+      if (changes.dueDate !== undefined) row.due_date = changes.dueDate
+      await supabase.from('todos').update(row).eq('id', id)
     }
   },
 

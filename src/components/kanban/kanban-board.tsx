@@ -31,6 +31,7 @@ export function KanbanBoard({ projectSlug, showProject, className }: KanbanBoard
               key={column.id}
               column={column}
               todos={columnTodos}
+              projectSlug={projectSlug}
               showProject={showProject}
             />
           )

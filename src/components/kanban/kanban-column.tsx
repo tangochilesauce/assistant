@@ -1,24 +1,40 @@
 'use client'
 
+import { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { Plus } from 'lucide-react'
 import { KanbanCard } from './kanban-card'
+import { useTodoStore } from '@/store/todo-store'
 import type { KanbanColumn as ColumnType } from '@/data/projects'
 import type { Todo } from '@/store/todo-store'
 
 interface KanbanColumnProps {
   column: ColumnType
   todos: Todo[]
+  projectSlug: string
   showProject?: boolean
 }
 
-export function KanbanColumn({ column, todos, showProject }: KanbanColumnProps) {
+export function KanbanColumn({ column, todos, projectSlug, showProject }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: `column-${column.id}`,
     data: { type: 'column', columnId: column.id },
   })
+  const { addTodo } = useTodoStore()
+  const [adding, setAdding] = useState(false)
+  const [addValue, setAddValue] = useState('')
 
   const todoIds = todos.map(t => t.id)
+
+  const handleAdd = () => {
+    const trimmed = addValue.trim()
+    if (trimmed) {
+      addTodo(projectSlug, trimmed, column.id)
+      setAddValue('')
+    }
+    setAdding(false)
+  }
 
   return (
     <div className="flex flex-col min-w-[260px] max-w-[300px] shrink-0">
@@ -45,7 +61,7 @@ export function KanbanColumn({ column, todos, showProject }: KanbanColumnProps) 
             isOver ? 'bg-accent/40 ring-1 ring-accent' : 'bg-accent/10'
           }`}
         >
-          {todos.length === 0 ? (
+          {todos.length === 0 && !adding ? (
             <div className="flex items-center justify-center h-[60px] text-[10px] text-muted-foreground/40">
               Drop here
             </div>
@@ -53,6 +69,32 @@ export function KanbanColumn({ column, todos, showProject }: KanbanColumnProps) 
             todos.map(todo => (
               <KanbanCard key={todo.id} todo={todo} showProject={showProject} />
             ))
+          )}
+
+          {/* Quick-add input */}
+          {adding ? (
+            <div className="rounded-lg border border-border bg-card p-2">
+              <input
+                value={addValue}
+                onChange={e => setAddValue(e.target.value)}
+                onBlur={handleAdd}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') handleAdd()
+                  if (e.key === 'Escape') { setAddValue(''); setAdding(false) }
+                }}
+                placeholder="What needs done?"
+                className="w-full text-sm bg-transparent outline-none placeholder:text-muted-foreground/40"
+                autoFocus
+              />
+            </div>
+          ) : (
+            <button
+              onClick={() => setAdding(true)}
+              className="flex items-center gap-1.5 w-full px-2 py-1.5 text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors rounded"
+            >
+              <Plus className="size-3" />
+              Add
+            </button>
           )}
         </div>
       </SortableContext>
