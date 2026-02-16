@@ -33,8 +33,9 @@ export const INCOME: IncomeStream[] = [
 
 export const PERSONAL_EXPENSES: Expense[] = [
   { name: 'Rent', monthly: 2878 },
+  { name: 'Health Insurance', monthly: 376 },
+  { name: 'Claude Code Max', monthly: 100 },
   { name: 'Phone', monthly: 0, unknown: true },
-  { name: 'Health Insurance', monthly: 0, unknown: true },
   { name: 'Car / Gas', monthly: 0, unknown: true },
   { name: 'Groceries', monthly: 0, unknown: true },
   { name: 'Subscriptions', monthly: 0, unknown: true },
@@ -42,8 +43,9 @@ export const PERSONAL_EXPENSES: Expense[] = [
 
 export const BUSINESS_EXPENSES: Expense[] = [
   { name: 'Off Record Studio', monthly: 300 },
-  { name: 'Amazon Seller Fees', monthly: 0, unknown: true },
+  { name: 'Foodies Storage', monthly: 350 },
   { name: 'Amazon PPC', monthly: 33, notes: '$66/60d' },
+  { name: 'Amazon Seller Fees', monthly: 0, unknown: true },
 ]
 
 export const PRODUCTION_COSTS: ProductionCost[] = [
