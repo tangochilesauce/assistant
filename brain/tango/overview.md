@@ -54,6 +54,27 @@ Production happens at Foodies (co-packing) with ingredients from Deep. Packaging
 | Costco | $5,000 | $0 | $5,000 |
 | DTC | — | $0 | — |
 
+## Orders System (NEXT BUILD)
+
+**Goal:** Full order lifecycle management on Tango Dashboard
+
+### What We Need
+1. **Supabase `orders` table** — id, channel, po_number, value, date, stage (new/processing/shipped/paid), doc paths (po_url, bol_url, inv_url), notes, created_at, updated_at
+2. **Migrate dashboard from localStorage → Supabase** — same pipeline UI, persistent data
+3. **Drop zone for new POs** — drag a PDF onto a box on the dashboard, it:
+   - Scans/parses the document for PO number, channel, value
+   - Creates a folder in `/Projects/🔥 tango/orders-invoices/{channel}/{po-number}/`
+   - Moves the file into that folder
+   - Creates a new order card in the "New" column
+4. **Document export links** — PO, BOL, Invoice buttons on each card link to the actual files
+5. **Existing folder:** `/Projects/🔥 tango/orders-invoices/` already has channel subfolders (Amazon, Costco, DTC, EXP, Faire, Mable, UNFI)
+
+### Architecture Decision
+- Order DATA → Supabase (stage, value, dates, doc URLs)
+- Order FILES → Local folders (PDFs stay on machine, organized by channel/PO)
+- Tango Dashboard reads from Supabase, displays pipeline, handles drag-and-drop
+- Drop zone intake: browser-side file handling → parse → create folder → insert row
+
 ## Files
 
 *Scanned Feb 16, 2026 from /Projects/🔥 tango/ (symlinked at /⚡ claudio/tango/)*

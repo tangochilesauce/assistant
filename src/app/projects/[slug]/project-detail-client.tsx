@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
-import { Target, StickyNote } from 'lucide-react'
+import { Target, StickyNote, Brain } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { ActionLine } from '@/components/action-line'
 import { AddActionInput } from '@/components/add-action-input'
@@ -12,6 +12,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useTodoStore } from '@/store/todo-store'
 import { getProject } from '@/data/projects'
 import { getAboutPage } from '@/data/about'
+import { getBrainFile } from '@/data/brain'
 
 interface Props {
   slug: string
@@ -21,6 +22,7 @@ export function ProjectDetailClient({ slug }: Props) {
   const project = getProject(slug)
   const { todos, fetchTodos, initialized } = useTodoStore()
   const hasAbout = !!getAboutPage(slug)
+  const hasBrain = !!getBrainFile(slug)
 
   useEffect(() => {
     fetchTodos()
@@ -44,6 +46,15 @@ export function ProjectDetailClient({ slug }: Props) {
   return (
     <>
       <PageHeader title={`${project.emoji} ${project.name}`}>
+        {hasBrain && (
+          <Link
+            href={`/projects/${slug}/brain`}
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors bg-accent px-2 py-1 rounded"
+          >
+            <Brain className="size-3" />
+            Brain
+          </Link>
+        )}
         <Link
           href={`/projects/${slug}/notes`}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors bg-accent px-2 py-1 rounded"
