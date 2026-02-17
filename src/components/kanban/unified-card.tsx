@@ -63,8 +63,9 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
       style={{
         ...style,
         borderLeftColor: accentColor,
+        backgroundColor: `color-mix(in oklch, ${accentColor} 6%, var(--card))`,
       }}
-      className={`group rounded-lg border border-border border-l-[3px] bg-card p-3 shadow-sm ${
+      className={`group rounded-lg border border-border border-l-[3px] p-3 shadow-sm ${
         isDragging ? 'opacity-30' : ''
       } ${overlay ? 'shadow-lg ring-1 ring-foreground/10 rotate-[2deg]' : ''}`}
     >
