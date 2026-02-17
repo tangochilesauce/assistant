@@ -73,7 +73,7 @@ function rowToItem(row: any): DreamwatchItem {
     publishTarget: row.publish_target,
     publishTargetDisplay: row.publish_target_display,
     description: row.description,
-    tags: row.tags ?? [],
+    tags: Array.isArray(row.tags) ? row.tags : (typeof row.tags === 'string' ? JSON.parse(row.tags) : []),
     thumbBase64: row.thumb_base64,
     sortDate: row.sort_date,
     syncedAt: row.synced_at,

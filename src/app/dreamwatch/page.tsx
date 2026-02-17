@@ -194,11 +194,11 @@ function ActiveCard({ item }: { item: DreamwatchItem }) {
               <div className="text-xs text-zinc-400 whitespace-pre-line line-clamp-4">
                 {item.description}
               </div>
-              {item.tags.length > 0 && (
+              {Array.isArray(item.tags) && item.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {item.tags.slice(0, 12).map(tag => (
-                    <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-500">
-                      {tag}
+                    <span key={String(tag)} className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-500">
+                      {String(tag)}
                     </span>
                   ))}
                 </div>
