@@ -68,7 +68,7 @@ export function QuickAdd() {
         variant="outline"
         size="icon-sm"
         onClick={() => setOpen(true)}
-        className="shrink-0"
+        className="shrink-0 rounded-none"
         aria-label="Quick add task"
       >
         <Plus className="size-4" />
