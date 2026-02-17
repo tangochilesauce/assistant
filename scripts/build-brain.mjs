@@ -26,6 +26,28 @@ const SLUG_MAP = {
   'tango/amazon.md': 'tango-amazon',
   'tango/costco.md': 'tango-costco',
   'tango/dtc.md': 'tango-dtc',
+  'tango/production.md': 'tango-production',
+}
+
+// Extract a <100 char summary from the "Current Understanding" section
+function extractSummary(content) {
+  // Find "## Current Understanding" section
+  const match = content.match(/##\s*Current Understanding\s*\n+([\s\S]*?)(?=\n##|\n$|$)/)
+  if (!match) return ''
+
+  // Get first sentence(s) of the section, strip markdown formatting
+  const text = match[1]
+    .replace(/\*\*/g, '')           // remove bold
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // links to text
+    .replace(/[#*_`]/g, '')         // other markdown chars
+    .replace(/\n+/g, ' ')          // newlines to spaces
+    .trim()
+
+  // Take up to 100 chars, break at last word boundary
+  if (text.length <= 100) return text
+  const truncated = text.slice(0, 100)
+  const lastSpace = truncated.lastIndexOf(' ')
+  return (lastSpace > 60 ? truncated.slice(0, lastSpace) : truncated) + '…'
 }
 
 function discoverBrainFiles(dir, base = '') {
@@ -76,6 +98,7 @@ export interface BrainFile {
   slug: string
   path: string
   content: string
+  summary: string
   updatedAt: string
 }
 
@@ -84,6 +107,7 @@ export const BRAIN_FILES: BrainFile[] = ${JSON.stringify(
     slug: e.slug,
     path: e.relPath,
     content: e.content,
+    summary: extractSummary(e.content),
     updatedAt: new Date().toISOString(),
   })),
   null,
