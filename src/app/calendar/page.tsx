@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { useTodoStore } from '@/store/todo-store'
+import { getProject } from '@/data/projects'
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -32,10 +33,11 @@ function toDateStr(year: number, month: number, day: number) {
 }
 
 export default function CalendarPage() {
-  const { todos, fetchTodos, initialized, toggleTodo } = useTodoStore()
+  const { todos, fetchTodos, initialized, toggleTodo, updateTodo } = useTodoStore()
   const today = new Date()
   const [viewYear, setViewYear] = useState(today.getFullYear())
   const [viewMonth, setViewMonth] = useState(today.getMonth())
+  const [addingDate, setAddingDate] = useState<string | null>(null)
 
   useEffect(() => {
     fetchTodos()
@@ -53,9 +55,6 @@ export default function CalendarPage() {
       todosByDate.set(todo.dueDate, list)
     }
   }
-
-  // For todos without due dates, show incomplete ones on today
-  const undated = todos.filter(t => !t.dueDate && !t.completed)
 
   const prevMonth = () => {
     if (viewMonth === 0) {
@@ -82,9 +81,12 @@ export default function CalendarPage() {
 
   const isCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth()
 
+  // Count how many days have deadlines for the header
+  const datedCount = todos.filter(t => !t.completed && t.dueDate).length
+
   return (
     <>
-      <PageHeader title="Calendar">
+      <PageHeader title="Calendar" count={datedCount}>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={prevMonth}>
             <ChevronLeft className="size-4" />
@@ -124,16 +126,14 @@ export default function CalendarPage() {
             const isToday = dateStr === todayStr
             const isWeekend = (i % 7 === 0) || (i % 7 === 6)
             const dayTodos = todosByDate.get(dateStr) || []
-            // Show undated todos on today's cell
-            const showUndated = isToday
-            const allTodos = showUndated ? [...dayTodos, ...undated] : dayTodos
+            const isPast = dateStr < todayStr
 
             return (
               <div
                 key={day}
                 className={`border-r border-b border-border/50 min-h-[100px] ${
                   isWeekend ? 'bg-accent/10' : ''
-                } ${isToday ? 'bg-primary/5' : ''}`}
+                } ${isToday ? 'bg-primary/5' : ''} ${isPast ? 'opacity-60' : ''}`}
               >
                 <div className={`px-2 py-1 text-right ${isToday ? 'font-bold' : ''}`}>
                   <span className={`text-sm tabular-nums ${
@@ -145,26 +145,35 @@ export default function CalendarPage() {
                   </span>
                 </div>
                 <div className="px-1 pb-1 space-y-0.5">
-                  {allTodos.slice(0, 4).map(todo => (
-                    <div
-                      key={todo.id}
-                      className="flex items-start gap-1 px-1 py-0.5 rounded hover:bg-accent/50 transition-colors group"
-                    >
-                      <Checkbox
-                        checked={todo.completed}
-                        onCheckedChange={() => toggleTodo(todo.id)}
-                        className="mt-0.5 shrink-0 size-3"
-                      />
-                      <span className={`text-[11px] leading-tight truncate ${
-                        todo.completed ? 'line-through text-muted-foreground' : ''
-                      }`}>
-                        {todo.title}
-                      </span>
-                    </div>
-                  ))}
-                  {allTodos.length > 4 && (
+                  {dayTodos.slice(0, 5).map(todo => {
+                    const project = getProject(todo.projectSlug)
+                    const accentColor = project?.color ?? '#666'
+                    return (
+                      <div
+                        key={todo.id}
+                        className="flex items-start gap-1 px-1 py-0.5 rounded hover:bg-accent/50 transition-colors group"
+                      >
+                        <Checkbox
+                          checked={todo.completed}
+                          onCheckedChange={() => toggleTodo(todo.id)}
+                          className="mt-0.5 shrink-0 size-3"
+                        />
+                        <div
+                          className="w-1.5 h-1.5 rounded-full shrink-0 mt-[3px]"
+                          style={{ backgroundColor: accentColor }}
+                          title={project?.name}
+                        />
+                        <span className={`text-[11px] leading-tight truncate ${
+                          todo.completed ? 'line-through text-muted-foreground' : ''
+                        }`}>
+                          {todo.title}
+                        </span>
+                      </div>
+                    )
+                  })}
+                  {dayTodos.length > 5 && (
                     <div className="text-[10px] text-muted-foreground px-1">
-                      +{allTodos.length - 4} more
+                      +{dayTodos.length - 5} more
                     </div>
                   )}
                 </div>
