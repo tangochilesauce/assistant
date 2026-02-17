@@ -8,7 +8,7 @@ import { getProject, PROJECTS } from '@/data/projects'
 // ── Financial Data ───────────────────────────────────────────────
 
 const DEBTS = [
-  { name: 'Deep (ingredients)', amount: 1299, due: 'Feb 23' },
+  { name: 'Deep (ingredients)', amount: 699, due: 'Feb 23' },
   { name: 'Off Record Studio', amount: 300, due: 'Mar 1' },
   { name: 'Acorn (boxes)', amount: 804, due: 'Next run' },
   { name: 'Labels', amount: 1500, due: 'Next run' },

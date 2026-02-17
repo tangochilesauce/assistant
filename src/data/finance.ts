@@ -1,4 +1,4 @@
-export const BALANCE = 45
+export const BALANCE = -555
 
 export type IncomeStatus = 'locked' | 'expected' | 'sporadic' | 'inactive'
 
