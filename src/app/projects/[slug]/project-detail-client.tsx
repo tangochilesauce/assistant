@@ -6,9 +6,11 @@ import { PageHeader } from '@/components/layout/page-header'
 import { ActionLine } from '@/components/action-line'
 import { AddActionInput } from '@/components/add-action-input'
 import { KanbanBoard } from '@/components/kanban/kanban-board'
+import { ProjectAbout } from '@/components/project-about'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useTodoStore } from '@/store/todo-store'
 import { getProject } from '@/data/projects'
+import { getAboutPage } from '@/data/about'
 
 interface Props {
   slug: string
@@ -17,6 +19,7 @@ interface Props {
 export function ProjectDetailClient({ slug }: Props) {
   const project = getProject(slug)
   const { todos, fetchTodos, initialized } = useTodoStore()
+  const hasAbout = !!getAboutPage(slug)
 
   useEffect(() => {
     fetchTodos()
@@ -66,6 +69,7 @@ export function ProjectDetailClient({ slug }: Props) {
             <TabsList className="mb-4">
               <TabsTrigger value="list">List</TabsTrigger>
               <TabsTrigger value="board">Board</TabsTrigger>
+              <TabsTrigger value="about">About</TabsTrigger>
             </TabsList>
 
             <TabsContent value="list" className="-mx-4">
@@ -96,6 +100,10 @@ export function ProjectDetailClient({ slug }: Props) {
 
             <TabsContent value="board">
               <KanbanBoard projectSlug={slug} />
+            </TabsContent>
+
+            <TabsContent value="about" className="-mx-4">
+              <ProjectAbout slug={slug} />
             </TabsContent>
           </Tabs>
         )}

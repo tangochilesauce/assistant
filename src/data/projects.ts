@@ -70,6 +70,15 @@ export const PROJECTS: Project[] = [
     defaultActions: ['Batch 7 videos', 'Cut 5 Shorts', 'Cross-post TikTok + Reels'],
   },
   {
+    slug: 'jeff',
+    name: 'JEFF',
+    emoji: '🤖',
+    color: '#3B82F6',
+    weight: 10,
+    goal: 'Build JEFF into the operating system for everything',
+    defaultActions: ['Be able to order/edit to-do list items', 'README for each project', 'Add Tango dashboard'],
+  },
+  {
     slug: 'life-admin',
     name: 'Life Admin',
     emoji: '🏠',

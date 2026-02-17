@@ -8,6 +8,7 @@ import {
   Kanban,
   DollarSign,
   Calendar,
+  Tv,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -34,6 +35,7 @@ const NAV_VIEWS = [
   { href: '/board', label: 'Board', icon: Kanban },
   { href: '/cash', label: 'Cash Flow', icon: DollarSign },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
+  { href: '/dreamwatch', label: 'Dreamwatch', icon: Tv },
 ]
 
 export function AppSidebar() {
