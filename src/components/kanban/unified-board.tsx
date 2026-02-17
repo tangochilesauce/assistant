@@ -8,7 +8,7 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  closestCorners,
+  closestCenter,
   type DragStartEvent,
   type DragEndEvent,
 } from '@dnd-kit/core'
@@ -143,7 +143,7 @@ export function UnifiedBoard() {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >

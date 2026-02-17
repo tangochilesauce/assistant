@@ -8,7 +8,7 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  closestCorners,
+  closestCenter,
   type DragStartEvent,
   type DragEndEvent,
   type DragOverEvent,
@@ -103,7 +103,7 @@ export function DndContextProvider({ children, projectSlug }: DndContextProvider
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
