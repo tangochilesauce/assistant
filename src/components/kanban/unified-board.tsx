@@ -174,10 +174,12 @@ export function UnifiedBoard() {
                 // Sort color groups by their highest-weight member
                 return (colorMaxWeight[cB] ?? 0) - (colorMaxWeight[cA] ?? 0)
               }
-              // Within same color group, sub-sort by project weight desc, then sortOrder
+              // Within same color group, sub-sort by project weight desc, then project slug, then sortOrder
               const wA = pA?.weight ?? 0
               const wB = pB?.weight ?? 0
               if (wA !== wB) return wB - wA
+              // Same weight? Group by project slug so cards don't interleave
+              if (a.projectSlug !== b.projectSlug) return a.projectSlug.localeCompare(b.projectSlug)
               return a.sortOrder - b.sortOrder
             })
 
