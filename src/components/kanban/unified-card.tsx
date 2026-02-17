@@ -68,20 +68,12 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
           ? `color-mix(in oklch, ${accentColor} 20%, var(--card))`
           : `color-mix(in oklch, ${accentColor} 6%, var(--card))`,
       }}
-      className={`group relative rounded-lg border overflow-hidden ${
+      className={`group rounded-lg border ${
         isFocused ? 'border-l-[5px] border-border' : 'border-l-[3px] border-border'
       } p-3 shadow-sm ${isDragging ? 'opacity-30' : ''} ${
         overlay ? 'shadow-lg ring-1 ring-foreground/10 rotate-[2deg]' : ''
       }`}
     >
-      {/* Top accent bar for focused items */}
-      {isFocused && (
-        <div
-          className="absolute top-0 left-0 right-0 h-[2px]"
-          style={{ backgroundColor: accentColor }}
-        />
-      )}
-
       <div className="flex items-start gap-2">
         {/* Drag handle */}
         <button

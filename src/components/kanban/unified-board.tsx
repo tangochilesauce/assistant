@@ -161,11 +161,6 @@ export function UnifiedBoard() {
           const columnTodos = todos
             .filter(t => toUnifiedStatus(t.status) === column.id)
             .sort((a, b) => {
-              // Focused items always float to the very top
-              const fA = a.tags?.includes('focus') ? 1 : 0
-              const fB = b.tags?.includes('focus') ? 1 : 0
-              if (fA !== fB) return fB - fA
-
               const pA = projectMap[a.projectSlug]
               const pB = projectMap[b.projectSlug]
               const cA = pA?.color ?? ''
@@ -174,12 +169,16 @@ export function UnifiedBoard() {
                 // Sort color groups by their highest-weight member
                 return (colorMaxWeight[cB] ?? 0) - (colorMaxWeight[cA] ?? 0)
               }
-              // Within same color group, sub-sort by project weight desc, then project slug, then sortOrder
+              // Within same color group, sub-sort by project weight desc
               const wA = pA?.weight ?? 0
               const wB = pB?.weight ?? 0
               if (wA !== wB) return wB - wA
               // Same weight? Group by project slug so cards don't interleave
               if (a.projectSlug !== b.projectSlug) return a.projectSlug.localeCompare(b.projectSlug)
+              // Within same project: focused items float to top of their section
+              const fA = a.tags?.includes('focus') ? 1 : 0
+              const fB = b.tags?.includes('focus') ? 1 : 0
+              if (fA !== fB) return fB - fA
               return a.sortOrder - b.sortOrder
             })
 
