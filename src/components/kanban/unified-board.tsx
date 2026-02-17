@@ -163,11 +163,12 @@ export function UnifiedBoard() {
             .sort((a, b) => {
               const pA = projectMap[a.projectSlug]
               const pB = projectMap[b.projectSlug]
-              // 1. Color group (higher max-weight color batch first)
+              // 1. Color group (higher max-weight color batch first, tie-break by color)
               const cA = pA?.color ?? ''
               const cB = pB?.color ?? ''
               if (cA !== cB) {
-                return (colorMaxWeight[cB] ?? 0) - (colorMaxWeight[cA] ?? 0)
+                const wDiff = (colorMaxWeight[cB] ?? 0) - (colorMaxWeight[cA] ?? 0)
+                return wDiff !== 0 ? wDiff : cA.localeCompare(cB)
               }
               // 2. Group by project (never interleave)
               if (a.projectSlug !== b.projectSlug) return a.projectSlug.localeCompare(b.projectSlug)

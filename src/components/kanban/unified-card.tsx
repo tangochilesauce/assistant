@@ -65,7 +65,7 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
         ...style,
         borderLeftColor: accentColor,
         backgroundColor: isFocused
-          ? `color-mix(in oklch, ${accentColor} 20%, var(--card))`
+          ? `color-mix(in oklch, ${accentColor} 35%, var(--card))`
           : `color-mix(in oklch, ${accentColor} 6%, var(--card))`,
       }}
       className={`group rounded-lg border ${
