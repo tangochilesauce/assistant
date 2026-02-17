@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Plus, Flame } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -17,16 +17,15 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { PROJECTS, type Project } from '@/data/projects'
+import { PROJECTS } from '@/data/projects'
 import { useTodoStore } from '@/store/todo-store'
 
 export function QuickAdd() {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [projectSlug, setProjectSlug] = useState('tango')
-  const [focus, setFocus] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
-  const { addTodo, updateTodo, todos } = useTodoStore()
+  const { addTodo } = useTodoStore()
 
   // Focus the input when dialog opens
   useEffect(() => {
@@ -42,17 +41,6 @@ export function QuickAdd() {
     if (!trimmed) return
 
     await addTodo(projectSlug, trimmed)
-
-    // If focus is on, tag the newly created todo
-    if (focus) {
-      // The new todo is the last one added for this project
-      const latest = useTodoStore.getState().todos
-        .filter(t => t.projectSlug === projectSlug && t.title === trimmed)
-        .sort((a, b) => b.sortOrder - a.sortOrder)[0]
-      if (latest) {
-        await updateTodo(latest.id, { tags: [...latest.tags, 'focus'] })
-      }
-    }
 
     // Reset and close
     setTitle('')
@@ -129,21 +117,8 @@ export function QuickAdd() {
               }}
             />
 
-            {/* Focus toggle + submit */}
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => setFocus(f => !f)}
-                className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-md transition-colors ${
-                  focus
-                    ? 'bg-orange-500/20 text-orange-400'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Flame className="size-3.5" />
-                Focus
-              </button>
-
+            {/* Submit */}
+            <div className="flex items-center justify-end">
               <Button
                 size="sm"
                 onClick={handleSubmit}

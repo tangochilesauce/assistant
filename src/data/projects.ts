@@ -108,6 +108,16 @@ export const PROJECTS: Project[] = [
     parentSlug: 'tango',
   },
   {
+    slug: 'tango-production',
+    name: 'Production',
+    emoji: '🔥',
+    color: '#f97316',
+    weight: 10,
+    goal: 'Keep kitchen runs on schedule, manage POs and packaging',
+    defaultActions: ['Schedule next kitchen run', 'Check packaging inventory'],
+    parentSlug: 'tango',
+  },
+  {
     slug: 'tango-dtc',
     name: 'DTC',
     emoji: '🔥',
