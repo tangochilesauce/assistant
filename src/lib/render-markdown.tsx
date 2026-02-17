@@ -1,6 +1,6 @@
 import React from 'react'
 
-/* ── Markdown → React renderer ───────────────────────────────── */
+/* ── Markdown → React renderer (compact) ─────────────────────── */
 
 function parseInline(text: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = []
@@ -17,7 +17,7 @@ function parseInline(text: string): React.ReactNode[] {
       nodes.push(<strong key={match.index} className="font-semibold text-foreground">{match[2]}</strong>)
     } else if (match[3]) {
       nodes.push(
-        <code key={match.index} className="px-1 py-0.5 rounded bg-accent text-xs font-mono">
+        <code key={match.index} className="px-0.5 py-px rounded bg-accent text-[10px] font-mono">
           {match[3]}
         </code>
       )
@@ -61,8 +61,8 @@ export function renderMarkdown(content: string): React.ReactNode[] {
       }
       i++
       elements.push(
-        <pre key={`code-${i}`} className="bg-accent/50 border border-border/50 rounded-lg p-3 overflow-x-auto my-3">
-          <code className="text-xs font-mono text-muted-foreground whitespace-pre">
+        <pre key={`code-${i}`} className="bg-accent/50 border border-border/50 rounded p-2 overflow-x-auto my-1.5">
+          <code className="text-[10px] font-mono text-muted-foreground whitespace-pre leading-tight">
             {codeLines.join('\n')}
           </code>
         </pre>
@@ -79,26 +79,26 @@ export function renderMarkdown(content: string): React.ReactNode[] {
 
     // Horizontal rule
     if (/^---+$/.test(line.trim())) {
-      elements.push(<hr key={`hr-${i}`} className="border-border/50 my-4" />)
+      elements.push(<hr key={`hr-${i}`} className="border-border/50 my-2" />)
       i++
       continue
     }
 
     // Headers
     if (line.startsWith('# ')) {
-      elements.push(<h1 key={`h1-${i}`} className="text-xl font-bold text-foreground mt-6 mb-3 first:mt-0">{parseInline(line.slice(2))}</h1>)
+      elements.push(<h1 key={`h1-${i}`} className="text-sm font-bold text-foreground mt-4 mb-1.5 first:mt-0">{parseInline(line.slice(2))}</h1>)
       i++; continue
     }
     if (line.startsWith('## ')) {
-      elements.push(<h2 key={`h2-${i}`} className="text-lg font-semibold text-foreground mt-6 mb-2 pb-1 border-b border-border/30">{parseInline(line.slice(3))}</h2>)
+      elements.push(<h2 key={`h2-${i}`} className="text-xs font-semibold text-foreground mt-3 mb-1 pb-0.5 border-b border-border/30 uppercase tracking-wide">{parseInline(line.slice(3))}</h2>)
       i++; continue
     }
     if (line.startsWith('### ')) {
-      elements.push(<h3 key={`h3-${i}`} className="text-base font-medium text-foreground mt-4 mb-2">{parseInline(line.slice(4))}</h3>)
+      elements.push(<h3 key={`h3-${i}`} className="text-xs font-medium text-foreground mt-2 mb-0.5">{parseInline(line.slice(4))}</h3>)
       i++; continue
     }
     if (line.startsWith('#### ')) {
-      elements.push(<h4 key={`h4-${i}`} className="text-sm font-medium text-muted-foreground mt-3 mb-1">{parseInline(line.slice(5))}</h4>)
+      elements.push(<h4 key={`h4-${i}`} className="text-[11px] font-medium text-muted-foreground mt-1.5 mb-0.5">{parseInline(line.slice(5))}</h4>)
       i++; continue
     }
 
@@ -118,12 +118,12 @@ export function renderMarkdown(content: string): React.ReactNode[] {
         const bodyRows = tableLines.slice(2).map(parseRow)
 
         elements.push(
-          <div key={`table-${i}`} className="overflow-x-auto my-3">
-            <table className="w-full text-xs border-collapse">
+          <div key={`table-${i}`} className="overflow-x-auto my-1.5">
+            <table className="w-full text-[10px] border-collapse">
               <thead>
                 <tr>
                   {header.map((cell, ci) => (
-                    <th key={ci} className="text-left px-2 py-1.5 border-b border-border font-medium text-muted-foreground">
+                    <th key={ci} className="text-left px-1.5 py-0.5 border-b border-border font-medium text-muted-foreground">
                       {parseInline(cell)}
                     </th>
                   ))}
@@ -131,9 +131,9 @@ export function renderMarkdown(content: string): React.ReactNode[] {
               </thead>
               <tbody>
                 {bodyRows.map((row, ri) => (
-                  <tr key={ri} className="border-b border-border/30 hover:bg-accent/20">
+                  <tr key={ri} className="border-b border-border/20 hover:bg-accent/20">
                     {row.map((cell, ci) => (
-                      <td key={ci} className="px-2 py-1.5 text-sm">
+                      <td key={ci} className="px-1.5 py-0.5 text-[11px]">
                         {parseInline(cell)}
                       </td>
                     ))}
@@ -155,7 +155,7 @@ export function renderMarkdown(content: string): React.ReactNode[] {
         i++
       }
       elements.push(
-        <blockquote key={`bq-${i}`} className="border-l-2 border-border pl-3 my-2 text-sm text-muted-foreground italic">
+        <blockquote key={`bq-${i}`} className="border-l-2 border-border pl-2 my-1 text-[11px] text-muted-foreground italic">
           {quoteLines.map((ql, qi) => (
             <p key={qi}>{parseInline(ql)}</p>
           ))}
@@ -183,15 +183,15 @@ export function renderMarkdown(content: string): React.ReactNode[] {
         i++
       }
       elements.push(
-        <ul key={`ul-${i}`} className="my-2 space-y-0.5">
+        <ul key={`ul-${i}`} className="my-1 space-y-px">
           {listItems.map((item, li) => (
-            <li key={li} className="text-sm flex items-start gap-2" style={{ paddingLeft: `${Math.min(item.indent, 8) * 6}px` }}>
+            <li key={li} className="text-[11px] flex items-start gap-1.5 leading-tight" style={{ paddingLeft: `${Math.min(item.indent, 8) * 4}px` }}>
               {item.checked !== undefined ? (
-                <span className={`shrink-0 mt-0.5 ${item.checked ? 'text-green-400' : 'text-muted-foreground'}`}>
+                <span className={`shrink-0 ${item.checked ? 'text-green-400' : 'text-muted-foreground'}`}>
                   {item.checked ? '\u2705' : '\u2610'}
                 </span>
               ) : (
-                <span className="shrink-0 text-muted-foreground mt-0.5">&bull;</span>
+                <span className="shrink-0 text-muted-foreground">&bull;</span>
               )}
               <span className={item.checked ? 'line-through text-muted-foreground' : ''}>
                 {parseInline(item.content)}
@@ -211,9 +211,9 @@ export function renderMarkdown(content: string): React.ReactNode[] {
         i++
       }
       elements.push(
-        <ol key={`ol-${i}`} className="my-2 space-y-0.5 list-decimal list-inside">
+        <ol key={`ol-${i}`} className="my-1 space-y-px list-decimal list-inside">
           {listItems.map((item, li) => (
-            <li key={li} className="text-sm">{parseInline(item)}</li>
+            <li key={li} className="text-[11px] leading-tight">{parseInline(item)}</li>
           ))}
         </ol>
       )
@@ -222,7 +222,7 @@ export function renderMarkdown(content: string): React.ReactNode[] {
 
     // Paragraph
     elements.push(
-      <p key={`p-${i}`} className="text-sm leading-relaxed my-1.5">
+      <p key={`p-${i}`} className="text-[11px] leading-snug my-0.5">
         {parseInline(line)}
       </p>
     )
