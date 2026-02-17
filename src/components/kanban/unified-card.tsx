@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, Flame, X, Trash2 } from 'lucide-react'
+import { GripVertical, X, Trash2 } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useTodoStore, type Todo } from '@/store/todo-store'
 import { getProject } from '@/data/projects'
@@ -218,14 +218,14 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
           {/* Focus toggle */}
           <button
             onClick={() => toggleFocus(todo.id)}
-            className={`shrink-0 transition-opacity ${
+            className={`shrink-0 transition-opacity text-sm leading-none ${
               isFocused
-                ? 'text-orange-400 opacity-100'
-                : 'opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-orange-400'
+                ? 'text-orange-400 opacity-100 font-black'
+                : 'opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-orange-400 font-black'
             }`}
             title={isFocused ? 'Remove focus' : 'Focus today'}
           >
-            <Flame className="size-4" />
+            !
           </button>
 
           {/* Delete (desktop hover) */}

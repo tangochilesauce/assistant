@@ -15,7 +15,8 @@ interface KanbanCardProps {
 }
 
 export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
-  const { toggleTodo, deleteTodo, updateTodo } = useTodoStore()
+  const { toggleTodo, toggleFocus, deleteTodo, updateTodo } = useTodoStore()
+  const isFocused = todo.tags?.includes('focus')
   const [editing, setEditing] = useState(false)
   const [editValue, setEditValue] = useState(todo.title)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -79,7 +80,7 @@ export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
           className="mt-0.5 shrink-0"
         />
 
-        {/* Title — editable on double-click */}
+        {/* Title — double-click on desktop, tap on mobile */}
         {editing ? (
           <input
             ref={inputRef}
@@ -95,13 +96,33 @@ export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
         ) : (
           <span
             onDoubleClick={() => !overlay && setEditing(true)}
+            onClick={() => {
+              if (!overlay && 'ontouchstart' in window) setEditing(true)
+            }}
             className={`text-sm flex-1 leading-tight cursor-text ${
-              todo.completed ? 'line-through text-muted-foreground/50' : ''
+              todo.completed
+                ? 'line-through text-muted-foreground/50'
+                : isFocused
+                  ? 'text-foreground font-semibold'
+                  : ''
             }`}
           >
             {todo.title}
           </span>
         )}
+
+        {/* Focus toggle */}
+        <button
+          onClick={() => toggleFocus(todo.id)}
+          className={`shrink-0 transition-opacity text-sm leading-none ${
+            isFocused
+              ? 'text-orange-400 opacity-100 font-black'
+              : 'opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-orange-400 font-black'
+          }`}
+          title={isFocused ? 'Remove focus' : 'Focus today'}
+        >
+          !
+        </button>
 
         {/* Delete */}
         <button
