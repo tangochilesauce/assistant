@@ -5,9 +5,8 @@ import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Plus } from 'lucide-react'
 import { KanbanCard } from './kanban-card'
-import { useTodoStore } from '@/store/todo-store'
+import { useTodoStore, type Todo } from '@/store/todo-store'
 import type { KanbanColumn as ColumnType } from '@/data/projects'
-import type { Todo } from '@/store/todo-store'
 
 interface KanbanColumnProps {
   column: ColumnType
@@ -21,7 +20,16 @@ export function KanbanColumn({ column, todos, projectSlug, showProject }: Kanban
     id: `column-${column.id}`,
     data: { type: 'column', columnId: column.id },
   })
-  const { addTodo } = useTodoStore()
+  const { addTodo, reorderTodo } = useTodoStore()
+
+  // Swap two adjacent todos by exchanging their sort orders
+  const swapTodos = (indexA: number, indexB: number) => {
+    const a = todos[indexA]
+    const b = todos[indexB]
+    if (!a || !b) return
+    reorderTodo(a.id, b.sortOrder)
+    reorderTodo(b.id, a.sortOrder)
+  }
   const [adding, setAdding] = useState(false)
   const [addValue, setAddValue] = useState('')
 
@@ -66,8 +74,14 @@ export function KanbanColumn({ column, todos, projectSlug, showProject }: Kanban
               Drop here
             </div>
           ) : (
-            todos.map(todo => (
-              <KanbanCard key={todo.id} todo={todo} showProject={showProject} />
+            todos.map((todo, i) => (
+              <KanbanCard
+                key={todo.id}
+                todo={todo}
+                showProject={showProject}
+                onMoveUp={i > 0 ? () => swapTodos(i, i - 1) : undefined}
+                onMoveDown={i < todos.length - 1 ? () => swapTodos(i, i + 1) : undefined}
+              />
             ))
           )}
 

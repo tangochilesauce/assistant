@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, Trash2 } from 'lucide-react'
+import { GripVertical, Trash2, ChevronUp, ChevronDown } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ProjectBadge } from '@/components/project-badge'
 import { useTodoStore, type Todo } from '@/store/todo-store'
@@ -12,9 +12,11 @@ interface KanbanCardProps {
   todo: Todo
   showProject?: boolean
   overlay?: boolean  // true when rendered inside DragOverlay
+  onMoveUp?: () => void
+  onMoveDown?: () => void
 }
 
-export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
+export function KanbanCard({ todo, showProject, overlay, onMoveUp, onMoveDown }: KanbanCardProps) {
   const { toggleTodo, toggleFocus, deleteTodo, updateTodo } = useTodoStore()
   const isFocused = todo.tags?.includes('focus')
   const [editing, setEditing] = useState(false)
@@ -65,10 +67,10 @@ export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
       } ${overlay ? 'shadow-lg ring-1 ring-foreground/10 rotate-[2deg]' : ''}`}
     >
       <div className="flex items-start gap-2">
-        {/* Drag handle */}
+        {/* Drag handle (desktop) */}
         <button
           {...(overlay ? {} : { ...attributes, ...listeners })}
-          className="mt-0.5 shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground touch-none"
+          className="mt-0.5 shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground touch-none hidden sm:block"
         >
           <GripVertical className="size-3.5" />
         </button>
@@ -123,6 +125,26 @@ export function KanbanCard({ todo, showProject, overlay }: KanbanCardProps) {
         >
           !
         </button>
+
+        {/* Reorder arrows (mobile) */}
+        {(onMoveUp || onMoveDown) && (
+          <div className="flex flex-col shrink-0 sm:hidden">
+            <button
+              onClick={onMoveUp}
+              disabled={!onMoveUp}
+              className={`text-muted-foreground/50 ${onMoveUp ? 'hover:text-foreground active:text-foreground' : 'opacity-20'}`}
+            >
+              <ChevronUp className="size-3.5" />
+            </button>
+            <button
+              onClick={onMoveDown}
+              disabled={!onMoveDown}
+              className={`text-muted-foreground/50 ${onMoveDown ? 'hover:text-foreground active:text-foreground' : 'opacity-20'}`}
+            >
+              <ChevronDown className="size-3.5" />
+            </button>
+          </div>
+        )}
 
         {/* Delete */}
         <button
