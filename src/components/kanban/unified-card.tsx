@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, Trash2 } from 'lucide-react'
+import { GripVertical, Trash2, Flame } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useTodoStore, type Todo } from '@/store/todo-store'
 import { getProject } from '@/data/projects'
@@ -14,7 +14,7 @@ interface UnifiedCardProps {
 }
 
 export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
-  const { toggleTodo, deleteTodo, updateTodo } = useTodoStore()
+  const { toggleTodo, toggleFocus, deleteTodo, updateTodo } = useTodoStore()
   const [editing, setEditing] = useState(false)
   const [editValue, setEditValue] = useState(todo.title)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -56,6 +56,7 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
   }
 
   const accentColor = project?.color ?? '#666'
+  const isFocused = todo.tags?.includes('focus')
 
   return (
     <div
@@ -63,11 +64,16 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
       style={{
         ...style,
         borderLeftColor: accentColor,
-        backgroundColor: `color-mix(in oklch, ${accentColor} 6%, var(--card))`,
+        backgroundColor: isFocused
+          ? `color-mix(in oklch, ${accentColor} 12%, var(--card))`
+          : `color-mix(in oklch, ${accentColor} 6%, var(--card))`,
+        ...(isFocused ? { boxShadow: `0 0 12px color-mix(in oklch, ${accentColor} 25%, transparent)` } : {}),
       }}
-      className={`group rounded-lg border border-border border-l-[3px] p-3 shadow-sm ${
-        isDragging ? 'opacity-30' : ''
-      } ${overlay ? 'shadow-lg ring-1 ring-foreground/10 rotate-[2deg]' : ''}`}
+      className={`group rounded-lg border border-l-[3px] p-3 shadow-sm ${
+        isFocused ? 'border-foreground/20 ring-1 ring-foreground/10' : 'border-border'
+      } ${isDragging ? 'opacity-30' : ''} ${
+        overlay ? 'shadow-lg ring-1 ring-foreground/10 rotate-[2deg]' : ''
+      }`}
     >
       <div className="flex items-start gap-2">
         {/* Drag handle */}
@@ -108,6 +114,19 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
             {todo.title}
           </span>
         )}
+
+        {/* Focus toggle */}
+        <button
+          onClick={() => toggleFocus(todo.id)}
+          className={`shrink-0 transition-opacity ${
+            isFocused
+              ? 'text-orange-400 opacity-100'
+              : 'opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-orange-400'
+          }`}
+          title={isFocused ? 'Remove focus' : 'Focus today'}
+        >
+          <Flame className="size-3" />
+        </button>
 
         {/* Delete */}
         <button

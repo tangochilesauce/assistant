@@ -11,6 +11,7 @@ export interface Todo {
   dueDate: string | null
   sortOrder: number
   status: string       // kanban column id: 'todo', 'in-progress', 'done', etc.
+  tags: string[]       // e.g. ["focus"] for daily focus items
 }
 
 interface TodoState {
@@ -21,6 +22,7 @@ interface TodoState {
   addTodo: (projectSlug: string, title: string, status?: string) => Promise<void>
   updateTodo: (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate'>>) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
+  toggleFocus: (id: string) => Promise<void>
   deleteTodo: (id: string) => Promise<void>
   moveTodo: (id: string, newStatus: string, newSortOrder: number) => Promise<void>
   reorderTodo: (id: string, newSortOrder: number) => Promise<void>
@@ -38,11 +40,23 @@ function rowToTodo(row: TodoRow): Todo {
     dueDate: row.due_date,
     sortOrder: row.sort_order,
     status,
+    tags: row.tags ?? [],
   }
 }
 
 function generateId() {
   return crypto.randomUUID()
+}
+
+// Get today's date string in PST (America/Los_Angeles)
+function todayPST(): string {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }) // YYYY-MM-DD
+}
+
+// Extract the completed date from tags, e.g. "completed:2026-02-16"
+function getCompletedDate(tags: string[]): string | null {
+  const tag = tags.find(t => t.startsWith('completed:'))
+  return tag ? tag.slice('completed:'.length) : null
 }
 
 // Seed data from project defaults (used when Supabase is not connected)
@@ -60,6 +74,7 @@ function getDefaultTodos(): Todo[] {
         dueDate: null,
         sortOrder: i,
         status: firstCol,
+        tags: [],
       })
     }
   }
@@ -82,7 +97,26 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         .order('sort_order', { ascending: true })
 
       if (!error && data) {
-        set({ todos: data.map(rowToTodo), loading: false, initialized: true })
+        const allTodos = data.map(rowToTodo)
+        const today = todayPST()
+
+        // Auto-purge: delete completed items from before today (PST)
+        const stale = allTodos.filter(t => {
+          if (!t.completed) return false
+          const doneDate = getCompletedDate(t.tags)
+          return doneDate && doneDate < today
+        })
+        const fresh = allTodos.filter(t => !stale.some(s => s.id === t.id))
+
+        // Delete stale items from Supabase in background
+        if (stale.length > 0) {
+          const ids = stale.map(t => t.id)
+          supabase.from('todos').delete().in('id', ids).then(() => {
+            console.log(`[JEFF] Auto-purged ${ids.length} completed items from before ${today}`)
+          })
+        }
+
+        set({ todos: fresh, loading: false, initialized: true })
         return
       }
     }
@@ -106,6 +140,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       dueDate: null,
       sortOrder: maxOrder + 1,
       status: targetStatus,
+      tags: [],
     }
 
     set(state => ({ todos: [...state.todos, newTodo] }))
@@ -148,9 +183,15 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       ? getLastColumnId(todo.projectSlug)
       : getFirstColumnId(todo.projectSlug)
 
+    // Stamp or remove the completed:DATE tag
+    let newTags = todo.tags.filter(t => !t.startsWith('completed:'))
+    if (willComplete) {
+      newTags = [...newTags, `completed:${todayPST()}`]
+    }
+
     set(state => ({
       todos: state.todos.map(t =>
-        t.id === id ? { ...t, completed: willComplete, status: newStatus } : t
+        t.id === id ? { ...t, completed: willComplete, status: newStatus, tags: newTags } : t
       ),
     }))
 
@@ -158,7 +199,28 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       await supabase.from('todos').update({
         completed: willComplete,
         status: newStatus,
+        tags: newTags,
       }).eq('id', id)
+    }
+  },
+
+  toggleFocus: async (id: string) => {
+    const todo = get().todos.find(t => t.id === id)
+    if (!todo) return
+
+    const isFocused = todo.tags.includes('focus')
+    const newTags = isFocused
+      ? todo.tags.filter(t => t !== 'focus')
+      : [...todo.tags, 'focus']
+
+    set(state => ({
+      todos: state.todos.map(t =>
+        t.id === id ? { ...t, tags: newTags } : t
+      ),
+    }))
+
+    if (supabase) {
+      await supabase.from('todos').update({ tags: newTags }).eq('id', id)
     }
   },
 
@@ -177,10 +239,16 @@ export const useTodoStore = create<TodoState>((set, get) => ({
 
     const isCompleted = newStatus === getLastColumnId(todo.projectSlug)
 
+    // Stamp or remove the completed:DATE tag
+    let newTags = todo.tags.filter(t => !t.startsWith('completed:'))
+    if (isCompleted) {
+      newTags = [...newTags, `completed:${todayPST()}`]
+    }
+
     set(state => ({
       todos: state.todos.map(t =>
         t.id === id
-          ? { ...t, status: newStatus, sortOrder: newSortOrder, completed: isCompleted }
+          ? { ...t, status: newStatus, sortOrder: newSortOrder, completed: isCompleted, tags: newTags }
           : t
       ),
     }))
@@ -190,6 +258,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         status: newStatus,
         sort_order: newSortOrder,
         completed: isCompleted,
+        tags: newTags,
       }).eq('id', id)
     }
   },

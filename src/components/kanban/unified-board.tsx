@@ -14,7 +14,6 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
-import { Plus } from 'lucide-react'
 import { UnifiedCard } from './unified-card'
 import { useTodoStore, type Todo } from '@/store/todo-store'
 import { UNIFIED_COLUMNS, PROJECTS, toUnifiedStatus, type KanbanColumn } from '@/data/projects'
@@ -151,21 +150,34 @@ export function UnifiedBoard() {
       <div className="flex gap-3 overflow-x-auto pb-4">
         {UNIFIED_COLUMNS.map(column => {
           const projectMap = Object.fromEntries(PROJECTS.map(p => [p.slug, p]))
+
+          // Max weight per color group so all same-color projects batch together
+          const colorMaxWeight: Record<string, number> = {}
+          for (const p of PROJECTS) {
+            const c = p.color ?? ''
+            colorMaxWeight[c] = Math.max(colorMaxWeight[c] ?? 0, p.weight)
+          }
+
           const columnTodos = todos
             .filter(t => toUnifiedStatus(t.status) === column.id)
             .sort((a, b) => {
+              // Focused items always float to the very top
+              const fA = a.tags?.includes('focus') ? 1 : 0
+              const fB = b.tags?.includes('focus') ? 1 : 0
+              if (fA !== fB) return fB - fA
+
               const pA = projectMap[a.projectSlug]
               const pB = projectMap[b.projectSlug]
-              // Group by color (same color = same visual batch)
               const cA = pA?.color ?? ''
               const cB = pB?.color ?? ''
               if (cA !== cB) {
-                // Higher-weight color group floats up
-                const wA = pA?.weight ?? 0
-                const wB = pB?.weight ?? 0
-                return wB - wA
+                // Sort color groups by their highest-weight member
+                return (colorMaxWeight[cB] ?? 0) - (colorMaxWeight[cA] ?? 0)
               }
-              // Within same color group, sort by sortOrder
+              // Within same color group, sub-sort by project weight desc, then sortOrder
+              const wA = pA?.weight ?? 0
+              const wB = pB?.weight ?? 0
+              if (wA !== wB) return wB - wA
               return a.sortOrder - b.sortOrder
             })
 
