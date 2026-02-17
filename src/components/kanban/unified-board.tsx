@@ -163,22 +163,19 @@ export function UnifiedBoard() {
             .sort((a, b) => {
               const pA = projectMap[a.projectSlug]
               const pB = projectMap[b.projectSlug]
+              // 1. Color group (higher max-weight color batch first)
               const cA = pA?.color ?? ''
               const cB = pB?.color ?? ''
               if (cA !== cB) {
-                // Sort color groups by their highest-weight member
                 return (colorMaxWeight[cB] ?? 0) - (colorMaxWeight[cA] ?? 0)
               }
-              // Within same color group, sub-sort by project weight desc
-              const wA = pA?.weight ?? 0
-              const wB = pB?.weight ?? 0
-              if (wA !== wB) return wB - wA
-              // Same weight? Group by project slug so cards don't interleave
+              // 2. Group by project (never interleave)
               if (a.projectSlug !== b.projectSlug) return a.projectSlug.localeCompare(b.projectSlug)
-              // Within same project: focused items float to top of their section
+              // 3. Focused items top of their project section
               const fA = a.tags?.includes('focus') ? 1 : 0
               const fB = b.tags?.includes('focus') ? 1 : 0
               if (fA !== fB) return fB - fA
+              // 4. Sort order
               return a.sortOrder - b.sortOrder
             })
 
