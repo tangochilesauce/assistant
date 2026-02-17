@@ -20,7 +20,7 @@ interface TodoState {
   initialized: boolean
   fetchTodos: () => Promise<void>
   addTodo: (projectSlug: string, title: string, status?: string) => Promise<void>
-  updateTodo: (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate'>>) => Promise<void>
+  updateTodo: (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate' | 'tags'>>) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
   toggleFocus: (id: string) => Promise<void>
   deleteTodo: (id: string) => Promise<void>
@@ -159,7 +159,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     }
   },
 
-  updateTodo: async (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate'>>) => {
+  updateTodo: async (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate' | 'tags'>>) => {
     set(state => ({
       todos: state.todos.map(t =>
         t.id === id ? { ...t, ...changes } : t
@@ -170,6 +170,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       const row: Record<string, unknown> = {}
       if (changes.title !== undefined) row.title = changes.title
       if (changes.dueDate !== undefined) row.due_date = changes.dueDate
+      if (changes.tags !== undefined) row.tags = changes.tags
       await supabase.from('todos').update(row).eq('id', id)
     }
   },

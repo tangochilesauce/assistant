@@ -64,9 +64,10 @@ function DeadlineRow({ todo, dateStr }: DeadlineItem) {
     setEditingDate(false)
   }
 
-  const clearDate = (e: React.MouseEvent) => {
+  const removeDeadline = (e: React.MouseEvent) => {
     e.stopPropagation()
-    updateTodo(todo.id, { dueDate: null })
+    const newTags = todo.tags.filter(t => t !== 'deadline')
+    updateTodo(todo.id, { tags: newTags })
   }
 
   return (
@@ -93,9 +94,9 @@ function DeadlineRow({ todo, dateStr }: DeadlineItem) {
             </button>
           )}
           <button
-            onClick={clearDate}
+            onClick={removeDeadline}
             className="opacity-0 group-hover:opacity-60 hover:opacity-100 transition-opacity"
-            title="Remove deadline"
+            title="Remove from deadlines"
           >
             <X className="size-2.5" />
           </button>
@@ -117,12 +118,16 @@ function AddDeadlineRow() {
   const [selectedTodo, setSelectedTodo] = useState('')
   const [selectedDate, setSelectedDate] = useState('')
 
-  // Only show todos that don't already have a due date
-  const undatedTodos = todos.filter(t => !t.completed && !t.dueDate)
+  // Show todos not already tagged as deadline
+  const availableTodos = todos.filter(t => !t.completed && !t.tags?.includes('deadline'))
 
   const handleAdd = () => {
     if (selectedTodo && selectedDate) {
-      updateTodo(selectedTodo, { dueDate: selectedDate })
+      const todo = todos.find(t => t.id === selectedTodo)
+      if (todo) {
+        const newTags = [...(todo.tags || []), 'deadline']
+        updateTodo(selectedTodo, { dueDate: selectedDate, tags: newTags })
+      }
       setSelectedTodo('')
       setSelectedDate('')
       setOpen(false)
@@ -145,17 +150,24 @@ function AddDeadlineRow() {
     <div className="px-2 py-2 space-y-1.5 bg-accent/20 rounded-md">
       <select
         value={selectedTodo}
-        onChange={e => setSelectedTodo(e.target.value)}
+        onChange={e => {
+          setSelectedTodo(e.target.value)
+          // Pre-fill date if task already has one
+          const t = todos.find(todo => todo.id === e.target.value)
+          if (t?.dueDate && !selectedDate) setSelectedDate(t.dueDate)
+        }}
         className="w-full text-[10px] bg-transparent border border-border rounded px-1.5 py-1 outline-none"
       >
         <option value="">Pick a task...</option>
         {PROJECTS.map(project => {
-          const projectTodos = undatedTodos.filter(t => t.projectSlug === project.slug)
+          const projectTodos = availableTodos.filter(t => t.projectSlug === project.slug)
           if (projectTodos.length === 0) return null
           return (
             <optgroup key={project.slug} label={`${project.emoji} ${project.name}`}>
               {projectTodos.map(t => (
-                <option key={t.id} value={t.id}>{t.title}</option>
+                <option key={t.id} value={t.id}>
+                  {t.title}{t.dueDate ? ` (${t.dueDate})` : ''}
+                </option>
               ))}
             </optgroup>
           )
@@ -189,9 +201,9 @@ function AddDeadlineRow() {
 export function DeadlinesSidebar() {
   const { todos } = useTodoStore()
 
-  // Find all incomplete todos with a dueDate set
+  // Find all incomplete todos tagged as 'deadline' with a dueDate
   const deadlines: DeadlineItem[] = todos
-    .filter(t => !t.completed && t.dueDate)
+    .filter(t => !t.completed && t.dueDate && t.tags?.includes('deadline'))
     .map(t => ({ todo: t, dateStr: t.dueDate! }))
     .sort((a, b) => a.dateStr.localeCompare(b.dateStr))
 
