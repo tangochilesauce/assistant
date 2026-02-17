@@ -1,9 +1,30 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { CalendarClock, Plus, X } from 'lucide-react'
+import { CalendarClock, Plus, X, CircleDollarSign } from 'lucide-react'
 import { useTodoStore, type Todo } from '@/store/todo-store'
 import { getProject, PROJECTS } from '@/data/projects'
+
+// ── Financial Data ───────────────────────────────────────────────
+
+const DEBTS = [
+  { name: 'Deep (ingredients)', amount: 1299, due: 'Feb 23' },
+  { name: 'Off Record Studio', amount: 300, due: 'Mar 1' },
+  { name: 'Acorn (boxes)', amount: 804, due: 'Next run' },
+  { name: 'Labels', amount: 1500, due: 'Next run' },
+]
+
+const UPCOMING_PAYMENTS = [
+  { name: 'Rent', amount: 2878, due: 'Mar 1' },
+  { name: 'Daylight shipping', amount: 400, due: 'Feb 19' },
+  { name: 'Foodies hand-fill', amount: 1100, due: 'Feb 23' },
+]
+
+const UPCOMING_INCOME = [
+  { name: 'Amazon payout', amount: 561, due: '~Feb 17', status: 'expected' as const },
+  { name: 'UNFI MOR', amount: 3422, due: '~Feb 23', status: 'expected' as const },
+  { name: 'EXP invoice', amount: 3400, due: '~Mar 21', status: 'pending' as const },
+]
 
 function formatDeadline(dateStr: string): string {
   const now = new Date()
@@ -198,6 +219,37 @@ function AddDeadlineRow() {
   )
 }
 
+function FinancialSection({ title, icon, items, color }: {
+  title: string
+  icon: React.ReactNode
+  items: { name: string; amount: number; due: string; status?: string }[]
+  color: string
+}) {
+  return (
+    <div className="mt-4">
+      <div className="flex items-center gap-2 px-2 py-2 mb-1">
+        {icon}
+        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          {title}
+        </span>
+      </div>
+      <div className="space-y-0.5">
+        {items.map(item => (
+          <div key={item.name} className="px-2 py-1 rounded-md hover:bg-accent/30 transition-colors">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-xs truncate flex-1">{item.name}</span>
+              <span className={`text-[10px] font-medium tabular-nums shrink-0 ${color}`}>
+                ${item.amount.toLocaleString()}
+              </span>
+            </div>
+            <span className="text-[9px] text-muted-foreground/50">{item.due}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function DeadlinesSidebar() {
   const { todos } = useTodoStore()
 
@@ -208,8 +260,9 @@ export function DeadlinesSidebar() {
     .sort((a, b) => a.dateStr.localeCompare(b.dateStr))
 
   return (
-    <div className="w-[220px] shrink-0 hidden lg:block">
-      <div className="sticky top-0">
+    <div className="w-[240px] shrink-0 hidden lg:block">
+      <div className="sticky top-0 max-h-screen overflow-y-auto pb-6">
+        {/* Deadlines */}
         <div className="flex items-center gap-2 px-2 py-2.5 mb-2">
           <CalendarClock className="size-3.5 text-muted-foreground/60" />
           <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -220,12 +273,36 @@ export function DeadlinesSidebar() {
           </span>
         </div>
 
-        <div className="space-y-1 max-h-[calc(100vh-120px)] overflow-y-auto">
+        <div className="space-y-1">
           {deadlines.map(({ todo, dateStr }) => (
             <DeadlineRow key={todo.id} todo={todo} dateStr={dateStr} />
           ))}
           <AddDeadlineRow />
         </div>
+
+        {/* Outstanding Debts */}
+        <FinancialSection
+          title="Debts"
+          icon={<CircleDollarSign className="size-3.5 text-red-400/60" />}
+          items={DEBTS}
+          color="text-red-400"
+        />
+
+        {/* Upcoming Payments */}
+        <FinancialSection
+          title="Payments Due"
+          icon={<CircleDollarSign className="size-3.5 text-amber-400/60" />}
+          items={UPCOMING_PAYMENTS}
+          color="text-amber-400"
+        />
+
+        {/* Upcoming Income */}
+        <FinancialSection
+          title="Income Coming"
+          icon={<CircleDollarSign className="size-3.5 text-emerald-400/60" />}
+          items={UPCOMING_INCOME}
+          color="text-emerald-400"
+        />
       </div>
     </div>
   )

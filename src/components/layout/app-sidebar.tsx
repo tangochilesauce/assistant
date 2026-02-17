@@ -10,6 +10,8 @@ import {
   Target,
   Calendar,
   Tv,
+  Flame,
+  ClipboardCheck,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -32,15 +34,16 @@ import { useTransactionStore } from '@/store/transaction-store'
 
 const NAV_MAIN = [
   { href: '/today', label: 'Today', icon: Inbox },
-  { href: '/projects', label: 'All Projects', icon: ListChecks },
 ]
 
-const NAV_VIEWS = [
+const NAV_VIEWS: { href: string; label: string; icon: typeof Inbox; external?: boolean }[] = [
   { href: '/board', label: 'Board', icon: Kanban },
   { href: '/cash', label: 'Cash Flow', icon: DollarSign },
   { href: '/goals', label: 'Goals', icon: Target },
+  { href: '/log', label: 'Completed', icon: ClipboardCheck },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
   { href: '/dreamwatch', label: 'Dreamwatch', icon: Tv },
+  { href: 'https://github.com/tangochilesauce/tango-dashboard', label: 'Tango Dashboard', icon: Flame, external: true },
 ]
 
 export function AppSidebar() {
@@ -137,11 +140,18 @@ export function AppSidebar() {
           <SidebarMenu>
             {NAV_VIEWS.map(item => (
               <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton asChild isActive={pathname === item.href}>
-                  <Link href={item.href}>
-                    <item.icon className="size-4" />
-                    <span>{item.label}</span>
-                  </Link>
+                <SidebarMenuButton asChild isActive={!item.external && pathname === item.href}>
+                  {item.external ? (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      <item.icon className="size-4" />
+                      <span>{item.label}</span>
+                    </a>
+                  ) : (
+                    <Link href={item.href}>
+                      <item.icon className="size-4" />
+                      <span>{item.label}</span>
+                    </Link>
+                  )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}

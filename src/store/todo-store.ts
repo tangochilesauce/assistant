@@ -100,23 +100,29 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         const allTodos = data.map(rowToTodo)
         const today = todayPST()
 
-        // Auto-purge: delete completed items from before today (PST)
+        // Archive: mark old completed items so they hide from the board
+        // but keep them in the DB for the log page
         const stale = allTodos.filter(t => {
           if (!t.completed) return false
           const doneDate = getCompletedDate(t.tags)
           return doneDate && doneDate < today
         })
-        const fresh = allTodos.filter(t => !stale.some(s => s.id === t.id))
 
-        // Delete stale items from Supabase in background
+        // Tag stale items as 'archived' so the board ignores them
         if (stale.length > 0) {
           const ids = stale.map(t => t.id)
-          supabase.from('todos').delete().in('id', ids).then(() => {
-            console.log(`[JEFF] Auto-purged ${ids.length} completed items from before ${today}`)
+          supabase.from('todos').update({ status: 'archived' }).in('id', ids).then(() => {
+            console.log(`[JEFF] Archived ${ids.length} completed items from before ${today}`)
           })
+          // Update local state too
+          for (const t of allTodos) {
+            if (stale.some(s => s.id === t.id)) {
+              t.status = 'archived'
+            }
+          }
         }
 
-        set({ todos: fresh, loading: false, initialized: true })
+        set({ todos: allTodos, loading: false, initialized: true })
         return
       }
     }
