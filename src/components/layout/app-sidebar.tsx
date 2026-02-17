@@ -20,9 +20,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
   SidebarSeparator,
 } from '@/components/ui/sidebar'
-import { PROJECTS } from '@/data/projects'
+import { getRootProjects, getSubProjects } from '@/data/projects'
 import { fmt } from '@/data/finance'
 import { useTransactionStore } from '@/store/transaction-store'
 
@@ -41,6 +44,7 @@ const NAV_VIEWS = [
 export function AppSidebar() {
   const pathname = usePathname()
   const balance = useTransactionStore(s => s.balance)
+  const rootProjects = getRootProjects()
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -73,24 +77,53 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Projects</SidebarGroupLabel>
           <SidebarMenu>
-            {PROJECTS.map(project => (
-              <SidebarMenuItem key={project.slug}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname === `/projects/${project.slug}`}
-                >
-                  <Link href={`/projects/${project.slug}`}>
-                    <span>{project.emoji}</span>
-                    <span style={{ color: project.color }}>{project.name}</span>
-                    {project.weight > 0 && (
-                      <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                        {project.weight}%
-                      </span>
-                    )}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {rootProjects.map(project => {
+              const subs = getSubProjects(project.slug)
+              const isParentActive = pathname === `/projects/${project.slug}`
+              const hasActiveSub = subs.some(s => pathname === `/projects/${s.slug}`)
+
+              return (
+                <SidebarMenuItem key={project.slug}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isParentActive}
+                  >
+                    <Link href={`/projects/${project.slug}`}>
+                      <span>{project.emoji}</span>
+                      <span style={{ color: project.color }}>{project.name}</span>
+                      {project.weight > 0 && (
+                        <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+                          {project.weight}%
+                        </span>
+                      )}
+                    </Link>
+                  </SidebarMenuButton>
+
+                  {/* Sub-projects */}
+                  {subs.length > 0 && (
+                    <SidebarMenuSub>
+                      {subs.map(sub => (
+                        <SidebarMenuSubItem key={sub.slug}>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={pathname === `/projects/${sub.slug}`}
+                          >
+                            <Link href={`/projects/${sub.slug}`}>
+                              <span
+                                className="text-xs"
+                                style={{ color: sub.color }}
+                              >
+                                {sub.name}
+                              </span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  )}
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarMenu>
         </SidebarGroup>
 

@@ -45,6 +45,7 @@ export interface Project {
   goal: string
   defaultActions: string[]
   defaultColumns?: KanbanColumn[]  // undefined = use DEFAULT_COLUMNS
+  parentSlug?: string              // sub-project parent (e.g. 'tango')
 }
 
 export const PROJECTS: Project[] = [
@@ -63,6 +64,36 @@ export const PROJECTS: Project[] = [
       { id: 'blocked', label: 'Blocked', color: '#EF4444' },
       { id: 'done', label: 'Done' },
     ],
+  },
+  {
+    slug: 'tango-amazon',
+    name: 'Amazon',
+    emoji: '🔥',
+    color: '#E25555',
+    weight: 25,
+    goal: 'Restart PPC, optimize Truffle listing, grow traffic',
+    defaultActions: ['Restart PPC campaigns', 'Truffle title + bullet optimization', 'Analyze search term report'],
+    parentSlug: 'tango',
+  },
+  {
+    slug: 'tango-costco',
+    name: 'Costco',
+    emoji: '🔥',
+    color: '#C83333',
+    weight: 15,
+    goal: 'Close roadshow deal with Moses',
+    defaultActions: ['Follow up with Moses re: roadshows', 'Prepare roadshow pricing deck'],
+    parentSlug: 'tango',
+  },
+  {
+    slug: 'tango-dtc',
+    name: 'DTC',
+    emoji: '🔥',
+    color: '#D04848',
+    weight: 5,
+    goal: 'Drive direct website sales',
+    defaultActions: ['Set up Shopify promotions', 'Email list campaign'],
+    parentSlug: 'tango',
   },
   {
     slug: 'ffeedd',
@@ -111,8 +142,20 @@ export const PROJECTS: Project[] = [
   },
 ]
 
+// ── Helpers ──────────────────────────────────────────────────────
+
 export function getProject(slug: string): Project | undefined {
   return PROJECTS.find(p => p.slug === slug)
+}
+
+/** Top-level projects only (no sub-projects) */
+export function getRootProjects(): Project[] {
+  return PROJECTS.filter(p => !p.parentSlug)
+}
+
+/** Sub-projects of a given parent */
+export function getSubProjects(parentSlug: string): Project[] {
+  return PROJECTS.filter(p => p.parentSlug === parentSlug)
 }
 
 export function getColumns(slug: string): KanbanColumn[] {
