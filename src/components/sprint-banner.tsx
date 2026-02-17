@@ -13,7 +13,6 @@ const SPRINT = {
   slug: 'sprint',           // matches the project slug
   start: '2026-02-14',
   end: '2026-02-28',
-  target: '$5,000 new revenue',
   color: '#84cc16', // lime green
 }
 
@@ -90,10 +89,7 @@ export function SprintBanner() {
           <div className="text-[11px] text-muted-foreground mb-1">All sprint items complete 🎉</div>
         )}
 
-        <div className="flex items-center justify-between gap-4">
-          <span className="text-[11px] font-semibold" style={{ color: SPRINT.color }}>
-            {SPRINT.target}
-          </span>
+        <div className="flex items-center justify-end">
           <ChevronRight className="size-3 text-muted-foreground/40" />
         </div>
       </div>
