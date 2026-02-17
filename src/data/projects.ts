@@ -9,7 +9,6 @@ export interface KanbanColumn {
 export const DEFAULT_COLUMNS: KanbanColumn[] = [
   { id: 'todo', label: 'To Do' },
   { id: 'in-progress', label: 'In Progress' },
-  { id: 'waiting', label: 'Waiting' },
   { id: 'done', label: 'Done' },
 ]
 
@@ -18,7 +17,6 @@ export const DEFAULT_COLUMNS: KanbanColumn[] = [
 export const UNIFIED_COLUMNS: KanbanColumn[] = [
   { id: 'todo', label: 'To Do' },
   { id: 'in-progress', label: 'In Progress' },
-  { id: 'waiting', label: 'Waiting' },
   { id: 'done', label: 'Done' },
 ]
 
@@ -27,7 +25,7 @@ export const UNIFIED_COLUMNS: KanbanColumn[] = [
 const STATUS_MAP: Record<string, string> = {
   'backlog': 'todo',
   'this-week': 'todo',
-  'blocked': 'waiting',
+  'blocked': 'in-progress',
 }
 
 export function toUnifiedStatus(status: string): string {
@@ -83,6 +81,16 @@ export const PROJECTS: Project[] = [
     weight: 15,
     goal: 'Close roadshow deal with Moses',
     defaultActions: ['Follow up with Moses re: roadshows', 'Prepare roadshow pricing deck'],
+    parentSlug: 'tango',
+  },
+  {
+    slug: 'tango-unfi',
+    name: 'UNFI',
+    emoji: '🔥',
+    color: '#f97316',
+    weight: 25,
+    goal: 'SKU expansion into Northeast, complete Endless Aisle',
+    defaultActions: ['Complete Endless Aisle paperwork', 'Follow up with John Lawson re: Whole Foods', 'Monthly check-in with Brittney'],
     parentSlug: 'tango',
   },
   {

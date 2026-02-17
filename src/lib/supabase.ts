@@ -27,6 +27,16 @@ export interface SettingsRow {
   updated_at: string
 }
 
+export interface NoteRow {
+  id: string
+  project_slug: string
+  content: string
+  tags: string[]
+  pinned: boolean
+  created_at: string
+  updated_at: string
+}
+
 export interface DreamwatchRow {
   id: string
   basename: string

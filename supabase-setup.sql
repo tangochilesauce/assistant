@@ -101,6 +101,19 @@ CREATE TABLE IF NOT EXISTS dreamwatch_pipeline (
 );
 
 -- ═══════════════════════════════════════════════════════════════
+-- NOTES (per-project scratchpad / intel capture)
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS notes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_slug TEXT NOT NULL,
+    content TEXT NOT NULL,
+    tags JSONB DEFAULT '[]'::jsonb,
+    pinned BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ═══════════════════════════════════════════════════════════════
 -- ROW LEVEL SECURITY (allow all — single-user app)
 -- ═══════════════════════════════════════════════════════════════
 ALTER TABLE todos ENABLE ROW LEVEL SECURITY;
@@ -108,12 +121,14 @@ ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kanban_columns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dreamwatch_pipeline ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow all on todos" ON todos FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on settings" ON settings FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on transactions" ON transactions FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on kanban_columns" ON kanban_columns FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on dreamwatch_pipeline" ON dreamwatch_pipeline FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on notes" ON notes FOR ALL USING (true) WITH CHECK (true);
 
 -- ═══════════════════════════════════════════════════════════════
 -- INDEXES
@@ -126,3 +141,6 @@ CREATE INDEX IF NOT EXISTS idx_transactions_category ON transactions(category);
 CREATE INDEX IF NOT EXISTS idx_kanban_project ON kanban_columns(project_slug);
 CREATE INDEX IF NOT EXISTS idx_dreamwatch_status ON dreamwatch_pipeline(card_status);
 CREATE INDEX IF NOT EXISTS idx_dreamwatch_active ON dreamwatch_pipeline(is_active);
+CREATE INDEX IF NOT EXISTS idx_notes_project ON notes(project_slug);
+CREATE INDEX IF NOT EXISTS idx_notes_pinned ON notes(pinned);
+CREATE INDEX IF NOT EXISTS idx_notes_created ON notes(created_at);

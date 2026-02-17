@@ -15,6 +15,10 @@ FFEEDD is an iOS app. It launched — $1 upfront, 60-day grace period, then $1/m
 - [ ] Reddit marketing blitz
 - [ ] TikTok screen recording
 
+## Brand / Messaging
+
+- **"Quiet personal thoughts"** — core tagline candidate. Captures the intimate, private, no-social-pressure angle. Use for App Store subtitle, marketing materials, landing page hero.
+
 ## Files
 
 *Located at: /Users/danfrieber/⚡ claudio/ffeedd/*

@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Target } from 'lucide-react'
+import Link from 'next/link'
+import { Target, StickyNote } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { ActionLine } from '@/components/action-line'
 import { AddActionInput } from '@/components/add-action-input'
@@ -43,6 +44,13 @@ export function ProjectDetailClient({ slug }: Props) {
   return (
     <>
       <PageHeader title={`${project.emoji} ${project.name}`}>
+        <Link
+          href={`/projects/${slug}/notes`}
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors bg-accent px-2 py-1 rounded"
+        >
+          <StickyNote className="size-3" />
+          Notes
+        </Link>
         {project.weight > 0 && (
           <span className="text-xs text-muted-foreground tabular-nums bg-accent px-2 py-1 rounded">
             {project.weight}% weight

@@ -43,7 +43,7 @@ const NAV_VIEWS: { href: string; label: string; icon: typeof Inbox; external?: b
   { href: '/log', label: 'Completed', icon: ClipboardCheck },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
   { href: '/dreamwatch', label: 'Dreamwatch', icon: Tv },
-  { href: 'https://github.com/tangochilesauce/tango-dashboard', label: 'Tango Dashboard', icon: Flame, external: true },
+  { href: 'https://tangochilesauce.github.io/tango-dashboard/', label: 'Tango Dashboard', icon: Flame, external: true },
 ]
 
 export function AppSidebar() {
