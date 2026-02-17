@@ -10,6 +10,7 @@ Non-revenue tasks that can't be ignored. These float above weighted tasks when u
 
 ## Pipeline
 
+- [x] Pay Deep $600 (paid Feb 17)
 - [ ] Delay rent to Mar 11
 - [ ] Pay Off Record $300 (Mar 1)
 - [ ] Organize financials

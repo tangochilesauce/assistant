@@ -58,15 +58,26 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
   const accentColor = project?.color ?? '#666'
   const isFocused = todo.tags?.includes('focus')
 
+  // Mix accent color with dark card background (#1a1a1f ≈ oklch(0.21 0.006 285))
+  // Using hex math instead of color-mix for SSR compatibility
+  function hexMix(hex: string, pct: number): string {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    const br = 0x1a, bg = 0x1a, bb = 0x1f // --card base
+    const mr = Math.round(r * pct + br * (1 - pct))
+    const mg = Math.round(g * pct + bg * (1 - pct))
+    const mb = Math.round(b * pct + bb * (1 - pct))
+    return `#${mr.toString(16).padStart(2,'0')}${mg.toString(16).padStart(2,'0')}${mb.toString(16).padStart(2,'0')}`
+  }
+
   return (
     <div
       ref={overlay ? undefined : setNodeRef}
       style={{
         ...style,
         borderLeftColor: accentColor,
-        backgroundColor: isFocused
-          ? `color-mix(in oklch, ${accentColor} 35%, var(--card))`
-          : `color-mix(in oklch, ${accentColor} 6%, var(--card))`,
+        backgroundColor: isFocused ? hexMix(accentColor, 0.35) : hexMix(accentColor, 0.06),
       }}
       className={`group rounded-lg border ${
         isFocused ? 'border-l-[5px] border-border' : 'border-l-[3px] border-border'
