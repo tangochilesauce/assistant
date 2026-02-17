@@ -17,7 +17,7 @@ import { useDroppable } from '@dnd-kit/core'
 import { Plus } from 'lucide-react'
 import { UnifiedCard } from './unified-card'
 import { useTodoStore, type Todo } from '@/store/todo-store'
-import { UNIFIED_COLUMNS, toUnifiedStatus, type KanbanColumn } from '@/data/projects'
+import { UNIFIED_COLUMNS, PROJECTS, toUnifiedStatus, type KanbanColumn } from '@/data/projects'
 
 // ── Column ───────────────────────────────────────────────────────
 
@@ -150,9 +150,16 @@ export function UnifiedBoard() {
     >
       <div className="flex gap-3 overflow-x-auto pb-4">
         {UNIFIED_COLUMNS.map(column => {
+          const weightMap = Object.fromEntries(PROJECTS.map(p => [p.slug, p.weight]))
           const columnTodos = todos
             .filter(t => toUnifiedStatus(t.status) === column.id)
-            .sort((a, b) => a.sortOrder - b.sortOrder)
+            .sort((a, b) => {
+              // Group by project weight (highest first), then by sortOrder within group
+              const wA = weightMap[a.projectSlug] ?? 0
+              const wB = weightMap[b.projectSlug] ?? 0
+              if (wA !== wB) return wB - wA
+              return a.sortOrder - b.sortOrder
+            })
 
           return (
             <UnifiedColumn
