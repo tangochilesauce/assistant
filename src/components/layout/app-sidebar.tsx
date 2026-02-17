@@ -12,6 +12,7 @@ import {
   Tv,
   Flame,
   ClipboardCheck,
+  Brain,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -42,6 +43,7 @@ const NAV_VIEWS: { href: string; label: string; icon: typeof Inbox; external?: b
   { href: '/goals', label: 'Goals', icon: Target },
   { href: '/log', label: 'Completed', icon: ClipboardCheck },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
+  { href: '/brains', label: 'Brains', icon: Brain },
   { href: '/dreamwatch', label: 'Dreamwatch', icon: Tv },
   { href: 'https://tangochilesauce.github.io/tango-dashboard/', label: 'Tango Dashboard', icon: Flame, external: true },
 ]
