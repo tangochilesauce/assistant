@@ -183,7 +183,7 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
             className="mt-0.5 shrink-0"
           />
 
-          {/* Title */}
+          {/* Title — double-click on desktop, tap on mobile */}
           {editing ? (
             <input
               ref={inputRef}
@@ -199,6 +199,10 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
           ) : (
             <span
               onDoubleClick={() => !overlay && setEditing(true)}
+              onClick={() => {
+                // On touch devices, single tap to edit (no hover/dblclick)
+                if (!overlay && 'ontouchstart' in window) setEditing(true)
+              }}
               className={`text-sm flex-1 leading-tight cursor-text ${
                 todo.completed
                   ? 'line-through text-muted-foreground/50'
