@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, Flame } from 'lucide-react'
+import { GripVertical, Flame, X } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useTodoStore, type Todo } from '@/store/todo-store'
 import { getProject } from '@/data/projects'
@@ -14,7 +14,7 @@ interface UnifiedCardProps {
 }
 
 export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
-  const { toggleTodo, toggleFocus, updateTodo } = useTodoStore()
+  const { toggleTodo, toggleFocus, updateTodo, deleteTodo } = useTodoStore()
   const [editing, setEditing] = useState(false)
   const [editValue, setEditValue] = useState(todo.title)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -129,6 +129,15 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
           title={isFocused ? 'Remove focus' : 'Focus today'}
         >
           <Flame className="size-4" />
+        </button>
+
+        {/* Delete */}
+        <button
+          onClick={() => deleteTodo(todo.id)}
+          className="shrink-0 opacity-0 group-hover:opacity-60 hover:opacity-100 text-muted-foreground hover:text-red-400 transition-opacity"
+          title="Delete"
+        >
+          <X className="size-3.5" />
         </button>
       </div>
 
