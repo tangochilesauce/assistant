@@ -48,6 +48,20 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    slug: 'sprint',
+    name: '14-Day Sprint',
+    emoji: '⚡',
+    color: '#84cc16',   // lime green
+    weight: 100,
+    goal: 'Ship pallet · Restart PPC · Drop single · Launch FFEEDD — $5K new revenue',
+    defaultActions: [
+      'Ship EXP pallet (Feb 19)',
+      'Restart Amazon PPC campaigns',
+      'Drop Madder single (Feb 22)',
+      'Launch FFEEDD app',
+    ],
+  },
+  {
     slug: 'tango',
     name: 'Tango',
     emoji: '🔥',
