@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { PageHeader } from '@/components/layout/page-header'
 import { UnifiedBoard } from '@/components/kanban/unified-board'
 import { DeadlinesSidebar } from '@/components/deadlines-sidebar'
+import { SprintBanner } from '@/components/sprint-banner'
 import { useTodoStore } from '@/store/todo-store'
 
 export default function TodayPage() {
@@ -22,12 +23,15 @@ export default function TodayPage() {
         {!initialized ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">Loading...</div>
         ) : (
+          <>
+          <SprintBanner />
           <div className="px-4 sm:px-6 py-4 flex gap-6">
             <div className="flex-1 min-w-0">
               <UnifiedBoard />
             </div>
             <DeadlinesSidebar />
           </div>
+          </>
         )}
       </div>
     </>
