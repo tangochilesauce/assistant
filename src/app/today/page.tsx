@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { UnifiedBoard } from '@/components/kanban/unified-board'
 import { DeadlinesSidebar } from '@/components/deadlines-sidebar'
 import { SprintBanner } from '@/components/sprint-banner'
+import { QuickAdd } from '@/components/quick-add'
 import { useTodoStore } from '@/store/todo-store'
 
 export default function TodayPage() {
@@ -18,7 +19,9 @@ export default function TodayPage() {
 
   return (
     <>
-      <PageHeader title="Today" count={incomplete} />
+      <PageHeader title="Today" count={incomplete}>
+        <QuickAdd />
+      </PageHeader>
       <div className="flex-1 overflow-y-auto">
         {!initialized ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">Loading...</div>
