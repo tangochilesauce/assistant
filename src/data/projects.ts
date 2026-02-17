@@ -8,7 +8,7 @@ export interface KanbanColumn {
 
 export const DEFAULT_COLUMNS: KanbanColumn[] = [
   { id: 'todo', label: 'To Do' },
-  { id: 'in-progress', label: 'In Progress' },
+  { id: 'in-progress', label: 'To Finish' },
   { id: 'waiting', label: 'Waiting' },
   { id: 'done', label: 'Done' },
 ]
@@ -17,7 +17,7 @@ export const DEFAULT_COLUMNS: KanbanColumn[] = [
 // All project-specific statuses map into these.
 export const UNIFIED_COLUMNS: KanbanColumn[] = [
   { id: 'todo', label: 'To Do' },
-  { id: 'in-progress', label: 'In Progress' },
+  { id: 'in-progress', label: 'To Finish' },
   { id: 'waiting', label: 'Waiting' },
   { id: 'done', label: 'Done' },
 ]
@@ -59,7 +59,7 @@ export const PROJECTS: Project[] = [
     defaultColumns: [
       { id: 'backlog', label: 'Backlog' },
       { id: 'this-week', label: 'This Week' },
-      { id: 'in-progress', label: 'In Progress' },
+      { id: 'in-progress', label: 'To Finish' },
       { id: 'blocked', label: 'Blocked', color: '#EF4444' },
       { id: 'done', label: 'Done' },
     ],
