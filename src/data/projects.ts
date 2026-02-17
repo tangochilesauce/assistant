@@ -9,8 +9,30 @@ export interface KanbanColumn {
 export const DEFAULT_COLUMNS: KanbanColumn[] = [
   { id: 'todo', label: 'To Do' },
   { id: 'in-progress', label: 'In Progress' },
+  { id: 'waiting', label: 'Waiting' },
   { id: 'done', label: 'Done' },
 ]
+
+// The unified pipeline columns used on the Today board.
+// All project-specific statuses map into these.
+export const UNIFIED_COLUMNS: KanbanColumn[] = [
+  { id: 'todo', label: 'To Do' },
+  { id: 'in-progress', label: 'In Progress' },
+  { id: 'waiting', label: 'Waiting' },
+  { id: 'done', label: 'Done' },
+]
+
+// Maps any project-specific status to a unified column.
+// Statuses not listed here pass through as-is.
+const STATUS_MAP: Record<string, string> = {
+  'backlog': 'todo',
+  'this-week': 'todo',
+  'blocked': 'waiting',
+}
+
+export function toUnifiedStatus(status: string): string {
+  return STATUS_MAP[status] ?? status
+}
 
 // ── Project Definition ────────────────────────────────────────────
 

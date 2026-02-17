@@ -2,15 +2,14 @@
 
 import { useEffect } from 'react'
 import { PageHeader } from '@/components/layout/page-header'
-import { ActionLine } from '@/components/action-line'
+import { UnifiedBoard } from '@/components/kanban/unified-board'
 import { useTodoStore } from '@/store/todo-store'
-import { PROJECTS } from '@/data/projects'
 import { fmt } from '@/data/finance'
 import { useTransactionStore } from '@/store/transaction-store'
 
 export default function TodayPage() {
   const { todos, fetchTodos, initialized } = useTodoStore()
-  const { fetchTransactions, balance, getMonthlyTotals, initialized: txnInit } = useTransactionStore()
+  const { fetchTransactions, balance, getMonthlyTotals } = useTransactionStore()
 
   useEffect(() => {
     fetchTodos()
@@ -18,15 +17,7 @@ export default function TodayPage() {
   }, [fetchTodos, fetchTransactions])
 
   const { totalIn, net } = getMonthlyTotals()
-
-  // Sort: incomplete first, then by project weight (descending)
-  const weightMap = Object.fromEntries(PROJECTS.map(p => [p.slug, p.weight]))
-  const sortedTodos = [...todos].sort((a, b) => {
-    if (a.completed !== b.completed) return a.completed ? 1 : -1
-    return (weightMap[b.projectSlug] ?? 0) - (weightMap[a.projectSlug] ?? 0)
-  })
-
-  const incomplete = sortedTodos.filter(t => !t.completed).length
+  const incomplete = todos.filter(t => !t.completed).length
 
   return (
     <>
@@ -54,16 +45,12 @@ export default function TodayPage() {
           </div>
         </div>
 
-        {/* Action list */}
+        {/* Unified kanban board */}
         {!initialized ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">Loading...</div>
-        ) : sortedTodos.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-muted-foreground">No actions yet.</div>
         ) : (
-          <div>
-            {sortedTodos.map(todo => (
-              <ActionLine key={todo.id} todo={todo} showProject />
-            ))}
+          <div className="px-4 sm:px-6 py-4">
+            <UnifiedBoard />
           </div>
         )}
       </div>
