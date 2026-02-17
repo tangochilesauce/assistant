@@ -150,14 +150,22 @@ export function UnifiedBoard() {
     >
       <div className="flex gap-3 overflow-x-auto pb-4">
         {UNIFIED_COLUMNS.map(column => {
-          const weightMap = Object.fromEntries(PROJECTS.map(p => [p.slug, p.weight]))
+          const projectMap = Object.fromEntries(PROJECTS.map(p => [p.slug, p]))
           const columnTodos = todos
             .filter(t => toUnifiedStatus(t.status) === column.id)
             .sort((a, b) => {
-              // Group by project weight (highest first), then by sortOrder within group
-              const wA = weightMap[a.projectSlug] ?? 0
-              const wB = weightMap[b.projectSlug] ?? 0
-              if (wA !== wB) return wB - wA
+              const pA = projectMap[a.projectSlug]
+              const pB = projectMap[b.projectSlug]
+              // Group by color (same color = same visual batch)
+              const cA = pA?.color ?? ''
+              const cB = pB?.color ?? ''
+              if (cA !== cB) {
+                // Higher-weight color group floats up
+                const wA = pA?.weight ?? 0
+                const wB = pB?.weight ?? 0
+                return wB - wA
+              }
+              // Within same color group, sort by sortOrder
               return a.sortOrder - b.sortOrder
             })
 
