@@ -26,7 +26,18 @@ function UnifiedColumn({ column, todos }: { column: KanbanColumn; todos: Todo[] 
     data: { type: 'column', columnId: column.id },
   })
 
-  const todoIds = todos.map(t => t.id)
+  // Separate parents from children
+  const parentTodos = todos.filter(t => !t.parentId)
+  const childMap = new Map<string, Todo[]>()
+  for (const t of todos) {
+    if (t.parentId) {
+      const arr = childMap.get(t.parentId) ?? []
+      arr.push(t)
+      childMap.set(t.parentId, arr)
+    }
+  }
+
+  const todoIds = parentTodos.map(t => t.id)
   const isDone = column.id === 'done'
 
   return (
@@ -38,7 +49,7 @@ function UnifiedColumn({ column, todos }: { column: KanbanColumn; todos: Todo[] 
           {column.label}
         </span>
         <span className="text-[10px] text-muted-foreground/60 tabular-nums ml-auto shrink-0">
-          {todos.length}
+          {parentTodos.length}
         </span>
       </div>
 
@@ -50,13 +61,13 @@ function UnifiedColumn({ column, todos }: { column: KanbanColumn; todos: Todo[] 
             isOver ? 'bg-accent/40 ring-1 ring-accent' : 'bg-accent/10'
           }`}
         >
-          {todos.length === 0 ? (
+          {parentTodos.length === 0 ? (
             <div className="flex items-center justify-center h-[60px] text-[10px] text-muted-foreground/40">
               {isDone ? 'Done' : 'Drop here'}
             </div>
           ) : (
-            todos.map(todo => (
-              <UnifiedCard key={todo.id} todo={todo} />
+            parentTodos.map(todo => (
+              <UnifiedCard key={todo.id} todo={todo} subTasks={childMap.get(todo.id)} />
             ))
           )}
         </div>
