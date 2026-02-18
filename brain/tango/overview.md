@@ -21,13 +21,15 @@ Production happens at Foodies (co-packing) with ingredients from Deep. Packaging
 **FDA Number**: 11095246958
 **GS1 Account**: 30042269
 
-## The Origin Story
+## The Origin Story (Short)
 
 When grandma first crafted her legendary chile in 1940s Honduras, she started with seven simple ingredients — most growing right outside her home. It started in her youth with a wild Scotch Bonnet plant that produced peppers every season.
 
 It stayed small and honest at first — just family, neighbors, and friends. Then she started bottling it for the local market, where it took off. For a few bright years it lived out in the world, until she came to America and the recipe went quiet.
 
 In 2015, she showed Dan her chile for the first time and it was over. He became obsessed. She showed him how to make it and he started making it naturally for himself, then for friends, then for stores, and Tango was born.
+
+*(Full timeline with dates from 2013–2020 in "The Full Origin Story" section below)*
 
 ## Brand Voice
 
@@ -97,15 +99,53 @@ Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic I
 | Thai 2-Pack | 198168289372 |
 | Sriracha 2-Pack | 199284382176 |
 
-### Amazon ASINs
-| Product | ASIN |
-|---------|------|
-| Mild Single | B07WW1NFH9 |
-| Hot Single | B07VXY26C6 |
-| Truffle Single | B07WWYQ44K |
-| Thai Single | B09NQHHWVR |
-| Mango Single | B09NQHPCS3 |
-| 2-Pack Truffle | B0CM87YWJR |
+### UPCs — 3-Packs
+| Product | UPC |
+|---------|-----|
+| Hot 3-Pack | 199284582309 |
+| Mild 3-Pack | 199284808225 |
+| Truffle 3-Pack | 199284317352 |
+| Mango 3-Pack | 199284781962 |
+| Thai 3-Pack | 199284887008 |
+| Sriracha 3-Pack | 199284005822 |
+
+### UPC Notes (Legacy/Alternate)
+- **Hot**: Original UPC was 019962102103, GS1 shows 196852546671, Amazon shows 653559973792
+- **Mild**: Original UPC was 019962102202, GS1 shows 196852812899, Amazon shows 653559973839
+- All other flavors have clean single UPCs with no legacy conflicts
+
+### Backburner Product UPCs
+| Product | UPC |
+|---------|-----|
+| Dragon Jelly Tango | 198168755891 |
+| Buffalo Tango | 198168750254 |
+| Tango Gobblins | 195893153879 |
+| Mega Jerk | 199284577152 |
+
+### Amazon SKUs, ASINs & FNSKUs
+**Singles:**
+| Product | Seller SKU | ASIN | FNSKU |
+|---------|-----------|------|-------|
+| Mild | U4-ZJKD-O0BK | B07WW1NFH9 | X002QOSLCN |
+| Hot | GX-ELCK-FRPF | B07VXY26C6 | X002QOIWJF |
+| Truffle | TRUFFLETANGO | B07WWYQ44K | X002UJ4RDL |
+| Thai | THAITANGO | B09NQHHWVR | — |
+| Mango | MANGOTANGO | B09NQHPCS3 | — |
+
+**2-Packs:**
+| Product | Seller SKU | ASIN | FNSKU |
+|---------|-----------|------|-------|
+| 2-Pack Mild | MILD2 | B0CM89191S | X0041GFNQV |
+| 2-Pack Hot | HOTT2 | B0CM877VR6 | X0041G8Y5N |
+| 2-Pack Mango | MANG2 | B0CM81YRTQ | X0041G8ZGL |
+| 2-Pack Thai | THAI2 | B0CM7PLRPG | X0041GAWMB |
+| 2-Pack Truffle | TRUF2 | B0CM87YWJR | X0041G8ZGV |
+
+**Legacy SKUs (for reference only):**
+- Old Mild: TCSM / B07WW1NFH9 / X002KAP2XT
+- Old Hot: TCSH / B07VXY26C6 / X002HOQNSV
+- Old Truffle: TT / B07WWYQ44K / X002HUWTGZ
+- Bad Listing Truffle: TTRU / B07ZG35FB3 / X002QM8VZH
 
 ### Bill of Materials
 | Component | Part # | Supplier | Cost/Unit |
@@ -294,6 +334,39 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 | Garlic | 2,280g |
 | Lime Juice | 3,930g/gallon |
 
+### Ingredient Orders by Run Size
+
+**Full Day — Truffle (24 batches):**
+- 32x 25lb bags of carrots (~800 lb)
+- 10 cases of lime juice
+- 10 cases of garlic
+- 5 cases of culantro
+- 2x 50lb bags of salt
+- 3 cases of habanero (for Mild/Truffle) / 6 cases (for Hot)
+- 18 cases of vinegar
+
+**Half Day — 3 Ollas (e.g. 2 Hot + 1 Mild):**
+- 12x 25lb bags of carrots (~400 lb total needed)
+- 5 cases of lime juice
+- 5 cases of garlic
+- 3 cases of culantro
+- 1x 50lb bag of salt
+- 2 cases of habanero
+- 10 cases of vinegar
+
+**Sriracha (per batch):**
+- 25 lb red jalapeno
+- 13 lb garlic
+- 10 lb water
+- 11 lb vinegar
+- 4 lb sugar
+- 3 lb salt
+
+**Mango:**
+- 100 lb mango per olla (2 batches per olla)
+- Mango comes in 30 lb cases
+- 3 ollas = 300 lb mango = 10 cases
+
 ### Standard Ingredient Order (18 batches, OLD)
 - 17x 50lb bags of carrots
 - 5x boxes of culantro
@@ -332,6 +405,70 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 - [x] DNS audit (Feb 17) — found stale Klaviyo SPF/DKIM
 - [x] Tango Dashboard deployed (GitHub Pages)
 - [x] Orders pipeline built (drag-and-drop kanban)
+
+## Product Marketing Descriptions
+
+**Hot Tango** — Hot Tango is the crowd favorite. Smooth & Spicy. Signature delicious Tango flavor with the perfect amount of heat you need. If you love hot sauce, start with Hot Tango.
+
+**Mild Tango** — Mild Tango is the perfect hot sauce for beginners. The subtle sweetness of the carrots and gentle spiciness of the scotch bonnet peppers works on everything. Kids can't get enough of it. Great on salads.
+
+**Thai Tango** — Thai Tango is the hottest sauce we've made yet. Fresh, spicy, sweet Tango with the heat turned all the way up. We added Thai chilies to the mix and they deliver a beautiful spicy flavor that doesn't linger on the tongue.
+
+**Mango Tango** — After years in the making, Mango Tango is finally here. Indulge in an exotic new world of sweet spicy delicious Mango Tango flavor. Enjoy fragrant ripe mangoes alongside limes, hot peppers and a touch of agave in this new Caribbean-inspired version of Tango.
+
+**Truffle Tango** — Truffle Tango is the original award-winning collaboration between two rising NYC food brands The Truffleist and Tango. Exceptional spicy truffle flavor in a healthful hot sauce guaranteed to take all your favorite meals to the next level.
+
+**Sriracha Tango** — Sriracha Tango is as close as we could get to the perfect Sriracha flavor we all love, while using only clean, simple ingredients.
+
+### Short Descriptions
+- **General:** Tango is crazy good spicy flavor in a plant-based chile sauce, made from 100% clean ingredients in a convenient 8oz squeeze bottle, perfect for adding delicious spicy flavor to your favorite foods.
+- **One-liner:** New carrot-based hot sauce hand-made in California from 100% clean ingredients.
+- **Tags:** Eco Friendly, Handmade, Made in USA, Dairy Free, Gluten Free, Keto, Paleo, Vegan, Vegetarian
+
+### Company Overview (for applications/pitches)
+Tango is an up-and-coming brand of carrot-based Hot Sauce born in NYC, manufactured in Southern California. We offer 6 exceptional flavors — Hot (the original), Mild (less heat), Truffle (hint of truffle), Mango (sweet and fruity), Thai (extra hot), and Sriracha (clean simple Sriracha). 100% clean ingredients, carrot-based, packed with nutrients, no sugar, and no preservatives. Tango is Plant-Based, Vegan, Gluten-Free, Paleo, and tastes good on everything.
+
+### Differentiation Copy
+The main difference that puts Tango above the rest is the flavor. There is something fundamentally special in the combination of these particular ingredients that simply doesn't exist elsewhere in the market. Tango is complementary without overpowering. Additionally, there is nothing unhealthy about Tango. It's plant-based, there's no sugar, no preservatives, yet still available in a convenient plastic squeeze bottle. Unlike most hot sauces, we're cold-fill certified, which means we're able to achieve shelf-stability in a squeeze bottle without the addition of any artificial preservatives. Convenience without compromise.
+
+---
+
+## RangeMe Pitch Templates
+
+**Erewhon:** Simply put, Erewhon is the highest level of grocery, and Tango is the highest level of hot sauce. Our target demographics are the same. We relocated to LA from NYC, where Tango is a hit in local grocery stores and chains such as Whole Foods, etc. We manufacture in LA, so we would be local to all your stores. No preservatives, no gums, no sugars.
+
+**Bristol Farms:** Simply put, Bristol Farms is the highest level of grocery, and Tango is the highest level of hot sauce. We are new to CA from NYC, where we are a hit in Whole Foods, Union Market, Freshdirect, etc. We now manufacture in LA, so not only would we be 'local' to your stores, but Bristol Farms would be our first chain on the West Coast.
+
+**Wegmans:** Simply put, Wegmans is the highest level of grocery, and Tango is the highest level of hot sauce. I grew up in NJ shopping at your stores, so I know them well, and now I make a grocery product for the same demographic that Wegmans caters to. Currently, Tango is a hit in Whole Foods, Union Market, etc. Tango will quickly rise to being one of your highest selling sauces.
+
+**Gelson's / Fresh Thyme (generic premium):** Tango is an all-natural, vegan, clean, plant-based hot sauce with no preservatives, no gums, and no sugar. Simply put, [STORE] is the highest level of grocery, and Tango is the highest level of hot sauce. Tango is grandma's recipe, born and raised in NYC, where we are a hit in Whole Foods, Union Market, Freshdirect, etc. Tango would sell great in your stores, guaranteed.
+
+---
+
+## The Full Origin Story
+
+Since childhood, Dan always enjoyed the staple condiments and sauces, but it was in college that his love for spiciness and hot sauce took full bloom. His mom — born in Central America and raised on spicy cuisine — sneered at his American brands of sauce and told him just wait until he tries grandma's 'chile'. It wasn't until 2013 that she actually made a batch and he got to try it. It blew his mind.
+
+After a dozen batches, he ended up with his own version of her recipe. When friends tried it they went crazy for it, and when people wanted to buy quantity, he started taking things seriously. He was working as a graphic/web designer in NYC, so it was easy enough to find jars on Amazon, design a logo, print labels at home, launch on Shopify, and blast social media. 10 jars sold the first day, another 10 over the next month. But sales continued and feedback was always positive.
+
+**Timeline:**
+- **2014** — Tango officially certified by NYC Health Department and FDA
+- **Feb 2015** — Switched from 4oz glass jars to 8oz plastic squeeze bottles
+- **2015** — First of two seasons at Smorgasburg in Brooklyn (tens of thousands of visitors)
+- **Oct 2015** — Hired first employee
+- **Mar 2016** — Went slightly viral with "Feel The Bern" bottle supporting Bernie Sanders
+- **Mar 2016** — Tango Presents launched with sold-out Khruangbin concert at Rough Trade; 25 more concerts over the next year
+- **Feb 2017** — Moved into dedicated kitchen on Borden Ave, Long Island City (ending 3 years of random commercial kitchens)
+- **Apr 2017** — Switched from black caps to green caps
+- **Dec 2017** — Signed with UNFI (first distributor)
+- **Early 2018** — 75+ food stores & markets in/around NYC
+- **Apr 2018** — Gave Hot Tango a red cap to differentiate from Mild's green
+- **Aug 2018** — Finally hit Whole Foods shelves (after 5 rejections)
+- **2019-2020** — Expanded to hundreds more stores
+- **Late 2020** — Created west coast manufacturing plant, relocated to LA
+- **Current** — 20,000 bottles/month capacity, Sun Valley CA kitchen
+
+---
 
 ## Files
 
