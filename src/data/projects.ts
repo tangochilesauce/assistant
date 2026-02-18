@@ -34,6 +34,13 @@ export function toUnifiedStatus(status: string): string {
 
 // ── Project Definition ────────────────────────────────────────────
 
+export interface ProjectTool {
+  href: string
+  label: string
+  icon: string        // Lucide icon name: 'Package', 'Tv', etc.
+  color?: string      // override color (defaults to muted warm #c2956a)
+}
+
 export interface Project {
   slug: string
   name: string
@@ -44,6 +51,7 @@ export interface Project {
   defaultActions: string[]
   defaultColumns?: KanbanColumn[]  // undefined = use DEFAULT_COLUMNS
   parentSlug?: string              // sub-project parent (e.g. 'tango')
+  tools?: ProjectTool[]            // project-specific views/tools shown in sidebar
 }
 
 export const PROJECTS: Project[] = [
@@ -75,6 +83,9 @@ export const PROJECTS: Project[] = [
       { id: 'in-progress', label: 'In Progress' },
       { id: 'blocked', label: 'Blocked', color: '#EF4444' },
       { id: 'done', label: 'Done' },
+    ],
+    tools: [
+      { href: '/orders', label: 'Orders', icon: 'Package' },
     ],
   },
   {
@@ -153,6 +164,9 @@ export const PROJECTS: Project[] = [
     weight: 5,
     goal: 'Upload 28 videos, hit 100 subs',
     defaultActions: ['Batch 7 videos', 'Cut 5 Shorts', 'Cross-post TikTok + Reels'],
+    tools: [
+      { href: '/dreamwatch', label: 'Dreamwatch', icon: 'Tv' },
+    ],
   },
   {
     slug: 'jeff',

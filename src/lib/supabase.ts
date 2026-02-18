@@ -21,6 +21,7 @@ export interface TodoRow {
 }
 
 export type { TransactionRow } from '@/lib/types/transaction'
+export type { OrderRow } from '@/lib/types/order'
 
 export interface SettingsRow {
   key: string
@@ -36,6 +37,16 @@ export interface NoteRow {
   pinned: boolean
   created_at: string
   updated_at: string
+}
+
+export interface EventRow {
+  id: string
+  title: string
+  date: string           // YYYY-MM-DD
+  time: string | null     // HH:MM or null
+  color: string           // hex color
+  project_slug: string | null  // optional link to project
+  created_at: string
 }
 
 export interface DreamwatchRow {

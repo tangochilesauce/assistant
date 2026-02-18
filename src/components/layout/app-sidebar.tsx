@@ -4,15 +4,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Inbox,
-  ListChecks,
   Kanban,
   DollarSign,
   Target,
   Calendar,
-  Tv,
-  Flame,
   ClipboardCheck,
   Brain,
+  Package,
+  Tv,
+  type LucideIcon,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -33,19 +33,25 @@ import { getRootProjects, getSubProjects } from '@/data/projects'
 import { fmt } from '@/data/finance'
 import { useTransactionStore } from '@/store/transaction-store'
 
+// Map icon name strings to Lucide components
+const ICON_MAP: Record<string, LucideIcon> = {
+  Package,
+  Tv,
+}
+
+const TOOL_COLOR = '#c2956a'  // muted warm — visually distinct from bright channel colors
+
 const NAV_MAIN = [
   { href: '/today', label: 'Today', icon: Inbox },
 ]
 
-const NAV_VIEWS: { href: string; label: string; icon: typeof Inbox; external?: boolean }[] = [
+const NAV_VIEWS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/board', label: 'Board', icon: Kanban },
   { href: '/cash', label: 'Cash Flow', icon: DollarSign },
   { href: '/goals', label: 'Goals', icon: Target },
   { href: '/log', label: 'Completed', icon: ClipboardCheck },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
   { href: '/brains', label: 'Brains', icon: Brain },
-  { href: '/dreamwatch', label: 'Dreamwatch', icon: Tv },
-  { href: 'https://tangochilesauce.github.io/tango-dashboard/', label: 'Tango Dashboard', icon: Flame, external: true },
 ]
 
 export function AppSidebar() {
@@ -86,8 +92,9 @@ export function AppSidebar() {
           <SidebarMenu>
             {rootProjects.map(project => {
               const subs = getSubProjects(project.slug)
+              const tools = project.tools || []
               const isParentActive = pathname === `/projects/${project.slug}`
-              const hasActiveSub = subs.some(s => pathname === `/projects/${s.slug}`)
+              const hasChildren = subs.length > 0 || tools.length > 0
 
               return (
                 <SidebarMenuItem key={project.slug}>
@@ -106,9 +113,10 @@ export function AppSidebar() {
                     </Link>
                   </SidebarMenuButton>
 
-                  {/* Sub-projects */}
-                  {subs.length > 0 && (
+                  {/* Sub-projects + tools */}
+                  {hasChildren && (
                     <SidebarMenuSub>
+                      {/* Channel sub-projects (bright color, no icon) */}
                       {subs.map(sub => (
                         <SidebarMenuSubItem key={sub.slug}>
                           <SidebarMenuSubButton
@@ -126,6 +134,34 @@ export function AppSidebar() {
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
+
+                      {/* Project tools (muted warm color, with icon) */}
+                      {tools.map(tool => {
+                        const Icon = ICON_MAP[tool.icon]
+                        return (
+                          <SidebarMenuSubItem key={tool.href}>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={pathname === tool.href}
+                            >
+                              <Link href={tool.href}>
+                                {Icon && (
+                                  <Icon
+                                    className="size-3 mr-0.5"
+                                    style={{ color: tool.color || TOOL_COLOR }}
+                                  />
+                                )}
+                                <span
+                                  className="text-xs"
+                                  style={{ color: tool.color || TOOL_COLOR }}
+                                >
+                                  {tool.label}
+                                </span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        )
+                      })}
                     </SidebarMenuSub>
                   )}
                 </SidebarMenuItem>
@@ -138,22 +174,14 @@ export function AppSidebar() {
 
         {/* Views */}
         <SidebarGroup>
-          <SidebarGroupLabel>Views</SidebarGroupLabel>
           <SidebarMenu>
             {NAV_VIEWS.map(item => (
               <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton asChild isActive={!item.external && pathname === item.href}>
-                  {item.external ? (
-                    <a href={item.href} target="_blank" rel="noopener noreferrer">
-                      <item.icon className="size-4" />
-                      <span>{item.label}</span>
-                    </a>
-                  ) : (
-                    <Link href={item.href}>
-                      <item.icon className="size-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  )}
+                <SidebarMenuButton asChild isActive={pathname === item.href}>
+                  <Link href={item.href}>
+                    <item.icon className="size-4" />
+                    <span>{item.label}</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
