@@ -263,4 +263,48 @@ Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic I
 
 ---
 
-*Migrated from Notion (TANGO SALES + Pitches + DM Outreach + TANGO parent) — Feb 17, 2026*
+## Customer Reviews (Use in Pitches)
+
+> "Bought the hot sauce on a whim at Smorgasburg. Oh my god! It has honestly become the most used 'spice' in the house. My son loves all things hot. But Tango is his go-to for sandwiches, burgers, etc. My daughter hates all things hot. Until this sauce." — **Mindya Owne, Facebook**
+
+> "Are you kidding? Usually you take a bland food and add spices... with tango, you start with tango and say what can I add to this?" — **Mitch Rosenthal, Facebook**
+
+> "It's got an awesome flavor with garlic and peppers at the forefront. Does not have a vinegar taste. Very mild heat, but the flavor is one of my new favorites." — **Annie, Amazon**
+
+> "Awesomely spicy without the sugar. Bought it for Whole30 and will be buying more." — **Amazon Review**
+
+> "This is delicious hot sauce! It tastes like it's habanero based which adds a yummy complexity. I got this as a sample from a James Beard event in the Hamptons. For those from NYC who love Dos Toro's, this is exactly like the super hot sauce they use." — **Birdie NYC, Amazon**
+
+> "This stuff is the nectar of hades, its ingredients chosen from the garden of eden and made from the same chilis that the aztecs used as currency. This is the sauce that all other sauces aspire to become." — **Jordan Rapaport, Facebook**
+
+> "I've been enjoying this for years, it's about time I thanked you. Thank you for making this incredibly complimentary condiment!" — **JonnyJersey, Amazon**
+
+---
+
+## E-Commerce Growth Framework (2022)
+
+### C x F x AOV
+- **C (Customers)**: Ads, Email, IG, Influencer, SEO, Content, PR, Website
+- **F (Frequency)**: Mainly email. Design 12 automated flows.
+- **AOV (Average Order Value)**: Post-purchase upsells, bundles, volume discounts, cross-sell at cart/checkout, increase free shipping threshold
+
+### Traffic Channel Priority
+1. Consistent organic social media
+2. $20/day Facebook ad campaign
+3. $20/day Targeted Google search ads
+4. TikTok content & ads
+5. YouTube content (how-to) & ads
+6. Affiliates (find review channels)
+7. Customer referrals
+8. Amazon
+
+### Content Strategy Notes
+- Build content from customer pain points ("How do I use?" "How long does it last?")
+- First 2 seconds must be engaging
+- Only 15% of people watch videos with sound on
+- Go for "How I" not "How To" format
+- Use 2 big hashtags about video + 3 small hashtags about niche
+
+---
+
+*Migrated from Notion (TANGO SALES + Pitches + DM Outreach + Content Ideas + Reviews + E-Commerce Push + TANGO parent) — Feb 17, 2026*

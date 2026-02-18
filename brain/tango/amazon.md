@@ -193,6 +193,21 @@ Jimmy from The Truffleist owns the UPC on current Truffle label. Collab since 20
 **Core sauces:** 6 flavors × 4 pack sizes (1-pk, 2-pk, 3-pk, 6-pk) = **24 clean listings**
 **Future products:** Dragon Jelly, Gobblins, Mega Jerk, Chips, Popcorn
 
+### Pricing Structure
+**Singles:** Hot $10, Mild $10, Mango $10, Thai $10, Truffle $17
+**2-Packs:** Hot $18, Mild $18, Mango $18, Thai $18, Truffle $30
+**6-Packs:** Hot $40, Mild $40, Mango $40, Thai $40, Truffle $75
+
+### Bundle Concepts (Bundles DELETED Jan 22 — 648 sessions, $0 revenue)
+*Historical reference only — bundles confirmed dead in hot sauce category*
+- Original Flavors: 1 Hot + 1 Mild — $18
+- Heat Seekers: 1 Hot + 1 Thai — $18
+- Starter Sauce: 1 Mild + 1 Mango — $18
+- New Flavors: 1 Thai + 1 Mango — $18
+- Heat Range: 1 Mild + 1 Hot + 1 Thai — $26
+- Tango Sampler: 1 Hot + 1 Mild + 1 Mango + 1 Thai — $34
+- Party of 5: 1 each of all — $40
+
 ---
 
 ## Open Questions
