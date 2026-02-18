@@ -62,40 +62,6 @@ function buildTree(): BrainNode[] {
     })
   }
 
-  // Attach orphan brain files (no matching project) to nearest parent
-  const claimedSlugs = new Set(['_state'])
-  for (const node of nodes) {
-    claimedSlugs.add(node.slug)
-    for (const child of node.children) claimedSlugs.add(child.slug)
-  }
-
-  for (const brain of brains) {
-    if (claimedSlugs.has(brain.slug)) continue
-
-    const parentNode = nodes
-      .filter(n => brain.slug.startsWith(n.slug + '-'))
-      .sort((a, b) => b.slug.length - a.slug.length)[0]
-
-    const rawLabel = parentNode
-      ? brain.slug.slice(parentNode.slug.length + 1)
-      : brain.slug
-
-    const orphan: BrainNode = {
-      slug: brain.slug,
-      label: rawLabel.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' '),
-      emoji: '📄',
-      color: parentNode?.color ?? '#6b7280',
-      brain,
-      children: [],
-    }
-
-    if (parentNode) {
-      parentNode.children.push(orphan)
-    } else {
-      nodes.push(orphan)
-    }
-  }
-
   return nodes
 }
 

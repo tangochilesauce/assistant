@@ -1,17 +1,27 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { Target, Brain, StickyNote, Clock } from 'lucide-react'
+import {
+  DndContext,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  closestCenter,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { PageHeader } from '@/components/layout/page-header'
 import { ActionLine } from '@/components/action-line'
 import { AddActionInput } from '@/components/add-action-input'
 import { KanbanBoard } from '@/components/kanban/kanban-board'
 import { ProjectAbout } from '@/components/project-about'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { useTodoStore } from '@/store/todo-store'
+import { useTodoStore, type Todo } from '@/store/todo-store'
 import { useNoteStore, type Note } from '@/store/note-store'
-import { getProject } from '@/data/projects'
-import { getBrainFile } from '@/data/brain'
+import { getProject, PROJECTS } from '@/data/projects'
+import { getBrainFile, getAllBrainFiles } from '@/data/brain'
 import { renderMarkdown } from '@/lib/render-markdown'
 
 interface Props {
@@ -147,8 +157,33 @@ function BrainPanel({ slug }: { slug: string }) {
 
 export function ProjectDetailClient({ slug }: Props) {
   const project = getProject(slug)
-  const { todos, fetchTodos, initialized } = useTodoStore()
+  const { todos, fetchTodos, initialized, reorderTodo } = useTodoStore()
   const hasBrain = !!getBrainFile(slug)
+
+  // Extra brain files for this project (e.g. tango-notion-dump on tango page)
+  const extraBrains = useMemo(() =>
+    getAllBrainFiles().filter(b =>
+      b.slug.startsWith(slug + '-') && !PROJECTS.some(p => p.slug === b.slug)
+    ), [slug]
+  )
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  )
+
+  const handleListDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const draggedTodo = active.data.current?.todo as Todo | undefined
+    const overTodo = over.data.current?.todo as Todo | undefined
+    if (!draggedTodo || !overTodo) return
+
+    // Swap sort orders
+    reorderTodo(draggedTodo.id, overTodo.sortOrder)
+    reorderTodo(overTodo.id, draggedTodo.sortOrder)
+  }, [reorderTodo])
 
   useEffect(() => { fetchTodos() }, [fetchTodos])
 
@@ -209,6 +244,15 @@ export function ProjectDetailClient({ slug }: Props) {
                   Brain
                 </TabsTrigger>
               )}
+              {extraBrains.map(b => {
+                const label = b.slug.slice(slug.length + 1).split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
+                return (
+                  <TabsTrigger key={b.slug} value={b.slug} className="flex items-center gap-1">
+                    <Brain className="size-3" />
+                    {label}
+                  </TabsTrigger>
+                )
+              })}
               <TabsTrigger value="notes" className="flex items-center gap-1">
                 <StickyNote className="size-3" />
                 Notes
@@ -221,7 +265,11 @@ export function ProjectDetailClient({ slug }: Props) {
               {incomplete.length === 0 && completed.length === 0 && (
                 <div className="px-4 py-8 text-center text-sm text-muted-foreground">No actions yet. Add one above.</div>
               )}
-              {incomplete.map(todo => <ActionLine key={todo.id} todo={todo} subTasks={childMap.get(todo.id)} />)}
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleListDragEnd}>
+                <SortableContext items={incomplete.map(t => t.id)} strategy={verticalListSortingStrategy}>
+                  {incomplete.map(todo => <ActionLine key={todo.id} todo={todo} subTasks={childMap.get(todo.id)} />)}
+                </SortableContext>
+              </DndContext>
               {completed.length > 0 && (
                 <>
                   <div className="px-4 py-2 text-xs text-muted-foreground border-b border-border/50 bg-accent/30">Completed ({completed.length})</div>
@@ -239,6 +287,12 @@ export function ProjectDetailClient({ slug }: Props) {
                 <BrainPanel slug={slug} />
               </TabsContent>
             )}
+
+            {extraBrains.map(b => (
+              <TabsContent key={b.slug} value={b.slug}>
+                <BrainPanel slug={b.slug} />
+              </TabsContent>
+            ))}
 
             <TabsContent value="notes">
               <NotesPanel slug={slug} />
