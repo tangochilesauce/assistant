@@ -17,6 +17,7 @@ export interface TodoRow {
   sort_order: number
   status: string | null  // kanban column id — null for legacy rows (derive from completed)
   tags: string[]         // e.g. ["focus"] for daily focus items
+  parent_id: string | null  // for nested sub-tasks
 }
 
 export type { TransactionRow } from '@/lib/types/transaction'

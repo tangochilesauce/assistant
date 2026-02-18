@@ -12,6 +12,7 @@ export interface Todo {
   sortOrder: number
   status: string       // kanban column id: 'todo', 'in-progress', 'done', etc.
   tags: string[]       // e.g. ["focus"] for daily focus items
+  parentId: string | null  // for nested sub-tasks
 }
 
 interface TodoState {
@@ -19,7 +20,7 @@ interface TodoState {
   loading: boolean
   initialized: boolean
   fetchTodos: () => Promise<void>
-  addTodo: (projectSlug: string, title: string, status?: string) => Promise<void>
+  addTodo: (projectSlug: string, title: string, status?: string, parentId?: string) => Promise<void>
   updateTodo: (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate' | 'tags'>>) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
   toggleFocus: (id: string) => Promise<void>
@@ -41,6 +42,7 @@ function rowToTodo(row: TodoRow): Todo {
     sortOrder: row.sort_order,
     status,
     tags: row.tags ?? [],
+    parentId: row.parent_id ?? null,
   }
 }
 
@@ -75,6 +77,7 @@ function getDefaultTodos(): Todo[] {
         sortOrder: i,
         status: firstCol,
         tags: [],
+        parentId: null,
       })
     }
   }
@@ -131,28 +134,32 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     set({ todos: getDefaultTodos(), loading: false, initialized: true })
   },
 
-  addTodo: async (projectSlug: string, title: string, status?: string) => {
+  addTodo: async (projectSlug: string, title: string, status?: string, parentId?: string) => {
     const id = generateId()
     const firstCol = getFirstColumnId(projectSlug)
     const targetStatus = status ?? firstCol
-    const sameTodos = get().todos.filter(t => t.projectSlug === projectSlug && t.status === targetStatus)
+    // If adding a sub-task, inherit the parent's status
+    const parentTodo = parentId ? get().todos.find(t => t.id === parentId) : null
+    const finalStatus = parentTodo ? parentTodo.status : targetStatus
+    const sameTodos = get().todos.filter(t => t.projectSlug === projectSlug && t.status === finalStatus)
     const maxOrder = Math.max(0, ...sameTodos.map(t => t.sortOrder))
     const newTodo: Todo = {
       id,
       projectSlug,
       title,
-      completed: targetStatus === getLastColumnId(projectSlug),
+      completed: finalStatus === getLastColumnId(projectSlug),
       createdAt: new Date().toISOString(),
       dueDate: null,
       sortOrder: maxOrder + 1,
-      status: targetStatus,
+      status: finalStatus,
       tags: [],
+      parentId: parentId ?? null,
     }
 
     set(state => ({ todos: [...state.todos, newTodo] }))
 
     if (supabase) {
-      await supabase.from('todos').insert({
+      const row: Record<string, unknown> = {
         id,
         project_slug: projectSlug,
         title,
@@ -161,7 +168,9 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         due_date: null,
         sort_order: newTodo.sortOrder,
         status: newTodo.status,
-      })
+      }
+      if (parentId) row.parent_id = parentId
+      await supabase.from('todos').insert(row)
     }
   },
 

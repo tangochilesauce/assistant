@@ -92,8 +92,12 @@ export function DndContextProvider({ children, projectSlug }: DndContextProvider
     }
 
     if (targetColumnId !== activeTodo.status) {
-      // Cross-column move
+      // Cross-column move — also move children
       moveTodo(activeTodo.id, targetColumnId, newSortOrder)
+      const childTodos = todos.filter(t => t.parentId === activeTodo.id)
+      for (const child of childTodos) {
+        moveTodo(child.id, targetColumnId, child.sortOrder)
+      }
     } else {
       // Same column reorder
       reorderTodo(activeTodo.id, newSortOrder)

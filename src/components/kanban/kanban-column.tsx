@@ -22,10 +22,21 @@ export function KanbanColumn({ column, todos, projectSlug, showProject }: Kanban
   })
   const { addTodo, reorderTodo } = useTodoStore()
 
-  // Swap two adjacent todos by exchanging their sort orders
+  // Separate parents and children
+  const parentTodos = todos.filter(t => !t.parentId)
+  const childMap = new Map<string, Todo[]>()
+  for (const t of todos) {
+    if (t.parentId) {
+      const arr = childMap.get(t.parentId) ?? []
+      arr.push(t)
+      childMap.set(t.parentId, arr)
+    }
+  }
+
+  // Swap two adjacent parent todos by exchanging their sort orders
   const swapTodos = (indexA: number, indexB: number) => {
-    const a = todos[indexA]
-    const b = todos[indexB]
+    const a = parentTodos[indexA]
+    const b = parentTodos[indexB]
     if (!a || !b) return
     reorderTodo(a.id, b.sortOrder)
     reorderTodo(b.id, a.sortOrder)
@@ -69,18 +80,19 @@ export function KanbanColumn({ column, todos, projectSlug, showProject }: Kanban
             isOver ? 'bg-accent/40 ring-1 ring-accent' : 'bg-accent/10'
           }`}
         >
-          {todos.length === 0 && !adding ? (
+          {parentTodos.length === 0 && !adding ? (
             <div className="flex items-center justify-center h-[60px] text-[10px] text-muted-foreground/40">
               Drop here
             </div>
           ) : (
-            todos.map((todo, i) => (
+            parentTodos.map((todo, i) => (
               <KanbanCard
                 key={todo.id}
                 todo={todo}
+                children={childMap.get(todo.id)}
                 showProject={showProject}
                 onMoveUp={i > 0 ? () => swapTodos(i, i - 1) : undefined}
-                onMoveDown={i < todos.length - 1 ? () => swapTodos(i, i + 1) : undefined}
+                onMoveDown={i < parentTodos.length - 1 ? () => swapTodos(i, i + 1) : undefined}
               />
             ))
           )}
