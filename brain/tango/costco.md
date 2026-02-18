@@ -152,6 +152,8 @@ The format has pivoted from the old 16oz 2-pack idea to a **3-pack of 8oz bottle
 - ✅ **Roadshows precede the "club case"** — Moses wants sales data first, then decides permanent format
 - ✅ **Demo your 3-4 best sellers** — Moses said to bring top flavors for demos, club case discussion comes after
 - ✅ **Deck messaging insight (Feb 17):** Don't tell the buyer how his store works. Present the format, show the math, let him draw conclusions. "Proposed format" energy, not "here's why we're right" energy.
+- ✅ **Priority stack insight (Feb 17):** The deck is polish work. The load-bearing walls are: (1) Cash — how do we fund ~$12,900 in inventory by May? (2) Production — book Aria NOW. (3) Packaging — need quotes this week, 4-8 week lead time. The deck matters less than we think because Moses already said yes. Its real purpose is giving Moses ammunition to champion Tango internally — "make Moses look good to his boss" energy, not "convince Moses" energy.
+- ✅ **$10K reframe (Feb 17):** The $10K target is Moses's number. If we hit $7K, that's still incredible velocity data for inline placement. Don't treat it as pass/fail.
 
 ---
 
@@ -216,18 +218,16 @@ The format has pivoted from the old 16oz 2-pack idea to a **3-pack of 8oz bottle
 
 ## Pipeline
 
-### 📋 To Do
-- [ ] Design 3-pack packaging (sleeve/box/shrink wrap)
-- [ ] Get packaging quotes
-- [ ] Schedule production with Aria (~3,750 bottles)
-- [ ] Follow up with Moses on store assignments (closer to roadshow date)
-- [ ] Staffing plan for 5 days of demos
-- [ ] Transportation/pallet delivery logistics
-- [ ] Display/signage
-- [ ] Sampling supplies
+### 📋 To Do (after 2/22 — Madder drop + FFEEDD launch first)
+- [ ] **Call Moses (2/25)** — follow up on 3-pack idea by phone, offer to send deck
+- [ ] **Rework deck based on Moses call feedback (2/25)** — let his input shape Slide 2
+- [ ] Design 3-pack packaging (sleeve/box/shrink wrap) — figure out later
+- [ ] Get packaging quotes — figure out later
+- [ ] Schedule production with Aria (~3,750 bottles) — figure out later
+- [ ] Map cash flow Feb → May for ~$12,900 inventory — figure out later
 
 ### 🔨 In Progress
-- [ ] Reworking proposal deck tone (Slide 2 especially — collaborative, not salesy)
+(nothing until after 2/22)
 
 ### ✅ Done
 - [x] Sent samples to Moses — got positive feedback
@@ -237,6 +237,9 @@ The format has pivoted from the old 16oz 2-pack idea to a **3-pack of 8oz bottle
 - [x] Calculated COGS and margin math for 3-pack
 - [x] Deleted redundant Bulma version of deck
 - [x] Pivoted from 16oz 2-pack to 8oz 3-pack format
+- [x] Migrated full Costco brain from Notion → PL8 (Feb 17)
+- [x] Identified priority stack: cash/production/packaging > deck polish
+- [x] Let Feb 12 email to Moses ride — he's a phone guy, follow up by call 2/25
 
 ---
 
