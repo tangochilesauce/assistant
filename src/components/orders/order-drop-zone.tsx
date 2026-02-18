@@ -55,7 +55,8 @@ export function OrderDropZone() {
       setParsing(false)
     } catch (err) {
       console.error('PDF parse error:', err)
-      setError('Failed to parse PDF. Try adding manually.')
+      const msg = err instanceof Error ? err.message : String(err)
+      setError(`Failed to parse PDF: ${msg.slice(0, 120)}`)
       setParsing(false)
     }
   }, [addOrder])

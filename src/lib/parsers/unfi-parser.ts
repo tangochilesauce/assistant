@@ -243,8 +243,8 @@ export function formatOrderDateStr(isoDate: string | null): string {
 export async function extractPdfText(file: File): Promise<string> {
   const pdfjsLib = await import('pdfjs-dist')
 
-  // Set worker source — use unpkg (cdnjs doesn't have v5.x)
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+  // Set worker source — served from public/ (no CDN/CORS issues)
+  pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs'
 
   const arrayBuffer = await file.arrayBuffer()
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
