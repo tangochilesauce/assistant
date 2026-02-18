@@ -18,6 +18,14 @@ The philosophy: no scoring math, no rigid ranked lists. Show Dan the state of ev
 - **Brain files are the soul of the system** — Claude reads/writes them between sessions, but Dan couldn't see them until the Brain page was built.
 - **Tags system is powerful** — JSONB tags on todos handle: focus, deadline, completed:DATE, archived. Flexible metadata without schema changes.
 - **dnd-kit closestCenter > closestCorners** — less finicky for 3-column layouts.
+- **IECU scoring model abandoned** — Original Prisma schema had impact (1-10), ease (1-10), control (1-10), urgency (1-3) scoring on todos. Dropped in favor of "priority is a story, not a formula."
+- **Prisma/SQLite was the original DB** — Dormant schema still exists in repo. Models: Project, Goal (hierarchical), TodoItem (with scoring), Transaction (recurring support), Settings. Replaced by Supabase.
+
+### Platform Evolution
+1. **Vercel attempt #1 (early Feb)** — Full backend, auto-deploy. Disaster: webhook integration failed silently, deploy hooks returned PENDING but never materialized. Multiple re-imports failed.
+2. **GitHub Pages (Feb 15)** — Pivoted to static export. All data hardcoded in DashboardClient.tsx. Free, fast, actually worked. Deploy via GitHub Actions (~50s).
+3. **Supabase added (Feb 16)** — Client-side data fetching. Replaced hardcoded constants with Zustand stores + Supabase tables.
+4. **Vercel attempt #2 (Feb 17)** — Switched back. This time it worked. Auto-deploys every push to main. GitHub Pages deploy kept as fallback.
 
 ## Goal
 
@@ -130,6 +138,18 @@ The philosophy: no scoring math, no rigid ranked lists. Show Dan the state of ev
 ├── supabase-setup.sql    ← Database schema reference
 └── next.config.ts        ← output: "export", basePath conditional on GITHUB_PAGES env
 ```
+
+## Theme
+
+```
+--background: #0a0a0a
+--foreground: #e5e5e5
+--card: #141414
+--border: #262626
+--accent: #f59e0b (amber)
+```
+
+Dark theme only. Hides scrollbars on mobile. Geist font.
 
 ## Supabase
 
