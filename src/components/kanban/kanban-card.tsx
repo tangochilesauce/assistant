@@ -10,14 +10,14 @@ import { useTodoStore, type Todo } from '@/store/todo-store'
 
 interface KanbanCardProps {
   todo: Todo
-  children?: Todo[]       // sub-tasks to render nested
+  subTasks?: Todo[]       // sub-tasks to render nested
   showProject?: boolean
   overlay?: boolean  // true when rendered inside DragOverlay
   onMoveUp?: () => void
   onMoveDown?: () => void
 }
 
-export function KanbanCard({ todo, children, showProject, overlay, onMoveUp, onMoveDown }: KanbanCardProps) {
+export function KanbanCard({ todo, subTasks, showProject, overlay, onMoveUp, onMoveDown }: KanbanCardProps) {
   const { toggleTodo, toggleFocus, deleteTodo, updateTodo, addTodo } = useTodoStore()
   const isFocused = todo.tags?.includes('focus')
   const [editing, setEditing] = useState(false)
@@ -202,9 +202,9 @@ export function KanbanCard({ todo, children, showProject, overlay, onMoveUp, onM
       )}
 
       {/* Nested sub-tasks */}
-      {children && children.length > 0 && (
+      {subTasks && subTasks.length > 0 && (
         <div className="mt-2 space-y-1.5">
-          {children.map(child => (
+          {subTasks.map(child => (
             <KanbanCard key={child.id} todo={child} showProject={false} />
           ))}
         </div>

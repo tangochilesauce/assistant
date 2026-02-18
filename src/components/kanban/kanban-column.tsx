@@ -89,7 +89,7 @@ export function KanbanColumn({ column, todos, projectSlug, showProject }: Kanban
               <KanbanCard
                 key={todo.id}
                 todo={todo}
-                children={childMap.get(todo.id)}
+                subTasks={childMap.get(todo.id)}
                 showProject={showProject}
                 onMoveUp={i > 0 ? () => swapTodos(i, i - 1) : undefined}
                 onMoveDown={i < parentTodos.length - 1 ? () => swapTodos(i, i + 1) : undefined}
