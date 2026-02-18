@@ -1,9 +1,12 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useOrderStore } from '@/store/order-store'
 
 export function ProductionDemand() {
-  const demand = useOrderStore(s => s.getProductionDemand())
+  const orders = useOrderStore(s => s.orders)
+  const getProductionDemand = useOrderStore(s => s.getProductionDemand)
+  const demand = useMemo(() => getProductionDemand(), [orders, getProductionDemand])
 
   if (demand.length === 0) return null
 
