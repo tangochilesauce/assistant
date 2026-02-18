@@ -26,6 +26,7 @@ const SLUG_MAP = {
   'tango/amazon.md': 'tango-amazon',
   'tango/costco.md': 'tango-costco',
   'tango/dtc.md': 'tango-dtc',
+  'tango/unfi.md': 'tango-unfi',
   'tango/production.md': 'tango-production',
 }
 

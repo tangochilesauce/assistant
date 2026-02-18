@@ -10,6 +10,49 @@ Production happens at Foodies (co-packing) with ingredients from Deep. Packaging
 
 **Channel vs Key Account distinction:** A "Channel" means you invoice them directly (Amazon, UNFI, Costco, EXP, Faire, Mable). A "Key Account" means they order through a distributor (e.g., Whole Foods orders via UNFI).
 
+---
+
+## Brand Identity
+
+**Name**: Tango Chile Sauce, LLC
+**Tagline**: Born in NYC, Made in LA
+**Established**: April 29, 2013
+**Federal EIN**: 46-2641462
+**FDA Number**: 11095246958
+**GS1 Account**: 30042269
+
+## The Origin Story
+
+When grandma first crafted her legendary chile in 1940s Honduras, she started with seven simple ingredients — most growing right outside her home. It started in her youth with a wild Scotch Bonnet plant that produced peppers every season.
+
+It stayed small and honest at first — just family, neighbors, and friends. Then she started bottling it for the local market, where it took off. For a few bright years it lived out in the world, until she came to America and the recipe went quiet.
+
+In 2015, she showed Dan her chile for the first time and it was over. He became obsessed. She showed him how to make it and he started making it naturally for himself, then for friends, then for stores, and Tango was born.
+
+## Brand Voice
+
+**Personality:** Approachable but premium. Health-conscious without being preachy. Bold, flavorful, fun.
+**Tone:** Confident, not arrogant. Playful when appropriate. Honest about ingredients and process.
+**Words We Use:** Clean, whole food, carrot-based, Keto-friendly, no sugar added, small batch, craft, artisan
+**Words We Avoid:** Cheap, budget, discount, diet, low-cal, "Just like TRUFF"
+
+## Key Messages
+
+**Primary:** Truffle Tango delivers gourmet truffle flavor with clean, healthy ingredients — carrot-based, Keto-friendly, no sugar added.
+**Elevator Pitch:** "Tango is the healthy truffle hot sauce. We use carrots instead of agave for natural sweetness, making us truly Keto-friendly. You get 8oz of gourmet truffle flavor at a better price than the big guys, and the NY Post named us one of the 14 best hot sauces."
+
+## Key Selling Points
+
+Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic Ingredients, 100% Clean Ingredients, Handmade in Small Batches in CA, Grandma's Recipe, Born in Brooklyn, Gluten-Free, American Made, Family-Owned, Good on Everything, 98%+ sell-through rate
+
+## Competitor Positioning
+
+| Competitor | Our Advantage |
+|-----------|---------------|
+| TRUFF | Keto-friendly (they use agave), better value $/oz |
+| Melinda's | Premium quality, authentic Keto |
+| Yellowbird | We lead with truffle premium |
+
 ## What We've Learned
 
 - **Traffic is the bottleneck on Amazon**, not conversion — PPC barely running ($66/60d)
