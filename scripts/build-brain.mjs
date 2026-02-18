@@ -32,7 +32,7 @@ const SLUG_MAP = {
 // Extract a <100 char summary from the "Current Understanding" section
 function extractSummary(content) {
   // Find "## Current Understanding" section
-  const match = content.match(/##\s*Current Understanding\s*\n+([\s\S]*?)(?=\n##|\n$|$)/)
+  const match = content.match(/##\s*(?:My )?Current Understanding\s*\n+([\s\S]*?)(?=\n##|\n$|$)/)
   if (!match) return ''
 
   // Get first sentence(s) of the section, strip markdown formatting

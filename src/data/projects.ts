@@ -156,11 +156,11 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'jeff',
-    name: 'JEFF',
-    emoji: '🍴',
+    name: 'PL8',
+    emoji: '🍽️',
     color: '#6b7280',
     weight: 10,
-    goal: 'Build JEFF into the operating system for everything',
+    goal: 'Build PL8 into the operating system for everything',
     defaultActions: ['Be able to order/edit to-do list items', 'README for each project', 'Add Tango dashboard'],
   },
   {

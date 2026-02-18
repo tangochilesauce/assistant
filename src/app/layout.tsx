@@ -4,6 +4,7 @@ import './globals.css'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AppSidebar } from '@/components/layout/app-sidebar'
+import { UndoListener } from '@/components/undo-listener'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -16,7 +17,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'JEFF',
+  title: 'PL8',
   description: "Dan's personal operating system",
 }
 
@@ -38,6 +39,7 @@ export default function RootLayout({
         <TooltipProvider>
           <SidebarProvider>
             <AppSidebar />
+            <UndoListener />
             <main className="flex-1 flex flex-col min-h-svh overflow-hidden">
               {children}
             </main>

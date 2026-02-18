@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { CalendarDays, ChevronDown, ChevronRight } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { CalendarDays, ChevronDown, ChevronRight, Plus } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useTodoStore, type Todo } from '@/store/todo-store'
-import { getProject } from '@/data/projects'
+import { getProject, PROJECTS } from '@/data/projects'
 
 // ── Helpers ──────────────────────────────────────────────────────
 
@@ -72,25 +72,98 @@ function WeekTaskRow({ todo }: { todo: Todo }) {
 
 // ── Day Column ───────────────────────────────────────────────────
 
+const activeProjects = PROJECTS.filter(p => !p.parentSlug && p.weight > 0)
+
 function DayColumn({ date, today, todos }: { date: Date; today: Date; todos: Todo[] }) {
   const dateStr = toDateStr(date)
   const isToday = dateStr === toDateStr(today)
   const isPast = date < today && !isToday
+  const { addTodo } = useTodoStore()
+
+  const [adding, setAdding] = useState(false)
+  const [value, setValue] = useState('')
+  const [projectSlug, setProjectSlug] = useState('tango')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (adding) {
+      inputRef.current?.focus()
+    }
+  }, [adding])
+
+  const handleAdd = () => {
+    const trimmed = value.trim()
+    if (trimmed) {
+      addTodo(projectSlug, trimmed, undefined, undefined, dateStr)
+      setValue('')
+      // Keep input open for rapid entry
+      setTimeout(() => inputRef.current?.focus(), 50)
+      return
+    }
+    setAdding(false)
+  }
+
+  const currentProject = getProject(projectSlug)
 
   return (
     <div className={`min-w-[140px] flex-1 ${isPast ? 'opacity-50' : ''}`}>
-      <div className={`text-[10px] font-medium uppercase tracking-wider mb-1.5 px-1 ${
-        isToday ? 'text-orange-400' : 'text-muted-foreground/60'
-      }`}>
-        {formatDayLabel(date, today)}
+      <div className="flex items-center gap-1 mb-1.5 px-1">
+        <span className={`text-[10px] font-medium uppercase tracking-wider flex-1 ${
+          isToday ? 'text-orange-400' : 'text-muted-foreground/60'
+        }`}>
+          {formatDayLabel(date, today)}
+        </span>
+        {!isPast && (
+          <button
+            onClick={() => setAdding(true)}
+            className="text-muted-foreground/30 hover:text-muted-foreground transition-colors"
+          >
+            <Plus className="size-3" />
+          </button>
+        )}
       </div>
-      {todos.length === 0 ? (
+
+      {todos.length === 0 && !adding ? (
         <div className="text-[10px] text-muted-foreground/30 px-1 py-2">—</div>
       ) : (
         <div className="space-y-0.5">
           {todos.map(todo => (
             <WeekTaskRow key={todo.id} todo={todo} />
           ))}
+        </div>
+      )}
+
+      {/* Quick-add input */}
+      {adding && (
+        <div className="mt-1 rounded border border-border/50 bg-accent/20 p-1.5">
+          <div className="flex gap-1 mb-1.5">
+            {activeProjects.map(p => (
+              <button
+                key={p.slug}
+                onClick={() => setProjectSlug(p.slug)}
+                className={`text-[9px] px-1.5 py-0.5 rounded transition-colors ${
+                  projectSlug === p.slug
+                    ? 'bg-accent text-foreground'
+                    : 'text-muted-foreground/40 hover:text-muted-foreground'
+                }`}
+                title={p.name}
+              >
+                {p.emoji}
+              </button>
+            ))}
+          </div>
+          <input
+            ref={inputRef}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            onBlur={handleAdd}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleAdd()
+              if (e.key === 'Escape') { setValue(''); setAdding(false) }
+            }}
+            placeholder={`Add to ${currentProject?.name ?? 'project'}...`}
+            className="w-full text-[11px] bg-transparent outline-none placeholder:text-muted-foreground/30"
+          />
         </div>
       )}
     </div>

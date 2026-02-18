@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { Plus } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Plus, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -22,33 +22,88 @@ import { useTodoStore } from '@/store/todo-store'
 
 export function QuickAdd() {
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState('')
   const [projectSlug, setProjectSlug] = useState('tango')
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [rows, setRows] = useState<string[]>([''])
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const { addTodo } = useTodoStore()
 
-  // Focus the input when dialog opens
+  // Focus the first input when dialog opens
   useEffect(() => {
     if (open) {
-      // Small delay for dialog animation
-      const t = setTimeout(() => inputRef.current?.focus(), 100)
+      const t = setTimeout(() => inputRefs.current[0]?.focus(), 100)
       return () => clearTimeout(t)
     }
   }, [open])
 
-  const handleSubmit = async () => {
-    const trimmed = title.trim()
-    if (!trimmed) return
+  const updateRow = useCallback((index: number, value: string) => {
+    setRows(prev => {
+      const next = [...prev]
+      next[index] = value
+      return next
+    })
+  }, [])
 
-    await addTodo(projectSlug, trimmed)
+  const addRow = useCallback(() => {
+    setRows(prev => [...prev, ''])
+    // Focus new row after render
+    setTimeout(() => {
+      const last = inputRefs.current[inputRefs.current.length - 1]
+      last?.focus()
+    }, 50)
+  }, [])
+
+  const removeRow = useCallback((index: number) => {
+    setRows(prev => {
+      if (prev.length <= 1) return [''] // always keep at least one
+      return prev.filter((_, i) => i !== index)
+    })
+  }, [])
+
+  const handleSubmit = async () => {
+    const items = rows.map(r => r.trim()).filter(Boolean)
+    if (items.length === 0) return
+
+    // Add all todos
+    for (const item of items) {
+      await addTodo(projectSlug, item)
+    }
 
     // Reset and close
-    setTitle('')
+    setRows([''])
     setOpen(false)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const current = rows[index]?.trim()
+      if (current) {
+        // If this is the last row, add a new one
+        if (index === rows.length - 1) {
+          addRow()
+        } else {
+          // Focus next row
+          inputRefs.current[index + 1]?.focus()
+        }
+      } else if (rows.some(r => r.trim())) {
+        // Empty row but has other content — submit all
+        handleSubmit()
+      }
+    } else if (e.key === 'Backspace' && !rows[index] && rows.length > 1) {
+      e.preventDefault()
+      removeRow(index)
+      // Focus previous row
+      setTimeout(() => {
+        const prev = Math.max(0, index - 1)
+        inputRefs.current[prev]?.focus()
+      }, 50)
+    }
   }
 
   // Group projects: root projects, then sub-projects nested under parents
   const rootProjects = PROJECTS.filter(p => !p.parentSlug)
+
+  const filledCount = rows.filter(r => r.trim()).length
 
   return (
     <>
@@ -62,7 +117,7 @@ export function QuickAdd() {
         <Plus className="size-4" />
       </Button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setRows(['']) }}>
         <DialogContent className="sm:max-w-sm gap-3 p-4" showCloseButton={false}>
           <DialogHeader className="pb-0">
             <DialogTitle className="text-sm">Quick Add</DialogTitle>
@@ -103,28 +158,46 @@ export function QuickAdd() {
               </SelectContent>
             </Select>
 
-            {/* Title input */}
-            <Input
-              ref={inputRef}
-              placeholder="What needs doing?"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && title.trim()) {
-                  e.preventDefault()
-                  handleSubmit()
-                }
-              }}
-            />
+            {/* Multi-row inputs */}
+            <div className="flex flex-col gap-2">
+              {rows.map((row, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Input
+                    ref={el => { inputRefs.current[i] = el }}
+                    placeholder={i === 0 ? 'What needs doing?' : 'Another one...'}
+                    value={row}
+                    onChange={e => updateRow(i, e.target.value)}
+                    onKeyDown={e => handleKeyDown(e, i)}
+                  />
+                  {rows.length > 1 && (
+                    <button
+                      onClick={() => removeRow(i)}
+                      className="text-muted-foreground hover:text-foreground shrink-0"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
 
-            {/* Submit */}
-            <div className="flex items-center justify-end">
+            {/* Add row + Submit */}
+            <div className="flex items-center justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={addRow}
+                className="gap-1 text-muted-foreground"
+              >
+                <Plus className="size-3.5" />
+                Add row
+              </Button>
               <Button
                 size="sm"
                 onClick={handleSubmit}
-                disabled={!title.trim()}
+                disabled={filledCount === 0}
               >
-                Add
+                Add{filledCount > 1 ? ` (${filledCount})` : ''}
               </Button>
             </div>
           </div>

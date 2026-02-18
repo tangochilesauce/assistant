@@ -7,6 +7,7 @@ import { DeadlinesSidebar } from '@/components/deadlines-sidebar'
 import { SprintBanner } from '@/components/sprint-banner'
 import { ThisWeek } from '@/components/this-week'
 import { QuickAdd } from '@/components/quick-add'
+import { QuickSpend } from '@/components/quick-spend'
 import { useTodoStore } from '@/store/todo-store'
 
 export default function TodayPage() {
@@ -21,6 +22,7 @@ export default function TodayPage() {
   return (
     <>
       <PageHeader title="Today" count={incomplete}>
+        <QuickSpend />
         <QuickAdd />
       </PageHeader>
       <div className="flex-1 overflow-y-auto">

@@ -98,6 +98,31 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
       ])
 
       if (!txnResult.error && txnResult.data) {
+        // If Supabase is empty, seed it with defaults
+        if (txnResult.data.length === 0) {
+          const defaults = getDefaultTransactions()
+          const now = new Date().toISOString()
+          const rows = defaults.map(t => ({
+            ...transactionToRow(t),
+            created_at: now,
+            updated_at: now,
+          }))
+          await supabase.from('transactions').insert(rows)
+          // Also seed the balance
+          await supabase.from('settings').upsert({
+            key: 'cash_balance',
+            value: BALANCE,
+            updated_at: now,
+          })
+          set({
+            transactions: defaults,
+            balance: BALANCE,
+            loading: false,
+            initialized: true,
+          })
+          return
+        }
+
         const balance = settingsResult.data?.value as number ?? BALANCE
         set({
           transactions: txnResult.data.map(rowToTransaction),

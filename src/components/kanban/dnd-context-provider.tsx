@@ -22,7 +22,7 @@ interface DndContextProviderProps {
 }
 
 export function DndContextProvider({ children, projectSlug }: DndContextProviderProps) {
-  const { todos, moveTodo, reorderTodo } = useTodoStore()
+  const { todos, moveTodo, moveTodoWithChildren, reorderTodo } = useTodoStore()
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
 
   const sensors = useSensors(
@@ -92,17 +92,13 @@ export function DndContextProvider({ children, projectSlug }: DndContextProvider
     }
 
     if (targetColumnId !== activeTodo.status) {
-      // Cross-column move — also move children
-      moveTodo(activeTodo.id, targetColumnId, newSortOrder)
-      const childTodos = todos.filter(t => t.parentId === activeTodo.id)
-      for (const child of childTodos) {
-        moveTodo(child.id, targetColumnId, child.sortOrder)
-      }
+      // Cross-column move — atomic: parent + children in one state update
+      moveTodoWithChildren(activeTodo.id, targetColumnId, newSortOrder)
     } else {
       // Same column reorder
       reorderTodo(activeTodo.id, newSortOrder)
     }
-  }, [todos, projectSlug, moveTodo, reorderTodo])
+  }, [todos, projectSlug, moveTodoWithChildren, reorderTodo])
 
   return (
     <DndContext

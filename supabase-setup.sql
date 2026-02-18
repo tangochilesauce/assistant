@@ -114,6 +114,25 @@ CREATE TABLE IF NOT EXISTS notes (
 );
 
 -- ═══════════════════════════════════════════════════════════════
+-- TANGO ORDERS (production order tracking)
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS tango_orders (
+    id TEXT PRIMARY KEY,
+    channel TEXT NOT NULL,
+    title TEXT NOT NULL,
+    value TEXT,
+    date_str TEXT,
+    stage TEXT DEFAULT 'new',
+    ship_to TEXT,
+    notes TEXT,
+    items JSONB DEFAULT '[]'::jsonb,
+    checklist JSONB DEFAULT '[]'::jsonb,
+    docs JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ═══════════════════════════════════════════════════════════════
 -- ROW LEVEL SECURITY (allow all — single-user app)
 -- ═══════════════════════════════════════════════════════════════
 ALTER TABLE todos ENABLE ROW LEVEL SECURITY;
@@ -122,6 +141,7 @@ ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE kanban_columns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dreamwatch_pipeline ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tango_orders ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow all on todos" ON todos FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on settings" ON settings FOR ALL USING (true) WITH CHECK (true);
@@ -129,6 +149,7 @@ CREATE POLICY "Allow all on transactions" ON transactions FOR ALL USING (true) W
 CREATE POLICY "Allow all on kanban_columns" ON kanban_columns FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on dreamwatch_pipeline" ON dreamwatch_pipeline FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on notes" ON notes FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on tango_orders" ON tango_orders FOR ALL USING (true) WITH CHECK (true);
 
 -- ═══════════════════════════════════════════════════════════════
 -- INDEXES
@@ -144,3 +165,5 @@ CREATE INDEX IF NOT EXISTS idx_dreamwatch_active ON dreamwatch_pipeline(is_activ
 CREATE INDEX IF NOT EXISTS idx_notes_project ON notes(project_slug);
 CREATE INDEX IF NOT EXISTS idx_notes_pinned ON notes(pinned);
 CREATE INDEX IF NOT EXISTS idx_notes_created ON notes(created_at);
+CREATE INDEX IF NOT EXISTS idx_tango_orders_stage ON tango_orders(stage);
+CREATE INDEX IF NOT EXISTS idx_tango_orders_channel ON tango_orders(channel);

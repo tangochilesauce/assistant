@@ -56,7 +56,7 @@ export function KanbanColumn({ column, todos, projectSlug, showProject }: Kanban
   }
 
   return (
-    <div className="flex flex-col min-w-[260px] max-w-[300px] shrink-0">
+    <div className="flex flex-col min-w-[220px] flex-1">
       {/* Header */}
       <div className="flex items-center gap-2 px-3 py-2.5 mb-2">
         {column.color ? (

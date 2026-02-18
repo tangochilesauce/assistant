@@ -15,18 +15,23 @@ export interface Todo {
   parentId: string | null  // for nested sub-tasks
 }
 
+const MAX_UNDO = 20
+
 interface TodoState {
   todos: Todo[]
   loading: boolean
   initialized: boolean
+  _undoStack: Todo[][]
   fetchTodos: () => Promise<void>
-  addTodo: (projectSlug: string, title: string, status?: string, parentId?: string) => Promise<void>
+  addTodo: (projectSlug: string, title: string, status?: string, parentId?: string, dueDate?: string) => Promise<void>
   updateTodo: (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate' | 'tags'>>) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
   toggleFocus: (id: string) => Promise<void>
   deleteTodo: (id: string) => Promise<void>
+  moveTodoWithChildren: (id: string, newStatus: string, newSortOrder: number) => Promise<void>
   moveTodo: (id: string, newStatus: string, newSortOrder: number) => Promise<void>
   reorderTodo: (id: string, newSortOrder: number) => Promise<void>
+  undo: () => Promise<void>
 }
 
 function rowToTodo(row: TodoRow): Todo {
@@ -84,10 +89,19 @@ function getDefaultTodos(): Todo[] {
   return todos
 }
 
+// Push a snapshot of the current todos onto the undo stack
+function pushUndo(get: () => TodoState, set: (fn: (s: TodoState) => Partial<TodoState>) => void) {
+  const snapshot = get().todos.map(t => ({ ...t }))
+  set(s => ({
+    _undoStack: [...s._undoStack.slice(-(MAX_UNDO - 1)), snapshot],
+  }))
+}
+
 export const useTodoStore = create<TodoState>((set, get) => ({
   todos: [],
   loading: false,
   initialized: false,
+  _undoStack: [],
 
   fetchTodos: async () => {
     if (get().initialized) return
@@ -115,7 +129,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         if (stale.length > 0) {
           const ids = stale.map(t => t.id)
           supabase.from('todos').update({ status: 'archived' }).in('id', ids).then(() => {
-            console.log(`[JEFF] Archived ${ids.length} completed items from before ${today}`)
+            console.log(`[PL8] Archived ${ids.length} completed items from before ${today}`)
           })
           // Update local state too
           for (const t of allTodos) {
@@ -134,7 +148,8 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     set({ todos: getDefaultTodos(), loading: false, initialized: true })
   },
 
-  addTodo: async (projectSlug: string, title: string, status?: string, parentId?: string) => {
+  addTodo: async (projectSlug: string, title: string, status?: string, parentId?: string, dueDate?: string) => {
+    pushUndo(get, set)
     const id = generateId()
     const firstCol = getFirstColumnId(projectSlug)
     const targetStatus = status ?? firstCol
@@ -149,7 +164,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       title,
       completed: finalStatus === getLastColumnId(projectSlug),
       createdAt: new Date().toISOString(),
-      dueDate: null,
+      dueDate: dueDate ?? null,
       sortOrder: maxOrder + 1,
       status: finalStatus,
       tags: [],
@@ -165,7 +180,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         title,
         completed: newTodo.completed,
         created_at: newTodo.createdAt,
-        due_date: null,
+        due_date: dueDate ?? null,
         sort_order: newTodo.sortOrder,
         status: newTodo.status,
       }
@@ -191,6 +206,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   },
 
   toggleTodo: async (id: string) => {
+    pushUndo(get, set)
     const todo = get().todos.find(t => t.id === id)
     if (!todo) return
 
@@ -241,6 +257,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   },
 
   deleteTodo: async (id: string) => {
+    pushUndo(get, set)
     set(state => ({ todos: state.todos.filter(t => t.id !== id) }))
 
     if (supabase) {
@@ -248,7 +265,52 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     }
   },
 
-  // Move a todo to a different column (and/or position)
+  // Move a parent todo + all its children to a different column in one atomic update
+  moveTodoWithChildren: async (id: string, newStatus: string, newSortOrder: number) => {
+    pushUndo(get, set)
+    const todo = get().todos.find(t => t.id === id)
+    if (!todo) return
+
+    const isCompleted = newStatus === getLastColumnId(todo.projectSlug)
+    const children = get().todos.filter(t => t.parentId === id)
+    const allIds = new Set([id, ...children.map(c => c.id)])
+
+    let newTags = todo.tags.filter(t => !t.startsWith('completed:'))
+    if (isCompleted) newTags = [...newTags, `completed:${todayPST()}`]
+
+    // Single atomic state update — parent + all children move together
+    set(state => ({
+      todos: state.todos.map(t => {
+        if (t.id === id) {
+          return { ...t, status: newStatus, sortOrder: newSortOrder, completed: isCompleted, tags: newTags }
+        }
+        if (allIds.has(t.id)) {
+          let childTags = t.tags.filter(tag => !tag.startsWith('completed:'))
+          if (isCompleted) childTags = [...childTags, `completed:${todayPST()}`]
+          return { ...t, status: newStatus, completed: isCompleted, tags: childTags }
+        }
+        return t
+      }),
+    }))
+
+    if (supabase) {
+      const updates = [
+        supabase.from('todos').update({
+          status: newStatus, sort_order: newSortOrder, completed: isCompleted, tags: newTags,
+        }).eq('id', id),
+        ...children.map(child => {
+          let childTags = child.tags.filter(tag => !tag.startsWith('completed:'))
+          if (isCompleted) childTags = [...childTags, `completed:${todayPST()}`]
+          return supabase!.from('todos').update({
+            status: newStatus, completed: isCompleted, tags: childTags,
+          }).eq('id', child.id)
+        }),
+      ]
+      await Promise.all(updates)
+    }
+  },
+
+  // Move a single todo to a different column (and/or position)
   moveTodo: async (id: string, newStatus: string, newSortOrder: number) => {
     const todo = get().todos.find(t => t.id === id)
     if (!todo) return
@@ -291,6 +353,51 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       await supabase.from('todos').update({
         sort_order: newSortOrder,
       }).eq('id', id)
+    }
+  },
+
+  // ── Undo ──────────────────────────────────────────────────────
+  undo: async () => {
+    const stack = get()._undoStack
+    if (stack.length === 0) return
+
+    const previous = stack[stack.length - 1]
+    set(s => ({
+      todos: previous,
+      _undoStack: s._undoStack.slice(0, -1),
+    }))
+
+    // Sync to Supabase: full replace by upserting restored state
+    if (supabase) {
+      // Delete all current todos and re-insert the snapshot
+      // This is brute-force but correct for undo
+      const current = get().todos
+      const ids = current.map(t => t.id)
+      if (ids.length > 0) {
+        await supabase.from('todos').delete().in('id', ids)
+      }
+      // Also clean up any todos that were in old state but not new
+      const prevIds = previous.map(t => t.id)
+      const staleIds = ids.filter(id => !prevIds.includes(id))
+      if (staleIds.length > 0) {
+        await supabase.from('todos').delete().in('id', staleIds)
+      }
+      // Upsert restored todos
+      if (previous.length > 0) {
+        const rows = previous.map(t => ({
+          id: t.id,
+          project_slug: t.projectSlug,
+          title: t.title,
+          completed: t.completed,
+          created_at: t.createdAt,
+          due_date: t.dueDate,
+          sort_order: t.sortOrder,
+          status: t.status,
+          tags: t.tags,
+          parent_id: t.parentId,
+        }))
+        await supabase.from('todos').upsert(rows)
+      }
     }
   },
 }))

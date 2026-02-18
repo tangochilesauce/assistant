@@ -14,7 +14,8 @@ interface ActionLineProps {
 }
 
 export function ActionLine({ todo, subTasks, showProject = false, isChild = false }: ActionLineProps) {
-  const { toggleTodo, deleteTodo, updateTodo, addTodo } = useTodoStore()
+  const { toggleTodo, toggleFocus, deleteTodo, updateTodo, addTodo } = useTodoStore()
+  const isFocused = todo.tags?.includes('focus')
   const [editing, setEditing] = useState(false)
   const [editValue, setEditValue] = useState(todo.title)
   const [addingChild, setAddingChild] = useState(false)
@@ -83,7 +84,11 @@ export function ActionLine({ todo, subTasks, showProject = false, isChild = fals
               if ('ontouchstart' in window) setEditing(true)
             }}
             className={`flex-1 cursor-text ${isChild ? 'text-xs' : 'text-sm'} ${
-              todo.completed ? 'line-through text-muted-foreground' : ''
+              todo.completed
+                ? 'line-through text-muted-foreground'
+                : isFocused
+                  ? 'text-foreground font-semibold'
+                  : ''
             }`}
           >
             {todo.title}
@@ -93,6 +98,18 @@ export function ActionLine({ todo, subTasks, showProject = false, isChild = fals
         {todo.dueDate && (
           <span className="text-xs text-muted-foreground">{todo.dueDate}</span>
         )}
+        {/* Focus toggle */}
+        <button
+          onClick={() => toggleFocus(todo.id)}
+          className={`shrink-0 transition-opacity text-sm leading-none ${
+            isFocused
+              ? 'text-orange-400 opacity-100 font-black'
+              : 'opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-orange-400 font-black'
+          }`}
+          title={isFocused ? 'Remove focus' : 'Focus today'}
+        >
+          !
+        </button>
         {/* Add sub-task button (parent items only) */}
         {!isChild && (
           <button

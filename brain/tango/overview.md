@@ -34,16 +34,62 @@ Production happens at Foodies (co-packing) with ingredients from Deep. Packaging
 | Thai | $3.42 | — | Amazon 54% |
 | Hot | $3.49 | 28% | Amazon 53% |
 
-## Production Costs (Per Run)
+## Production System
 
+### Conversion Ratios
+| Unit | Conversion |
+|------|-----------|
+| 1 drum (bote) | ~625 bottles |
+| 1 case | 6 bottles |
+| 1 cook shift (4hr) | 3 ollas |
+| 1 pack shift (4hr) | 1,000 bottles |
+
+### Batches per Olla
+| Flavor | Batches/Olla |
+|--------|-------------|
+| Hot/Mild/Truffle | 4 |
+| Mango | 2 (larger batch) |
+| Sriracha | 2 or 3 |
+
+### Process Flow
+Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pack) → Cases
+
+### Production Costs (Per Run)
 | Item | Vendor | Cost |
 |------|--------|------|
-| Ingredients | Deep | $1,300 |
-| Co-pack | Foodies | $1,100 |
+| Ingredients | Deep (My Orchard) | $1,300 |
+| Co-pack | Foodies (Aria) | $1,100 |
 | Boxes | Acorn | $804 |
-| Labels | (vendor TBD) | $1,500 |
+| Labels | KSidrane (Zachary) | $695-$910 (see below) |
 | Shipping | Daylight | $400 |
 | **Total per run** | | **$5,104** |
+
+### Label Pricing — KSidrane (Quote #23728, Feb 17 2026, valid 30 days)
+**Contact:** Zachary Sidrane, ksidrane.com, (631) 393-6974
+**Account #:** 1228
+**Specs:** 4.6508" x 3" Special Shape Set, White BOPP + Matte Lamination, 4 Color Process, Permanent adhesive
+**Payment:** Credit Card (50% deposit, balance on shipment), FOB Farmingdale NY
+
+| Qty | Per 1,000 | Total |
+|-----|-----------|-------|
+| 1,000 | $490 | $490 |
+| 2,000 | $268 | $536 |
+| 5,000 | $139 | $695 |
+| 10,000 | $91 | $910 |
+
+**Note:** This quote is for **Mild labels only**. Sweet spot is 5K-10K range — nearly double labels for +$215. Quote expires ~March 19, 2026.
+
+### Shift Costs
+| Type | Hours | Cost |
+|------|-------|------|
+| COOK | 4 | $400 |
+| PACK | 8 | $1,000 |
+
+### Kitchen
+Foodies Urban Kitchen, 8922 Norris Ave, Sun Valley
+
+### Data Source
+All production data lives in Supabase settings table (keys: `tango_production_*`). **Tango Dashboard is the single source of truth** — editable directly (packed counts, drum counts, status pills, ingredient inventory, bill plans, material status). Notion "Tango Production" page is **retired** as of Feb 17, 2026. Don't update it — update the dashboard instead.
 
 ## Channel Revenue Targets
 
@@ -99,7 +145,9 @@ Production happens at Foodies (co-packing) with ingredients from Deep. Packaging
 ## Pipeline
 
 ### 📋 To Do
-- [ ] Ship EXP pallet (Feb 19 pickup)
+- [ ] Ship EXP pallet (Feb 28 pickup — pushed from Feb 19)
+- [ ] Mon Feb 24: Cook (1 olla Hot + 1 olla Sriracha, 4hr)
+- [ ] Thu Feb 27: Pack (4hr)
 - [ ] Restart Amazon PPC
 - [ ] Clean tangochilesauce.com DNS
 - [ ] Export Klaviyo list → set up Shopify Email
@@ -111,6 +159,10 @@ Production happens at Foodies (co-packing) with ingredients from Deep. Packaging
 - [x] DTC email recovery plan designed
 
 ### ✅ Done
+- [x] Production Brain on Tango Dashboard — editable, Supabase-backed (Feb 17)
+- [x] Notion "Tango Production" page retired — dashboard is source of truth (Feb 17)
+- [x] All production data synced Notion → Supabase (11 settings keys) (Feb 17)
+- [x] Flavor Snapshot + Order Demand + Gap Analysis tables built (Feb 17)
 - [x] DNS audit (Feb 17) — found stale Klaviyo SPF/DKIM
 - [x] Tango Dashboard deployed (GitHub Pages)
 - [x] Orders pipeline built (drag-and-drop kanban)

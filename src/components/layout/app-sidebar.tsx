@@ -57,7 +57,7 @@ export function AppSidebar() {
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="px-4 py-3">
         <Link href="/today" className="flex items-center gap-2">
-          <span className="font-semibold text-sm tracking-wide">JEFF</span>
+          <span className="font-semibold text-sm tracking-wide">PL8</span>
         </Link>
       </SidebarHeader>
 

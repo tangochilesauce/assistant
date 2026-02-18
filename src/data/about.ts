@@ -20,14 +20,14 @@ export const ABOUT_PAGES: Record<string, AboutPage> = {
   jeff: {
     slug: 'jeff',
     tagline: "Dan's personal operating system",
-    description: "JEFF is the command center for everything Dan builds, ships, and manages. It started as a simple to-do app and is evolving into a full business intelligence dashboard — project management, cash flow, contacts, learnings, and strategy all in one place.",
+    description: "PL8 is the command center for everything Dan builds, ships, and manages. It started as a simple to-do app and is evolving into a full business intelligence dashboard — project management, cash flow, contacts, learnings, and strategy all in one place.",
     sections: [
       {
-        title: 'What JEFF Is',
+        title: 'What PL8 Is',
         style: 'prose',
-        content: `JEFF is a Next.js web app deployed on GitHub Pages that serves as the single source of truth for Dan's entire operation. It replaces Notion, scattered markdown files, and unreliable AI memory with structured, beautiful, persistent pages.
+        content: `PL8 is a Next.js web app deployed on Vercel that serves as the single source of truth for Dan's entire operation. It replaces Notion, scattered markdown files, and unreliable AI memory with structured, beautiful, persistent pages.
 
-The name is just JEFF. No acronym. No meaning. Just a name for the system that runs everything.`,
+The name is PL8. Like a plate — you drop things on it. Tasks, expenses, ideas, files. Everything lands here.`,
       },
       {
         title: 'Tech Stack',
@@ -37,7 +37,7 @@ TypeScript end to end
 Tailwind CSS 4 + shadcn/ui components
 Zustand for state management
 Supabase for persistent data (todos, transactions, settings)
-GitHub Pages for hosting
+Vercel for hosting
 GitHub Actions for auto-deploy on push to main
 dnd-kit for drag-and-drop kanban
 Geist font family
@@ -68,18 +68,18 @@ Pattern detection — noticing what gets pushed, what gets done, what falls thro
       {
         title: 'The Philosophy',
         style: 'prose',
-        content: `JEFF doesn't tell Dan what to do. It shows him the state of everything and lets him pick.
+        content: `PL8 doesn't tell Dan what to do. It shows him the state of everything and lets him pick.
 
 The old system (codename: the scoring engine) tried to rank tasks with Impact × Ease × Control × Urgency formulas. It worked on paper but felt like a spreadsheet pretending to be a brain. Dan makes a new to-do list every day and somehow what's important still bubbles up. The system should mirror that — fluid, not rigid.
 
 The pipeline is simple: To Do → In Progress → Waiting → Done. That applies to almost everything. Color-coded by project so you can scan at a glance.
 
-Priority isn't a formula. It's a story. And the story changes every day. A pallet sitting at a warehouse outranks PPC optimization. An email that's been waiting 3 days outranks a listing update. JEFF surfaces the landscape. Dan reads it and knows.`,
+Priority isn't a formula. It's a story. And the story changes every day. A pallet sitting at a warehouse outranks PPC optimization. An email that's been waiting 3 days outranks a listing update. PL8 surfaces the landscape. Dan reads it and knows.`,
       },
       {
         title: 'The Conversation Layer',
         style: 'prose',
-        content: `JEFF isn't just a website. It's also a Claude Code slash command (/jeff) that acts as the conversational interface.
+        content: `PL8 isn't just a website. It's also a Claude Code slash command (/jeff) that acts as the conversational interface.
 
 Every morning, Dan runs /jeff. Instead of a scoring algorithm, it just asks: "What's going on?" Dan talks — stream of consciousness, whatever's on his mind. Claude listens, organizes it into the board, asks a few clarifying questions, and presents the current state. Dan picks what to do first.
 
@@ -94,13 +94,13 @@ The slash command writes to the same data layer as the web app. One system, two 
 FFEEDD — #2A9D8F (teal green)
 Madder — #7B2CBF (purple)
 Dream Beds — #E07A00 (orange)
-JEFF — #3B82F6 (blue)
+PL8 — #3B82F6 (blue)
 Life Admin — #666666 (gray)`,
       },
       {
         title: 'Architecture',
         style: 'prose',
-        content: `The app lives at /Users/danfrieber/⚡ claudio/assistant/ and deploys to tangochilesauce.github.io/assistant/.
+        content: `The app lives at /Users/danfrieber/⚡ claudio/jeff/ and deploys to Vercel (assistant-k5go.vercel.app).
 
 Data flows two ways: Supabase provides persistent storage that the web app reads from and writes to. Claude Code can also read and write the source files directly — updating project data, adding content, pushing to GitHub — which triggers a rebuild and deploy.
 
@@ -111,13 +111,13 @@ Static export means no server costs, instant loads, and works offline once cache
       {
         title: 'The Vision',
         style: 'prose',
-        content: `JEFF becomes headquarters. Every project gets a beautiful About page — not a markdown dump, not a Notion database, but a designed, scannable, living document. Strategy, contacts, metrics, learnings, pipeline, calendar, everything.
+        content: `PL8 becomes headquarters. Every project gets a beautiful About page — not a markdown dump, not a Notion database, but a designed, scannable, living document. Strategy, contacts, metrics, learnings, pipeline, calendar, everything.
 
 When Dan says "show me Tango Amazon," he gets a page with revenue charts, COGS breakdown, key contacts, active campaigns, and recent learnings. When he says "what's the status of Madder," he sees the release timeline, studio schedule, and distribution status.
 
 The daily /jeff conversation feeds new information into these pages. Learnings get locked in. Contacts get updated. Strategy narratives evolve. Nothing disappears when the chat session ends.
 
-$50,000/month by Q2 2026. JEFF is how we get there.`,
+$50,000/month by Q2 2026. PL8 is how we get there.`,
       },
     ],
   },
