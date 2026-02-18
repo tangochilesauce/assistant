@@ -162,8 +162,20 @@ export function ProjectDetailClient({ slug }: Props) {
   }
 
   const projectTodos = todos.filter(t => t.projectSlug === slug)
-  const incomplete = projectTodos.filter(t => !t.completed)
-  const completed = projectTodos.filter(t => t.completed)
+
+  // Build child map for nesting
+  const childMap = new Map<string, typeof projectTodos>()
+  for (const t of projectTodos) {
+    if (t.parentId) {
+      const arr = childMap.get(t.parentId) ?? []
+      arr.push(t)
+      childMap.set(t.parentId, arr)
+    }
+  }
+
+  // Only show top-level items in the list; children render nested
+  const incomplete = projectTodos.filter(t => !t.completed && !t.parentId)
+  const completed = projectTodos.filter(t => t.completed && !t.parentId)
 
   return (
     <>
@@ -209,11 +221,11 @@ export function ProjectDetailClient({ slug }: Props) {
               {incomplete.length === 0 && completed.length === 0 && (
                 <div className="px-4 py-8 text-center text-sm text-muted-foreground">No actions yet. Add one above.</div>
               )}
-              {incomplete.map(todo => <ActionLine key={todo.id} todo={todo} />)}
+              {incomplete.map(todo => <ActionLine key={todo.id} todo={todo} subTasks={childMap.get(todo.id)} />)}
               {completed.length > 0 && (
                 <>
                   <div className="px-4 py-2 text-xs text-muted-foreground border-b border-border/50 bg-accent/30">Completed ({completed.length})</div>
-                  {completed.map(todo => <ActionLine key={todo.id} todo={todo} />)}
+                  {completed.map(todo => <ActionLine key={todo.id} todo={todo} subTasks={childMap.get(todo.id)} />)}
                 </>
               )}
             </TabsContent>
