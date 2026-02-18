@@ -62,6 +62,29 @@ function buildTree(): BrainNode[] {
     })
   }
 
+  // Catch orphaned brain files (not matched to any project)
+  const usedSlugs = new Set<string>(['_state'])
+  for (const p of PROJECTS) usedSlugs.add(p.slug)
+
+  const orphaned = brains.filter(b => !usedSlugs.has(b.slug))
+  if (orphaned.length > 0) {
+    nodes.push({
+      slug: '_reference',
+      label: 'Strategy & Reference',
+      emoji: '📊',
+      color: '#a78bfa',
+      brain: null,
+      children: orphaned.map(b => ({
+        slug: b.slug,
+        label: b.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+        emoji: '📄',
+        color: '#a78bfa',
+        brain: b,
+        children: [],
+      })),
+    })
+  }
+
   return nodes
 }
 

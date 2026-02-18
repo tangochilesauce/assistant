@@ -29,6 +29,9 @@ const SLUG_MAP = {
   'tango/unfi.md': 'tango-unfi',
   'tango/production.md': 'tango-production',
   'tango/notion-dump.md': 'tango-notion-dump',
+  '2026-plan.md': '2026-plan',
+  'dan-profile.md': 'dan-profile',
+  'revenue-opportunities.md': 'revenue-opportunities',
 }
 
 // Extract a <100 char summary from the "Current Understanding" section

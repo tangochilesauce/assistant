@@ -54,6 +54,31 @@ function buildTree(): TreeNode[] {
     })
   }
 
+  // Catch orphaned brain files (not matched to any project)
+  const usedSlugs = new Set<string>()
+  for (const p of PROJECTS) usedSlugs.add(p.slug)
+
+  const orphaned = brains.filter(b => b.slug !== '_state' && !usedSlugs.has(b.slug))
+  if (orphaned.length > 0) {
+    nodes.push({
+      slug: '_reference',
+      label: 'Strategy',
+      emoji: '📊',
+      color: '#a78bfa',
+      summary: 'Financial analysis, revenue opportunities, 2026 plan',
+      href: '/brains',
+      children: orphaned.map(b => ({
+        slug: b.slug,
+        label: b.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+        emoji: '📄',
+        color: '#a78bfa',
+        summary: b.summary || '',
+        href: '/brains',
+        children: [],
+      })),
+    })
+  }
+
   return nodes
 }
 

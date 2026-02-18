@@ -13,29 +13,52 @@ Balance is extremely tight (~$45 as of Feb 17). Monthly income exceeds expenses 
 - Deep payment ($1,299) is a production cost but hits cash flow hard
 - Off Record studio ($300) is a Madder expense due Mar 1
 
-## Financial Snapshot (Feb 17, 2026)
+## Financial Snapshot (Feb 18, 2026)
 
 **Balance:** ~$45
+**Net Worth:** ~-$34,000
 
-### Monthly Income (~$12,144)
-| Source | Amount | Status |
-|--------|--------|--------|
-| Amazon payout | $1,900 | Expected |
-| UNFI SoPac (LA) | $3,422 | Expected |
-| UNFI NE (NYC) | $3,422 | Expected |
-| EXP Corp | $3,400 | Pending |
+### Monthly Income (Actual 6-month avg from statements)
+| Source | Amount | Notes |
+|--------|--------|-------|
+| UNFI | $3,827 | Largest channel, SoPac growing |
+| Amazon | $1,169 | PPC barely running — huge upside |
+| Deposit/Other | $1,000 | Cash deposits, misc |
+| Faire | $519 | Growing steadily |
+| DTC/Shopify | $328 | Needs email reactivation |
+| Other | $84 | Wave, Apple Cash, etc. |
+| **TOTAL** | **~$6,927** | |
 
-### Monthly Expenses (~$4,037+)
+### Monthly Expenses (Real, from statements)
 | Expense | Amount | Type |
 |---------|--------|------|
 | Rent | $2,878 | Personal |
-| Health Insurance | $376 | Personal |
-| Foodies Storage | $350 | Business |
-| Off Record Studio | $300 | Business |
-| Claude Code Max | $100 | Business |
-| Amazon PPC | $33 | Business |
+| Credit card minimums | $2,139 | 7 cards |
+| Production/COGS | ~$2,500 | Foodies, ingredients, packaging |
+| Shipping | ~$500 | Stamps, Shipstation, postage |
+| Subscriptions/software | ~$500 | 20+ services |
+| Groceries & food | ~$600 | Ralphs, Chipotle, etc. |
+| ATM cash | ~$600 | 12+ withdrawals/month |
+| Gas & transport | ~$250 | Gas, parking |
+| Business loans | ~$287 | Parafin + Shopify Capital |
+| Phone/insurance | ~$100 | AT&T, Blue Shield |
+| Personal | ~$200 | Smoke shops, misc |
+| **TOTAL BURN** | **~$10,554** | |
+| **MONTHLY GAP** | **~-$3,627** | Revenue < expenses |
 
-### Outstanding Debts
+### Credit Card Debt (Confirmed from statements)
+| Card | Balance | APR | Min Payment | Status |
+|------|---------|-----|-------------|--------|
+| Chase Sapphire | $19,147 | 26.74% | $641 | OVER LIMIT |
+| Cap One Venture X | $10,545 | 28.49% | $1,125 | OVER LIMIT, PAST DUE |
+| Chase Amazon | $6,345 | 27.49% | $207 | OVER LIMIT |
+| Apple Card | $2,653 | 25.49% | $86 | Normal |
+| Amex | ~$1,000 | ~25% | $40 | Pay over time |
+| Cap One Platinum | $481 | 27.24% | $25 | Near maxed |
+| Cap One Starry | $276 | 26.40% | $15 | Near maxed |
+| **TOTAL** | **$40,447** | | **$2,139/mo** | **$946/mo interest** |
+
+### Outstanding Vendor Debts
 | To | Amount | Due |
 |----|--------|-----|
 | Deep (ingredients) | $1,299 | Feb 23 |
