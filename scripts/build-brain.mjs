@@ -28,6 +28,9 @@ const SLUG_MAP = {
   'tango/dtc.md': 'tango-dtc',
   'tango/unfi.md': 'tango-unfi',
   'tango/production.md': 'tango-production',
+  'tango/contacts.md': 'tango-contacts',
+  'tango/sales.md': 'tango-sales',
+  'tango/faire.md': 'tango-faire',
 }
 
 // Extract a <100 char summary from the "Current Understanding" section

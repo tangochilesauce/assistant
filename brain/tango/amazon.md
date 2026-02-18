@@ -216,6 +216,41 @@ Jimmy from The Truffleist owns the UPC on current Truffle label. Collab since 20
 
 ---
 
+## Product Listing Copy
+
+### Hot Tango
+Hot Tango is the crowd favorite. Smooth & Spicy. Signature delicious Tango flavor with the perfect amount heat you need. If you love hot sauce, start with Hot Tango.
+
+### Mild Tango
+Mild Tango is the perfect hot sauce for beginners. The subtle sweetness of the carrots and gentle spiciness of the scotch bonnet peppers works on everything. Kids can't get enough of it. Great on salads.
+
+### Thai Tango
+Thai Tango is the hottest sauce we've made yet. This is fresh, spicy, sweet Tango with the heat turned all the way up. We added Thai chilies to the mix and they deliver a beautiful spicy flavor that doesn't linger on the tongue.
+
+### Mango Tango
+Indulge in an exotic new world of sweet spicy delicious Mango Tango flavor. Enjoy fragrant ripe mangoes alongside limes, hot peppers and a touch of agave in this new Caribbean-inspired version of Tango.
+
+### Truffle Tango
+Truffle Tango is the original award-winning collaboration between two rising NYC food brands The Truffleist and Tango. Exceptional spicy truffle flavor in a healthful hot sauce guaranteed to take all your favorite meals to the next level.
+
+### Bullet Points Template
+- CARROT-BASED SAUCE – Plant-based hot sauce made from carrots, peppers, herbs, & vegetables. Gluten-Free, Paleo, Vegan, GMO-Free, & Whole30 Friendly.
+- HOT & SPICY FLAVOR – Incredible flavor, packed with all the heat you need. Great with wings, pizza, burgers, eggs, anything.
+- CLEAN INGREDIENTS – Only made with things you can pronounce.
+- GREAT GIFT - Perfect for birthdays, snack baskets, thank you gifts, company gifts.
+
+### 8-Shot Photo List
+1. Front of bottle with zig zag
+2. Happy customer
+3. Bottle in food
+4. Tastes great
+5. Nutritious
+6. Clean ingredients
+7. Nutritional panel
+8. Video
+
+---
+
 ## Files
 
 *Located at: /Projects/🔥 tango/amazon/*
@@ -224,4 +259,4 @@ Jimmy from The Truffleist owns the UPC on current Truffle label. Collab since 20
 
 ---
 
-*Migrated from Notion (Tango x Amazon) — Feb 17, 2026*
+*Migrated from Notion (Tango x Amazon + TANGO parent) — Feb 17, 2026*

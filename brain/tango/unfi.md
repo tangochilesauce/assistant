@@ -11,6 +11,12 @@ UNFI is Tango's wholesale distribution channel, getting us into grocery stores v
 
 **Status:** SoPac is growing +516% YoY. Northeast needs SKU expansion (no Mango). Endless Aisle paperwork blocking new store access.
 
+### UpNext Crisis Context
+On **May 21, 2025**, Brittney sent a termination notice. UpNext is a 2-year program — we've been in it since 2018 (7 years). Reason: "not meeting sales thresholds for graduation." Decision reversed May 22 after Dan's response. Monthly check-ins established. **The $10K/month goal isn't just nice-to-have, it's survival.**
+
+### Core Philosophy: Density Before Scale
+"Store count is vanity. Velocity is sanity." Brands that dominate two distribution centers before expanding have 3-4x better outcomes. Current WF velocity: ~1.6 units/store/week. Target: 3+ units/store/week = 2x current sales without adding stores.
+
 ---
 
 ## Goals
@@ -30,6 +36,57 @@ UNFI is Tango's wholesale distribution channel, getting us into grocery stores v
 | SoPac YoY | +516% | Maintain | --- |
 | Northeast YoY | -9% | +20% | Needs Mango |
 | Store Count | ~50 | 200+ | +150 |
+| WF Velocity | ~1.6 units/store/week | 3+ | 2x needed |
+
+---
+
+## Growth Strategy Tree
+
+```
+UNFI $10K Goal
+├── Whole Foods (existing) ───────────── 25%
+│   ├── SoPac stores — GROWING +516% YoY
+│   └── Northeast stores — DECLINING -9% YoY
+│
+├── Whole Foods (expansion via John Lawson) ─ 25%
+│   ├── SKU expansion — get all 6 flavors
+│   └── New regions — Rocky Mountain, Midwest
+│
+└── New Store Outreach ──────────────── 50%
+    ├── LA/SoCal (65%) ← WHERE THE GROWTH IS
+    │   ├── Erewhon (10 stores) — TOP PRIORITY
+    │   ├── Bristol Farms + Lazy Acres (20)
+    │   └── Gelson's (27)
+    └── NYC/Northeast (35%)
+        ├── Wegmans (50)
+        └── DeCicco's (14)
+```
+
+## Revenue Math
+
+| Source | Current | Target | Gap |
+|--------|---------|--------|-----|
+| Existing WF velocity | $3,400 | $4,500 | +$1,100 |
+| WF SKU expansion (John Lawson) | $0 | $2,000 | +$2,000 |
+| WF new regions (John Lawson) | $0 | $1,500 | +$1,500 |
+| New LA chains | $0 | $1,500 | +$1,500 |
+| New NYC chains | $0 | $500 | +$500 |
+| **Total** | **$3,400** | **$10,000** | **+$6,600** |
+
+## Why LA First?
+
+| Region | WF Stores | YoY Growth |
+|--------|-----------|------------|
+| SoPac (LA) | 48 | **+516%** |
+| Northeast (NYC) | 53 | **-9%** |
+
+LA is exploding. NYC is shrinking. **Go where the momentum is.**
+
+---
+
+## In-Store Demo Strategy
+
+Demos boost same-day sales up to **475%**. Velocity stays elevated **1.3x for 3-4 weeks**. **1.1x permanent lift** from converted loyal customers. Cost: ~$250-400 per demo session.
 
 ---
 
@@ -117,10 +174,9 @@ UNFI is Tango's wholesale distribution channel, getting us into grocery stores v
 
 ---
 
-## Cold Email Template
+## Cold Email Templates
 
-**Structure:** Hook → Proof → CTA
-
+### Generic (Hook → Proof → CTA)
 ```
 Subject: [Chain Name] + Tango — Premium Hot Sauce (Already in UNFI)
 
@@ -144,6 +200,25 @@ Dan Frieber
 Founder, Tango Hot Sauce
 ```
 
+### LA-Specific (Updated, Stronger)
+```
+Subject: Tango Chile Sauce — LA Whole Foods +516% YoY
+
+Hi [Name],
+
+I'm Dan, founder of Tango Chile Sauce. We're in 100+ Whole Foods,
+and our LA locations are exploding — Venice +396%, Downtown LA +1,201%.
+
+We're made in LA. [Chain name] feels like a perfect fit.
+
+We're already in UNFI, so fulfillment is seamless.
+
+Would you be open to samples? I can walk them over.
+
+Dan Frieber
+Tango Chile Sauce
+```
+
 ---
 
 ## Open Questions
@@ -163,7 +238,12 @@ Founder, Tango Hot Sauce
 |------|------|--------|-------------|
 | John Lawson | Whole Foods buyer | Awaiting response | Jan 20, 2026 |
 | Lauren Martinez | Erewhon Brand Mgmt | Warm lead | Sep 2025 |
+| Zulma Cienfuegos | Erewhon Buyer (Purchasing) | — | — |
+| Maren Giuliano | Erewhon Buyer (20+ yrs organic) | — | — |
 | Brittney Langlois | UNFI UpNext SDM (blanglois@unfi.com) | Monthly check-ins | May 2025 |
+| Jennifer Warner Jo | UNFI Moreno Valley Buyer | — | — |
+| Shawn Lantry | UNFI Hudson Valley | — | — |
+| Catherine Garcia | UNFI Hudson Valley | — | — |
 
 ---
 

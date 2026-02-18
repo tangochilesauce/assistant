@@ -43,7 +43,99 @@ In 2015, she showed Dan her chile for the first time and it was over. He became 
 
 ## Key Selling Points
 
-Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic Ingredients, 100% Clean Ingredients, Handmade in Small Batches in CA, Grandma's Recipe, Born in Brooklyn, Gluten-Free, American Made, Family-Owned, Good on Everything, 98%+ sell-through rate
+Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic Ingredients, 100% Clean Ingredients, Handmade in Small Batches in CA, Grandma's Recipe, Born in Brooklyn, Gluten-Free, American Made, Family-Owned, Good on Everything, 98%+ sell-through rate, Cold-fill certified (shelf-stable in squeeze bottle without preservatives)
+
+---
+
+## Product Reference
+
+### Core Lineup (8 oz bottles)
+| Flavor | Heat | Cap Color |
+|--------|------|-----------|
+| Truffle Tango | Medium | Black |
+| Hot Tango | Hot | Red |
+| Mild Tango | Mild | Green |
+| Mango Tango | Mild | Yellow |
+| Thai Tango | Medium-Hot | Purple |
+| Sriracha Tango | Hot | Blue |
+
+### Ingredients by Flavor
+- **Hot**: Carrots, Garlic, Limes, Habanero, Scotch Bonnet, Sawtooth Cilantro, Cider Vinegar, Sea Salt
+- **Mild**: Carrots, Garlic, Limes, Habanero, Scotch Bonnet, Sawtooth Cilantro, Cider Vinegar, Sea Salt
+- **Truffle**: Carrots, Garlic, Limes, Chile Peppers, Sawtooth Cilantro, Truffle Flavoring, Cider Vinegar, Sea Salt
+- **Mango**: Mangos, Carrots, Garlic, Limes, Habanero, Scotch Bonnet, Sawtooth Cilantro, Cider Vinegar, Sea Salt, Agave Nectar
+- **Thai**: Carrots, Garlic, Limes, Habanero, Scotch Bonnet, Thai Chilies, Sawtooth Cilantro, Cider Vinegar, Sea Salt
+- **Sriracha**: Red Jalapeno, Garlic, White Vinegar, Cane Sugar, Sea Salt
+
+### UPCs — Singles (8oz)
+| Product | UPC |
+|---------|-----|
+| Hot | 196852546671 |
+| Mild | 196852812899 |
+| Truffle | 871661003842 |
+| Mango | 195893424436 |
+| Thai | 195893449477 |
+| Sriracha | 198168929643 |
+
+### UPCs — 6-Packs (Case UPCs for UNFI)
+| Product | Case UPC |
+|---------|----------|
+| Hot 6-Pack | 195893456864 |
+| Mild 6-Pack | 195893300969 |
+| Truffle 6-Pack | 195893555284 |
+| Mango 6-Pack | 196852060641 |
+| Thai 6-Pack | 196852257539 |
+| Sriracha 6-Pack | **NOT REGISTERED** |
+
+### UPCs — 2-Packs
+| Product | UPC |
+|---------|-----|
+| Hot 2-Pack | 198168271391 |
+| Mild 2-Pack | 198168148358 |
+| Truffle 2-Pack | 198168989760 |
+| Mango 2-Pack | 198168818275 |
+| Thai 2-Pack | 198168289372 |
+| Sriracha 2-Pack | 199284382176 |
+
+### Amazon ASINs
+| Product | ASIN |
+|---------|------|
+| Mild Single | B07WW1NFH9 |
+| Hot Single | B07VXY26C6 |
+| Truffle Single | B07WWYQ44K |
+| Thai Single | B09NQHHWVR |
+| Mango Single | B09NQHPCS3 |
+| 2-Pack Truffle | B0CM87YWJR |
+
+### Bill of Materials
+| Component | Part # | Supplier | Cost/Unit |
+|-----------|--------|----------|-----------|
+| Bottle | B320 | Container & Packaging | ~$0.28 |
+| Cap | 24-410 TOTC | Owen Xiang (Alibaba) | $0.025 |
+| Seal | — | Container & Packaging | $0.02 |
+| Label (set) | — | K Sidrane | $0.373 |
+| 6-Pack Box | — | Acorn (Gary) | ~$1.00 |
+
+### Label Colors (Hex)
+| Flavor | Color | Hex |
+|--------|-------|-----|
+| Hot | Red | #b93b35 |
+| Mild | Green | #3ca44f |
+| Mango (Pink) | Pink | #d98095 |
+| Mango (Yellow) | Yellow | #fff06c |
+| Mango (Blue) | Teal | #60a891 |
+| Thai | Purple | #774684 |
+
+### Box Dimensions
+- 3-pack: 7.5" x 7.5" x 3.5"
+- 1-pack: 3.5" x 3.5" x 8"
+
+### Other Business IDs
+- **DUNS Number**: 119248742
+- **Faire Link**: https://www.faire.com/brand/b_4ruezpily0
+- **Dan's Phone**: 908-285-8099
+
+---
 
 ## Competitor Positioning
 
@@ -179,6 +271,37 @@ All production data lives in Supabase settings table (keys: `tango_production_*`
 - Order FILES → Local folders (PDFs on machine, organized by channel/PO)
 - Tango Dashboard reads from Supabase
 - Drop zone: browser-side file handling → parse → create folder → insert row
+
+## Key Decisions
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| Feb 8, 2026 | Replaced numbered folder system with project-based folders mirroring Notion sub-pages | Old system organized by lifecycle stage but didn't match how we work — by project/channel |
+| Feb 8, 2026 | Moved financial statements from tango/ to dan/financial | Financial statements are personal/company-wide, not Tango-specific |
+| Jan 19, 2026 | Position Truffle Tango as "The Healthy Truffle Hot Sauce" | TRUFF uses agave (not Keto), Melinda's falsely claims Keto. We own this space legitimately. |
+| Jan 19, 2026 | Organize workspace by brand → channel (e.g., /tango/amazon/) | Brands are the entities, channels are how they sell. Scales better. |
+
+## Recipe Reference
+
+### Vinegar:Veg Ratio
+In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:Veg**
+
+### Ingredient Weights (Per Box)
+| Ingredient | Weight/Box |
+|-----------|------------|
+| Peppers | 3,573g |
+| Culantro | 2,900g (fills ~3 buckets) |
+| Garlic | 2,280g |
+| Lime Juice | 3,930g/gallon |
+
+### Standard Ingredient Order (18 batches, OLD)
+- 17x 50lb bags of carrots
+- 5x boxes of culantro
+- 5x boxes of garlic
+- 7x boxes of lime juice
+- 5x boxes of habanero
+- 1x 50lb bag of salt
+- 13x cases of apple cider vinegar (52 gallons)
 
 ## Goal
 
