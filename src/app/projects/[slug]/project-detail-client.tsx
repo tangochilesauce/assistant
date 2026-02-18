@@ -161,11 +161,26 @@ export function ProjectDetailClient({ slug }: Props) {
   const hasBrain = !!getBrainFile(slug)
 
   // Extra brain files for this project (e.g. tango-notion-dump on tango page)
-  const extraBrains = useMemo(() =>
-    getAllBrainFiles().filter(b =>
-      b.slug.startsWith(slug + '-') && !PROJECTS.some(p => p.slug === b.slug)
-    ), [slug]
-  )
+  // On life-admin page, also show orphaned brain files (strategy/financial docs)
+  const extraBrains = useMemo(() => {
+    const allBrains = getAllBrainFiles()
+    const projectSlugs = new Set(PROJECTS.map(p => p.slug))
+
+    // Brain files that match this project's prefix (e.g. tango-notion-dump on tango page)
+    const prefixed = allBrains.filter(b =>
+      b.slug.startsWith(slug + '-') && !projectSlugs.has(b.slug)
+    )
+
+    // On life-admin page, also include orphaned brain files (not matched to any project)
+    if (slug === 'life-admin') {
+      const orphaned = allBrains.filter(b =>
+        b.slug !== '_state' && !projectSlugs.has(b.slug) && !prefixed.some(p => p.slug === b.slug)
+      )
+      return [...prefixed, ...orphaned]
+    }
+
+    return prefixed
+  }, [slug])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),

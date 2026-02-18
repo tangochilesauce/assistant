@@ -13,24 +13,32 @@
 | **Amazon Seller** | Active FBA seller, PPC management, listing optimization | 5+ | $100-200/hr consulting |
 | **Food Manufacturing** | Cold-fill certified, runs production at Foodies Mfg, manages COGS/inventory | 12+ | Rare — cold-fill moat |
 | **Retail Distribution** | UNFI UpNext, Whole Foods, Costco buyer relationship, Faire, Mable, EXP | 12+ | Extremely rare for a solo operator |
-| **Branding & Design** | Created Tango brand system, labels, packaging, A+ content | 12+ | $75-150/hr |
+| **Branding & Design** | Created Tango brand system, labels, packaging, A+ content, PL8/FFEEDD UI | 12+ | $75-150/hr |
 
 ### Tier 2: Monetizable (Built, Not Yet Revenue)
 | Skill | Evidence | Market Value |
 |-------|----------|-------------|
-| **Full-Stack Web Dev** | Built JEFF/PL8 app (Next.js 16, React, TypeScript, Supabase, Vercel) | $150-250/hr on Toptal/Gun.io |
-| **iOS/Swift Development** | Built FFEEDD (SwiftUI, SwiftData, StoreKit) | $150-200/hr |
-| **AI Automation** | Claude Code Max user, built automated pipelines (Dream Beds, data extraction) | $100-200/hr consulting |
-| **Music Production** | Ableton Live 12, FabFilter suite, virtual instruments, mixing | Sync licensing potential |
+| **AI-Powered Product Builder** | Built PL8 (Next.js web app) and FFEEDD (iOS app) using Claude Code — ships production software without traditional coding background. Designs AND builds complete products from zero. | Emerging — rare combo of design sense + AI execution |
+| **Music Production** | Ableton Live 12, FabFilter suite, Guitar Rig 7, Kontakt (Shreddage, DjinnBass), mixing/mastering | Sync licensing potential |
+| **AI Automation** | Claude Code Max power user, built Dream Beds pipeline, financial data extraction, automated workflows | Consulting potential |
 
 ### Tier 3: Supporting Skills
 | Skill | Evidence |
 |-------|----------|
 | Marketing & Copywriting | Tango marketing materials, email campaigns, social content |
 | Business Development | Cold outreach to buyers (Moses/Costco, John/WF, Lauren/Erewhon) |
-| Financial Analysis | (Now) 7 years of data structured and analyzed |
 | Project Management | Runs 5+ active projects simultaneously with brain file system |
 | Video Production | Dream Beds pipeline, product photography |
+
+### Important Context
+Dan is a **designer**, not a developer. He never learned to code traditionally. Through AI tools (Claude Code), he ships production software — PL8 and FFEEDD are both real, functioning products. He doesn't know how good the code is under the hood, and couldn't debug a codebase manually or take a traditional freelance dev contract. What he CAN do is design and build complete products from concept to shipped. This is a different and emerging skill category in 2026.
+
+### What He Actually Wants
+- **Dream since 25:** Automatic/passive income. Originally thought Tango would be the vehicle — produce once, collect forever. Reality: CPG is far more hands-on than expected.
+- **If money wasn't a factor:** Music production all day + designing fun products/things
+- **Real goal:** Monthly passive income from digital products (apps, YouTube, etc.)
+- **FFEEDD and Dream Beds are the dream projects** — they align with what he actually wants, not just what pays bills
+- **Tango is the engine** — it's real revenue and the difficulty is his moat (nobody else is willing to do this), but the goal is to systematize it so it runs with minimal touch
 
 ---
 
