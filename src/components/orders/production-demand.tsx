@@ -21,8 +21,8 @@ export function ProductionDemand() {
             <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
               <th className="pb-2">Flavor</th>
               <th className="pb-2 text-right">Cases</th>
-              <th className="pb-2 text-right">Bottles</th>
-              <th className="pb-2 hidden sm:table-cell">Source Orders</th>
+              <th className="pb-2 text-right pr-4">Bottles</th>
+              <th className="pb-2 hidden sm:table-cell pl-4">Source Orders</th>
             </tr>
           </thead>
           <tbody>
@@ -30,8 +30,8 @@ export function ProductionDemand() {
               <tr key={d.flavor} className="border-t border-border/50">
                 <td className="py-1.5 font-medium">{d.flavor}</td>
                 <td className="py-1.5 text-right tabular-nums">{d.cases}</td>
-                <td className="py-1.5 text-right tabular-nums text-muted-foreground">{d.bottles}</td>
-                <td className="py-1.5 text-xs text-muted-foreground hidden sm:table-cell">
+                <td className="py-1.5 text-right tabular-nums text-muted-foreground pr-4">{d.bottles}</td>
+                <td className="py-1.5 text-xs text-muted-foreground hidden sm:table-cell pl-4">
                   {d.sourceOrders.join(' + ')}
                 </td>
               </tr>
@@ -43,10 +43,10 @@ export function ProductionDemand() {
               <td className="pt-2 text-right tabular-nums">
                 {demand.reduce((s, d) => s + d.cases, 0)}
               </td>
-              <td className="pt-2 text-right tabular-nums text-muted-foreground">
+              <td className="pt-2 text-right tabular-nums text-muted-foreground pr-4">
                 {demand.reduce((s, d) => s + d.bottles, 0)}
               </td>
-              <td className="pt-2 hidden sm:table-cell" />
+              <td className="pt-2 hidden sm:table-cell pl-4" />
             </tr>
           </tfoot>
         </table>
