@@ -13,10 +13,11 @@ const SWIPE_MAX = 100      // max travel
 
 interface UnifiedCardProps {
   todo: Todo
+  subTasks?: Todo[]
   overlay?: boolean
 }
 
-export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
+export function UnifiedCard({ todo, subTasks, overlay }: UnifiedCardProps) {
   const { toggleTodo, toggleFocus, updateTodo, deleteTodo } = useTodoStore()
   const [editing, setEditing] = useState(false)
   const [editValue, setEditValue] = useState(todo.title)
@@ -247,6 +248,35 @@ export function UnifiedCard({ todo, overlay }: UnifiedCardProps) {
             >
               {project.emoji} {project.name}
             </span>
+          </div>
+        )}
+
+        {/* Nested sub-tasks */}
+        {subTasks && subTasks.length > 0 && (
+          <div className="mt-2 ml-[22px] space-y-1 border-l-2 border-muted-foreground/10 pl-2">
+            {subTasks.map(child => {
+              const childProject = getProject(child.projectSlug)
+              return (
+                <div key={child.id} className="flex items-center gap-2 py-0.5">
+                  <Checkbox
+                    checked={child.completed}
+                    onCheckedChange={() => toggleTodo(child.id)}
+                    className="shrink-0 size-3"
+                  />
+                  <span className={`text-xs flex-1 leading-tight ${
+                    child.completed ? 'line-through text-muted-foreground/40' : ''
+                  }`}>
+                    {child.title}
+                  </span>
+                  <button
+                    onClick={() => deleteTodo(child.id)}
+                    className="shrink-0 opacity-0 group-hover:opacity-60 hover:opacity-100 text-muted-foreground hover:text-red-400 transition-opacity"
+                  >
+                    <X className="size-2.5" />
+                  </button>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
