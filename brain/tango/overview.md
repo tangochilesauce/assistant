@@ -174,6 +174,49 @@ Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic I
 - **DUNS Number**: 119248742
 - **Faire Link**: https://www.faire.com/brand/b_4ruezpily0
 - **Dan's Phone**: 908-285-8099
+- **UPS Account**: 82X6R7
+- **NAICS Code**: 311941 (Mayonnaise, Dressing, and Other Prepared Sauce Manufacturing)
+- **Establishment Number**: 709122
+
+### UNFI Vendor Numbers
+- **Moreno Valley (SoPac)**: L-086208
+- **Hudson Valley (Northeast)**: 79667
+- **UNFI Item #s**: Hot = 224132, Mild = 224137
+
+### California Registrations
+- **CDTFA**: Account 0-022-571-248
+- **CA Sales and Use Tax**: Acct #253-228736
+- **CA Secretary of State**: 202129210482
+- **City of LA Tax Registration**: Business Account 0003268060
+
+### Insurance
+- **Carrier**: The Hartford (Billing Account 16253373)
+- **Broker**: EPIC Brokers — Evelyn Delarosa (account manager), with Susan Combs
+
+### Trademark Note
+Dec 2021 — "Tango Jang" competitor exists. Decision was NOT to engage/send consent agreement to stay off their radar until more resources available to fight or cancel.
+
+### Weights & Measurements (Shipping Reference)
+
+**Single Bottle:**
+- Filled weight: ~10oz (308g), empty: 31g
+- Dimensions: 2.25" x 2.25" x 6.25"
+- Average serving: 12g
+
+**Pack Weights (with jelly packet & slip):**
+| Pack | Weight |
+|------|--------|
+| 1-bottle box | 14.4oz |
+| 2-bottle box | 1lb 12oz (28oz) |
+| 3-bottle box | 2lb 7oz (39oz) |
+| 6-pack | 4lb 5oz (70oz) |
+
+**6-Pack Box:** 7" H x 5" W x 7.5" L
+**Case (12.25" x 12.25" x 6.25"):** 16.8 lb
+**Pallet (40x48):** 48 cases/layer x 6 layers = 288 cases = 1,728 bottles
+
+### Cold-Fill Certification
+Worked with food scientists at Cornell University for over a year to achieve FDA shelf-stability in a plastic squeeze bottle without preservatives (no sodium benzoate, sodium bisulfite, potassium sulfide, potassium sorbate, xanthan gums). This is a key competitive advantage — convenience without compromise.
 
 ---
 

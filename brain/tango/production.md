@@ -26,6 +26,7 @@ Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pa
 | 1 case | 6 bottles |
 | 1 cook shift (4hr) | 3 ollas |
 | 1 pack shift (4hr) | 1,000 bottles |
+| 1 day max capacity | ~1,200 bottles |
 
 ## Batches per Olla
 
@@ -34,6 +35,30 @@ Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pa
 | Hot/Mild/Truffle | 4 |
 | Mango | 2 (larger batch) |
 | Sriracha | 2 or 3 |
+
+## Kitchen Operations Detail
+
+**Cooking setup:** 9 batches cook simultaneously — 3 batches per pot, on 3 burners total.
+- 1 nine-batch run takes ~3 hours
+- 18 batches = 3 drums = 1 full day of saucing (9 before lunch + 9 after)
+- 1 drum = 6 batches
+- Vinegar: 3 gallons per batch (for 3 batches = 9 gallons, so 5-gal bucket + 4-gal bucket)
+
+**Truffle process (2-day):** Cook WITHOUT infusing (day 1) → cool → infuse and pack (day 2). This is why truffle runs take two shifts.
+
+**Thai:** 40 lb Thai chilies per bote (6 batches)
+
+**Mango:** 100 lb mango per olla (2 batches per olla), mango comes in 30 lb cases
+
+**Sriracha scaling ratios (from R&D):**
+| Batch Size | Jalapeno | Garlic | Water | Vinegar | Sugar | Salt |
+|-----------|----------|--------|-------|---------|-------|------|
+| 1x (home) | 0.5 lb | 0.18 lb | — | 0.22 lb | 0.08 lb | 0.08 lb |
+| 20 lb | 20 lb | 6.4 lb | — | 8.8 lb | 3.2 lb | 4.4 lb |
+| 25 lb (production) | 25 lb | 13 lb | 10 lb | 11 lb | 4 lb | 3 lb |
+| 50 lb | 50 lb | 16 lb | — | 22 lb | 8 lb | 11 lb |
+
+**Sriracha process:** Blend everything → low heat → boil that can't be stirred down → re-blend → strain. (Fermenting was tested and abandoned: "Fermenting is ass")
 
 ---
 
@@ -129,6 +154,11 @@ Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pa
 ### Kitchen
 **Foodies Urban Kitchen**, 8922 Norris Ave, Sun Valley
 Aria — aria@foodiesurbankitchen.com | 800-781-3043
+
+### Bottles
+**Berlin Packaging** — Matt Barrington
+matt.barrington@berlinpackaging.com | 404-821-4894
+B320 8oz Clear PET Boston Round, 24-410 neck — $0.22/unit (14,000 qty, Jan 2026 PO)
 
 ### Ingredients
 **My Orchard LLC (Deep)**, 1480 Long Beach Ave, LA

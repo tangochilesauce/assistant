@@ -515,3 +515,127 @@ TANGO SALES TRACKING page had 12 Notion databases with individual store-level da
 - "Rainforest" — noted as target
 - "Dora's" — noted as target
 - LegalZoom filing deadline noted
+
+---
+
+# PRE-2026 ARCHIVE SCAN (Feb 18, 2026)
+
+*Scanned all 51 pages in the PRE-2026 Archive on Notion. Below is everything that was NEW and not already captured in our brain files.*
+
+## Backburner Products
+
+### Dragon Jelly Tango
+Hot pepper jelly made from fresh Thai chilies. Extremely spicy (9/10). Available on Amazon.
+- **UPC:** 198168755891
+- **Sizes:** 2oz, 6oz, 8oz
+- **8oz jar:** 2.85" diameter x 2" height, 7.2oz filled
+- **Recipe (1x):** 9oz Thai chilies, 1 cup white vinegar (238g), 2.5 tbsp pectin (21g), 4 cups sugar (32oz), 7 drops food coloring
+- **Process:** Blend peppers + vinegar → cold pot → medium heat → add pectin → stir to hard boil → add sugar → repeat boil → flame off right before boil → hit 220-222°F
+- **Warning label:** EXTREMELY SPICY. Do not eat if sensitive to spicy foods, allergic to peppers/nightshades/capsaicin, pregnant, or have medical conditions. Keep out of reach of children.
+- **Key copy:** "Unleash the flames within and breathe your fire with Dragon Jelly Tango"
+
+### Tango Dust
+Dehydrated sauce turned into chip seasoning. Concept phase (Dec 2025).
+- Yield: ~2oz dust per bottle
+- Alternative: buy raw ingredients (red jalapeno powder, garlic powder, salt, sugar)
+- For 200 units (10oz bags): ~125 lb chips ($200), ~3 lb seasoning
+- Best chip source: tortilleria chips from Mexican market
+- First dehydrator test (Cosori): 6H @ 135° was too little — took 15+ hours
+
+### Tango Gobblins
+Spicy gummies. UPC: 195893153879. Had bags designed for Tangofest (black, white, iridescent).
+
+### Mega Jerk
+UPC: 199284577152. No other details in archive.
+
+### Buffalo Tango
+UPC: 198168750254. No other details in archive.
+
+### Green Jelly
+Recipe experiment. Two versions tested (15oz peppers + sugar + water + jalapeno).
+
+### Tango Rub (Dry Seasoning)
+Ingredient list: garlic powder, dried lime, salt, truffle, dried cilantro, dried habanero, dried carrot.
+
+## Tangofest
+
+**Concept:** "Coachella meets Burning Man meets Art Basel" — a first-of-its-kind celebration of creative spirit combining Art, Food, Music.
+
+**Tangofest 1:** August 1, 2025
+- 2000 sq ft indoor space
+- Free to attend, tight lottery
+- Food stations: Sriracha bites, Dragon Jelly bites, Spicy Tango Margs, Classic Tango station
+- Artists: Audi (host), Ian (Sriracha snacks), Jaff (Gobblins), Ladue (camera), Mari (jelly snacks)
+- Products debuted: Sriracha Tango, Dragon Jelly, Gobblins, Mega Jerk, new label design
+- Budget: ~$770 (TOGO $150, Troy video $500, Amon recording $120)
+- Dream collabs: Tango x JNCO, MSCHF, Asspizza
+- Vision statement: "Our definition of an artist is anyone brave enough to tango with the unknown long enough to pull something new and good out of it."
+
+## Historical Sales Data (2022 Baseline)
+
+**Amazon YTD (11/19/2022):**
+Truffle 925, Hot 389, Mild 281, Thai 39, Mango 11
+
+**Faire YTD (11/19/2022):**
+Hot 1417, Truffle 1201, Mild 907, Mango 348, Thai 228
+
+**Shopify YTD (11/19/2022):**
+Hot 112, Truffle 81, Mango 76, Mild 69, Thai 65
+
+**UNFI Annual (5/2020–4/2021):** $31,102 (88% supernatural, 4% supermarket independent, 3% supermarket chain, 3% natural independent, 3% ecommerce)
+**UNFI Annual (5/2019–4/2020):** $19,964
+
+**Key insight:** Truffle has ALWAYS been the Amazon star. Hot has always been the retail/Faire star. This hasn't changed in 4 years.
+
+## UPC Nightmare Context
+Hot and Mild have conflicting UPCs because the originals (019962102103 / 019962102202) didn't match what GS1 registered (196852546671 / 196852812899) or what Amazon uses (653559973792 / 653559973839). Plan was to migrate to GS1 UPCs going forward and sunset the old ones. "Problem children" using old UPCs: UNFI, Nassau, EXP, Faire, Mabel. This is why the UPC Notes section in overview.md documents all three numbers.
+
+## Lancaster Non-Compete Clause
+During the term and for 3 years after expiration/termination, Lancaster agrees not to manufacture, assist in manufacture, or develop/sell products similar in taste, appearance, trade dress, or branding to Tango products. Breach = liquidated damages + immediate termination. (Lancaster was the NYC co-packer before moving to LA/Foodies.)
+
+## Testimonials (Early Days)
+- Denis Jasarevic (Gramatik): "That, my friend, was one mighty fine hot sauce. Excellent work."
+- Various fans: "I used the entire jar on two grilled cheese sandwiches," "My eggs are bland without your sauce," "Tango is bango"
+
+## Nassau Candy (Distributor, Historical)
+- PO #2199847: 84 each of Hot, Mild, Truffle, Mango, Thai
+- Sep 2022 call: Hot & Mild performing better than others. Stores: Gorillas, Adam's Fairica, C-Town, Union Market, Solanga Market, Holiday Farms, Steve's Market
+
+## Food Safety Notes (CA Move)
+- Schedule process from NY valid in CA
+- LA County is the certifying body
+- Need: preventative controls, Certificate of Analysis for each ingredient, possibly Foreign Supplier Certification Process
+- Foodies Urban Kitchen maintains current food safety audit certifications (SQF/BRC/FSSC 22000 equivalent)
+
+## UNFI Food Safety Audit Promissory Note (Jan 2026)
+Letter drafted committing to provide UNFI with co-packing facility's food safety audit cert within 90 days. Tango address: 513 N Spaulding Ave, Los Angeles CA 90036.
+
+## Culantro Sourcing (Historical)
+**LA area (small qty):** Saigon Market (Gardena), Dat Moi Market (Gardena)
+**LA area (wholesale):** Long Produce, Panda Produce Inc
+**NYC area:** JCJ Produce (718-554-0716, Robinson — had truckloads), Coosemans (718-328-3060, Peter)
+**UC Davis** — biggest ag school in US, potential culantro growing research partner
+
+## Old SKUs Reference
+- Old Mild: TCSMI001
+- Old Medium: TCSME002
+- Old Hot: TCSHO003
+- Then: Original TCSO / TCSH
+- Current: see Amazon SKUs table in overview.md
+
+## Pallet Math
+- Europallet: TI 36, HI 6 = 216 cases = 1,296 bottles
+- 40x48 (updated): TI 48, HI 6 = 288 cases = 1,728 bottles
+
+## Misc From Archive
+- **Shipping tiers (DTC/old):** 1 bottle $5.99, 2 bottles $11.98, etc.
+- **Original recipe (home scale):** 500g carrots, 230g ACV, 30g garlic, 20g lime rind, 12g culantro, 16g peppers, 14g salt
+- **Bottle cost history:** 4oz glass jars (2013-2015) → 8oz plastic squeeze (Feb 2015+). Original jars $0.57 from specialtybottle.com
+- **NY Post** named Tango one of "14 best hot sauces"
+- **Chopped** (Food Network) — Tango was a mystery ingredient
+- **High Maintenance** (HBO) — Tango appeared
+- **Berlin DHL shipping:** Pallet to 10439 = $2,261 (with account), small box (18lbs) = $125
+- **EXP Corp callout:** pizza bulk pricing = $800/half drum (~325 bottles), $200/bucket
+
+## SENSITIVE DATA WARNING
+The "Notational Velocity" and "California" pages contain passwords for: FDA, Shopify (+ authenticator codes), 1and1 email (dan@ and orders@), Stamps.com, Sysco, Campaign Monitor, NY Tax, Hartford Insurance, blog admin. **DO NOT DELETE THOSE PAGES** without saving credentials to a password manager first.
