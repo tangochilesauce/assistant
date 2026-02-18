@@ -1,4 +1,6 @@
-export const BALANCE = -555
+// ── Financial Data (from 7-year statement analysis, Feb 2026) ──────
+
+export const BALANCE = 45
 
 export type IncomeStatus = 'locked' | 'expected' | 'sporadic' | 'inactive'
 
@@ -12,8 +14,18 @@ export interface IncomeStream {
 export interface Expense {
   name: string
   monthly: number
-  unknown?: boolean
+  category: 'personal' | 'business' | 'production' | 'debt'
   notes?: string
+}
+
+export interface DebtCard {
+  name: string
+  balance: number
+  apr: number
+  minPayment: number
+  monthlyInterest: number
+  status: 'normal' | 'over-limit' | 'past-due' | 'near-maxed'
+  priority: number // payoff order (1 = first)
 }
 
 export interface ProductionCost {
@@ -21,32 +33,74 @@ export interface ProductionCost {
   perRun: number
 }
 
+// ── Income (actual 6-month averages from Chase Business deposits) ──
+
 export const INCOME: IncomeStream[] = [
-  { name: 'Amazon Payouts', monthly: 1900, status: 'locked', notes: 'biweekly avg' },
-  { name: 'UNFI (SoPac)', monthly: 3422, status: 'expected', notes: 'net 30' },
-  { name: 'UNFI (NE)', monthly: 3422, status: 'expected', notes: 'net 30' },
-  { name: 'EXP Corp', monthly: 3400, status: 'sporadic', notes: 'net 30' },
-  { name: 'Faire / Mable', monthly: 0, status: 'inactive' },
-  { name: 'DTC Sales', monthly: 0, status: 'inactive' },
-  { name: 'FFEEDD Subs', monthly: 0, status: 'inactive' },
+  { name: 'UNFI', monthly: 3827, status: 'locked', notes: 'Largest channel, SoPac growing +516% YoY' },
+  { name: 'Amazon', monthly: 1169, status: 'locked', notes: 'PPC barely running — huge upside' },
+  { name: 'Faire', monthly: 519, status: 'expected', notes: 'Growing steadily' },
+  { name: 'DTC / Shopify', monthly: 328, status: 'sporadic', notes: 'Needs email reactivation' },
+  { name: 'EXP International', monthly: 850, status: 'sporadic', notes: '~$3,400/quarter' },
+  { name: 'Other', monthly: 234, status: 'sporadic', notes: 'Cash deposits, Wave, misc' },
+  { name: 'FFEEDD', monthly: 0, status: 'inactive', notes: 'Launching' },
+  { name: 'Dream Beds', monthly: 0, status: 'inactive', notes: 'Need 1K subs for monetization' },
 ]
 
-export const PERSONAL_EXPENSES: Expense[] = [
-  { name: 'Rent', monthly: 2878 },
-  { name: 'Health Insurance', monthly: 376 },
-  { name: 'Claude Code Max', monthly: 100 },
-  { name: 'Phone', monthly: 0, unknown: true },
-  { name: 'Car / Gas', monthly: 0, unknown: true },
-  { name: 'Groceries', monthly: 0, unknown: true },
-  { name: 'Subscriptions', monthly: 0, unknown: true },
+// ── Expenses (actual from statement analysis) ──
+
+export const EXPENSES: Expense[] = [
+  // Personal
+  { name: 'Rent', monthly: 2878, category: 'personal' },
+  { name: 'Groceries & Food', monthly: 600, category: 'personal', notes: 'Ralphs, Chipotle, dining' },
+  { name: 'ATM Cash', monthly: 600, category: 'personal', notes: '~$250 weed/vapes, rest unclear' },
+  { name: 'Gas & Transport', monthly: 250, category: 'personal' },
+  { name: 'Personal / Misc', monthly: 200, category: 'personal', notes: 'Smoke shops, misc purchases' },
+  { name: 'Phone (AT&T)', monthly: 74, category: 'personal' },
+  { name: 'Health Insurance', monthly: 27, category: 'personal', notes: 'Blue Shield CA' },
+
+  // Subscriptions (keeping essential, includes cuttable)
+  { name: 'Shopify', monthly: 74, category: 'business', notes: 'DTC storefront — essential' },
+  { name: 'Topaz Labs', monthly: 39, category: 'business', notes: 'CUT — not generating revenue' },
+  { name: 'Shipstation', monthly: 30, category: 'business', notes: 'Shipping — essential' },
+  { name: 'Stamps.com', monthly: 30, category: 'business', notes: 'Postage — essential' },
+  { name: 'Netflix', monthly: 25, category: 'personal', notes: 'CUT — entertainment luxury' },
+  { name: 'Adobe Illustrator', monthly: 23, category: 'business', notes: 'CUT — use alternatives' },
+  { name: 'Claude AI', monthly: 20, category: 'business', notes: 'Essential — operational brain' },
+  { name: 'OpenAI / ChatGPT', monthly: 20, category: 'business', notes: 'CUT — redundant with Claude' },
+  { name: 'Google One', monthly: 20, category: 'personal', notes: 'CUT — downgrade to free' },
+  { name: 'Fox One', monthly: 20, category: 'personal', notes: 'CUT — entertainment' },
+  { name: 'IONOS', monthly: 14, category: 'business', notes: 'Web hosting — essential' },
+  { name: 'YouTube Premium', monthly: 14, category: 'personal', notes: 'CUT — downgrade to free' },
+  { name: 'Spotify', monthly: 12, category: 'personal', notes: 'Review — Madder research?' },
+  { name: 'Pika Art', monthly: 10, category: 'business', notes: 'CUT — experimental' },
+  { name: 'CapCut Pro', monthly: 10, category: 'business', notes: 'CUT — use free tier' },
+  { name: 'Apple iCloud', monthly: 10, category: 'personal', notes: 'Review' },
+  { name: 'Prime Video', monthly: 9, category: 'personal', notes: 'Review' },
+  { name: 'Google Workspace', monthly: 8, category: 'business', notes: 'Business email — essential' },
+  { name: 'Notion', monthly: 5, category: 'personal', notes: 'Review' },
+
+  // Business
+  { name: 'Off Record Studio', monthly: 300, category: 'business', notes: 'Madder — music studio' },
+  { name: 'Business Loans', monthly: 287, category: 'debt', notes: 'Parafin + Shopify Capital' },
+  { name: 'Shipping / Postage', monthly: 500, category: 'business', notes: 'Stamps, Shipstation, FBA' },
+
+  // Production (averaged monthly — roughly 1 run/month)
+  { name: 'Production / COGS', monthly: 2500, category: 'production', notes: 'Foodies, ingredients, packaging' },
 ]
 
-export const BUSINESS_EXPENSES: Expense[] = [
-  { name: 'Off Record Studio', monthly: 300 },
-  { name: 'Foodies Storage', monthly: 350 },
-  { name: 'Amazon PPC', monthly: 33, notes: '$66/60d' },
-  { name: 'Amazon Seller Fees', monthly: 0, unknown: true },
+// ── Credit Card Debt ──
+
+export const DEBT: DebtCard[] = [
+  { name: 'Chase Sapphire', balance: 19147, apr: 26.74, minPayment: 641, monthlyInterest: 427, status: 'over-limit', priority: 4 },
+  { name: 'Cap One Venture X', balance: 10545, apr: 28.49, minPayment: 1125, monthlyInterest: 250, status: 'past-due', priority: 3 },
+  { name: 'Chase Amazon', balance: 6345, apr: 27.49, minPayment: 207, monthlyInterest: 145, status: 'over-limit', priority: 5 },
+  { name: 'Apple Card', balance: 2682, apr: 25.49, minPayment: 86, monthlyInterest: 57, status: 'normal', priority: 6 },
+  { name: 'Amex', balance: 1000, apr: 25.00, minPayment: 40, monthlyInterest: 21, status: 'normal', priority: 7 },
+  { name: 'Cap One Platinum', balance: 481, apr: 27.24, minPayment: 25, monthlyInterest: 11, status: 'near-maxed', priority: 1 },
+  { name: 'Cap One Starry', balance: 276, apr: 26.40, minPayment: 15, monthlyInterest: 6, status: 'near-maxed', priority: 2 },
 ]
+
+// ── Production Costs (per run) ──
 
 export const PRODUCTION_COSTS: ProductionCost[] = [
   { name: 'Deep (ingredients)', perRun: 1300 },
@@ -55,6 +109,18 @@ export const PRODUCTION_COSTS: ProductionCost[] = [
   { name: 'Labels', perRun: 1500 },
   { name: 'Shipping (Daylight)', perRun: 400 },
 ]
+
+// ── Survival Thresholds ──
+
+export const THE_NUMBER = {
+  bareSurvival: 8000,    // min payments, cut subs
+  stable: 10500,         // min payments, modest living
+  payingDown: 11500,     // survival + $1K extra to debt
+  target: 15000,         // comfortable + aggressive paydown
+  freedom: 18000,        // $50K/year debt payoff + living
+}
+
+// ── Status Colors ──
 
 export const STATUS_COLORS: Record<IncomeStatus, string> = {
   locked: 'bg-emerald-400',
@@ -70,6 +136,22 @@ export const STATUS_LABELS: Record<IncomeStatus, string> = {
   inactive: 'Not Active',
 }
 
+export const DEBT_STATUS_COLORS: Record<DebtCard['status'], string> = {
+  'normal': 'text-muted-foreground',
+  'over-limit': 'text-amber-400',
+  'past-due': 'text-red-400',
+  'near-maxed': 'text-orange-400',
+}
+
+export const DEBT_STATUS_LABELS: Record<DebtCard['status'], string> = {
+  'normal': 'Normal',
+  'over-limit': 'Over Limit',
+  'past-due': 'PAST DUE',
+  'near-maxed': 'Near Maxed',
+}
+
+// ── Helpers ──
+
 export function fmt(n: number) {
   return n.toLocaleString('en-US')
 }
@@ -77,16 +159,49 @@ export function fmt(n: number) {
 export function getTotals() {
   const activeIncome = INCOME.filter(i => i.status !== 'inactive')
   const totalIn = activeIncome.reduce((s, i) => s + i.monthly, 0)
-  const totalPersonal = PERSONAL_EXPENSES.reduce((s, e) => s + e.monthly, 0)
-  const totalBiz = BUSINESS_EXPENSES.reduce((s, e) => s + e.monthly, 0)
-  const totalProd = PRODUCTION_COSTS.reduce((s, e) => s + e.perRun, 0)
-  const totalOut = totalPersonal + totalBiz + totalProd
+
+  const personalExpenses = EXPENSES.filter(e => e.category === 'personal')
+  const businessExpenses = EXPENSES.filter(e => e.category === 'business')
+  const productionExpenses = EXPENSES.filter(e => e.category === 'production')
+  const debtExpenses = EXPENSES.filter(e => e.category === 'debt')
+  const ccMinimums = DEBT.reduce((s, d) => s + d.minPayment, 0)
+
+  const totalPersonal = personalExpenses.reduce((s, e) => s + e.monthly, 0)
+  const totalBiz = businessExpenses.reduce((s, e) => s + e.monthly, 0)
+  const totalProd = productionExpenses.reduce((s, e) => s + e.monthly, 0)
+  const totalDebt = debtExpenses.reduce((s, e) => s + e.monthly, 0) + ccMinimums
+  const totalOut = totalPersonal + totalBiz + totalProd + totalDebt
   const net = totalIn - totalOut
-  const unknowns = [...PERSONAL_EXPENSES, ...BUSINESS_EXPENSES].filter(e => e.unknown).length
-  return { totalIn, totalPersonal, totalBiz, totalProd, totalOut, net, unknowns }
+
+  const totalCCDebt = DEBT.reduce((s, d) => s + d.balance, 0)
+  const totalInterest = DEBT.reduce((s, d) => s + d.monthlyInterest, 0)
+
+  return {
+    totalIn,
+    totalPersonal,
+    totalBiz,
+    totalProd,
+    totalDebt,
+    totalOut,
+    net,
+    totalCCDebt,
+    totalInterest,
+    ccMinimums,
+    unknowns: 0,
+  }
 }
 
-// ── Unknown expense items (need real numbers) ─────────────────────
+// ── Cuttable subscriptions ──
+
+export function getCuttableExpenses() {
+  return EXPENSES.filter(e => e.notes?.includes('CUT'))
+}
+
+export function getCuttableSavings() {
+  return getCuttableExpenses().reduce((s, e) => s + e.monthly, 0)
+}
+
+// ── Unknown items (none now — all real data) ──
 
 export interface UnknownItem {
   name: string
@@ -94,14 +209,7 @@ export interface UnknownItem {
 }
 
 export function getUnknownItems(): UnknownItem[] {
-  const items: UnknownItem[] = []
-  for (const e of PERSONAL_EXPENSES) {
-    if (e.unknown) items.push({ name: e.name, category: 'personal' })
-  }
-  for (const e of BUSINESS_EXPENSES) {
-    if (e.unknown) items.push({ name: e.name, category: 'business' })
-  }
-  return items
+  return [] // All expenses now have real numbers from statement analysis
 }
 
 // ── Default transactions (seed data for Zustand/Supabase) ─────────
@@ -128,7 +236,7 @@ export function getDefaultTransactions(): Transaction[] {
       description: item.name,
       vendor: null,
       isRecurring: true,
-      recurrenceRule: item.name === 'Amazon Payouts' ? 'biweekly' : 'monthly',
+      recurrenceRule: item.name === 'Amazon' ? 'weekly' : item.name === 'EXP International' ? 'quarterly' : 'monthly',
       recurrenceAnchor: today,
       incomeStatus: item.status as TxnIncomeStatus,
       isProjection: false,
@@ -139,14 +247,14 @@ export function getDefaultTransactions(): Transaction[] {
     })
   }
 
-  // Personal expenses (skip unknown — those become prompts)
-  for (const item of PERSONAL_EXPENSES) {
-    if (item.unknown || item.monthly === 0) continue
+  // All expenses
+  for (const item of EXPENSES) {
+    if (item.monthly === 0) continue
     txns.push({
-      id: `seed-personal-${slug(item.name)}`,
+      id: `seed-expense-${slug(item.name)}`,
       date: today,
       amount: -item.monthly,
-      category: 'personal',
+      category: item.category === 'debt' ? 'business' : item.category,
       subcategory: slug(item.name),
       description: item.name,
       vendor: null,
@@ -162,50 +270,26 @@ export function getDefaultTransactions(): Transaction[] {
     })
   }
 
-  // Business expenses (skip unknown)
-  for (const item of BUSINESS_EXPENSES) {
-    if (item.unknown || item.monthly === 0) continue
-    txns.push({
-      id: `seed-business-${slug(item.name)}`,
-      date: today,
-      amount: -item.monthly,
-      category: 'business',
-      subcategory: slug(item.name),
-      description: item.name,
-      vendor: null,
-      isRecurring: true,
-      recurrenceRule: 'monthly',
-      recurrenceAnchor: today,
-      incomeStatus: null,
-      isProjection: false,
-      parentRecurringId: null,
-      notes: item.notes || null,
-      createdAt: today,
-      updatedAt: today,
-    })
-  }
-
-  // Production costs (per-run, not auto-projected)
-  for (const item of PRODUCTION_COSTS) {
-    txns.push({
-      id: `seed-production-${slug(item.name)}`,
-      date: today,
-      amount: -item.perRun,
-      category: 'production',
-      subcategory: slug(item.name),
-      description: item.name,
-      vendor: null,
-      isRecurring: true,
-      recurrenceRule: 'per-run',
-      recurrenceAnchor: null,
-      incomeStatus: null,
-      isProjection: false,
-      parentRecurringId: null,
-      notes: null,
-      createdAt: today,
-      updatedAt: today,
-    })
-  }
+  // CC minimums as a single line item
+  const ccMin = DEBT.reduce((s, d) => s + d.minPayment, 0)
+  txns.push({
+    id: 'seed-expense-cc-minimums',
+    date: today,
+    amount: -ccMin,
+    category: 'personal',
+    subcategory: 'credit-card-minimums',
+    description: 'Credit Card Minimums (7 cards)',
+    vendor: null,
+    isRecurring: true,
+    recurrenceRule: 'monthly',
+    recurrenceAnchor: today,
+    incomeStatus: null,
+    isProjection: false,
+    parentRecurringId: null,
+    notes: `$917/mo goes to interest alone`,
+    createdAt: today,
+    updatedAt: today,
+  })
 
   return txns
 }

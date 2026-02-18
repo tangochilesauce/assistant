@@ -48,7 +48,7 @@ Dark mode only`,
         style: 'list',
         content: `Today — daily action list sorted by project weight, cash snapshot
 Board — multi-project kanban with drag-and-drop, collapsible sections
-Cash Flow — balance tracking, income streams, expenses, 90-day forecast
+Financial — income by channel, expenses, debt tracker, 90-day forecast
 Calendar — month view with todos mapped to dates
 Dreamwatch — real-time Dream Beds video pipeline monitor
 Project pages — per-project detail with list and board views

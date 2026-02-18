@@ -47,7 +47,7 @@ const NAV_MAIN = [
 
 const NAV_VIEWS: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/board', label: 'Board', icon: Kanban },
-  { href: '/cash', label: 'Cash Flow', icon: DollarSign },
+  { href: '/cash', label: 'Financial', icon: DollarSign },
   { href: '/goals', label: 'Goals', icon: Target },
   { href: '/log', label: 'Completed', icon: ClipboardCheck },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
