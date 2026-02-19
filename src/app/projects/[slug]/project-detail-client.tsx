@@ -260,7 +260,12 @@ export function ProjectDetailClient({ slug }: Props) {
                 </TabsTrigger>
               )}
               {extraBrains.map(b => {
-                const label = b.slug.slice(slug.length + 1).split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
+                // For prefix-matched brains (e.g. tango-notion-dump on tango page), strip the prefix
+                // For orphaned brains on life-admin, use the full slug as label
+                const rawLabel = b.slug.startsWith(slug + '-')
+                  ? b.slug.slice(slug.length + 1)
+                  : b.slug
+                const label = rawLabel.split('-').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(' ')
                 return (
                   <TabsTrigger key={b.slug} value={b.slug} className="flex items-center gap-1">
                     <Brain className="size-3" />
