@@ -10,6 +10,96 @@ import type {
   FlavorDemand,
 } from '@/lib/types/order'
 
+// ── Seed Data ─────────────────────────────────────────────────────
+
+function getDefaultOrders(): Order[] {
+  return [
+    {
+      id: 'unfi-1102034',
+      channel: 'UNFI Hudson Valley',
+      title: 'PO #1102034',
+      value: '$3,480',
+      dateStr: 'Pickup: Mar 25',
+      stage: 'new',
+      shipTo: 'Hudson Valley Warehouse, 525 Neelytown Rd, Montgomery, NY 12549',
+      notes: 'Sent 02/18/26 from catherine.r.garcia@unfi.com. Ref: HH-79667-B18. ETA: 04/06/26.',
+      items: [
+        { sku: '224137', flavor: 'Mild', cases: 84, price: 29, packed: 0 },
+        { sku: '224132', flavor: 'Hot', cases: 36, price: 29, packed: 0 },
+      ],
+      checklist: [],
+      docs: { po: 'PO1102034.pdf', bol: null, inv: null },
+      createdAt: '2026-02-18T08:40:00Z',
+    },
+    {
+      id: 'unfi-1052998',
+      channel: 'UNFI Hudson Valley',
+      title: 'PO #1052998',
+      value: '$3,422',
+      dateStr: 'Pickup: Feb 25',
+      stage: 'processing',
+      shipTo: 'Hudson Valley Warehouse, 525 Neelytown Rd, Montgomery, NY 12549',
+      notes: 'Palletized and ready. Pays ~Mar 11 (Net 14).',
+      items: [],
+      checklist: [
+        { id: 'ck-hva-1', text: 'Palletized', done: true },
+        { id: 'ck-hva-2', text: 'Confirm pickup with carrier', done: false },
+        { id: 'ck-hva-3', text: 'Generate BOL', done: false },
+      ],
+      docs: { po: null, bol: null, inv: null },
+      createdAt: '2026-02-01T00:00:00Z',
+    },
+    {
+      id: 'unfi-044849783',
+      channel: 'UNFI Moreno Valley',
+      title: 'PO #044849783',
+      value: '$3,422',
+      dateStr: 'Shipped: Feb 9',
+      stage: 'shipped',
+      shipTo: null,
+      notes: 'Pays ~Feb 23 (Net 14)',
+      items: [],
+      checklist: [],
+      docs: { po: null, bol: null, inv: null },
+      createdAt: '2026-01-20T00:00:00Z',
+    },
+    {
+      id: 'exp-12165',
+      channel: 'EXP Corp',
+      title: 'PO #12165',
+      value: '$3,450',
+      dateStr: 'Pickup: Feb 19',
+      stage: 'processing',
+      shipTo: 'EXP Warehouse, 28-13 119th St, College Point, NY 11354',
+      notes: 'Mango corrected to $25/case (was $5 typo). Sriracha reduced to 8 cases (only 48 bottles available). Mild caps need swap. Daylight pickup ~$400 net 7.',
+      items: [
+        { sku: 'TH01', flavor: 'Truffle', cases: 10, price: 50, packed: 0 },
+        { sku: 'TH02', flavor: 'Hot', cases: 50, price: 25, packed: 10 },
+        { sku: 'TH03', flavor: 'Mild', cases: 30, price: 25, packed: 0 },
+        { sku: 'TH04', flavor: 'Mango', cases: 30, price: 25, packed: 0 },
+        { sku: 'TH05', flavor: 'Sriracha', cases: 8, price: 25, packed: 0 },
+      ],
+      checklist: [
+        { id: 'ck-1', text: 'Swap Mild caps (garage — wrong color)', done: false },
+        { id: 'ck-2', text: 'Haul bottles upstairs', done: false },
+        { id: 'ck-3', text: 'Tape bottoms on all boxes', done: false },
+        { id: 'ck-4', text: 'Fill + tape + sticker: 30 Mango cases', done: false },
+        { id: 'ck-5', text: 'Fill + tape + sticker: 10 Truffle cases', done: false },
+        { id: 'ck-6', text: 'Fill + tape + sticker: 8 Sriracha (48 btl = all we have)', done: false },
+        { id: 'ck-7', text: 'Get more boxes (need 92 more)', done: false },
+        { id: 'ck-8', text: 'Pack 50 Hot cases (40 new + 10 already at kitchen)', done: false },
+        { id: 'ck-9', text: 'Pack 30 Mild cases', done: false },
+        { id: 'ck-10', text: 'Pack 12 more Sriracha cases (need 72 more bottles)', done: false },
+        { id: 'ck-11', text: 'Palletize all 140 cases', done: false },
+        { id: 'ck-12', text: 'Generate BOL', done: false },
+        { id: 'ck-13', text: 'Confirm pickup time with EXP', done: false },
+      ],
+      docs: { po: 'EXP-PO-12165.pdf', bol: null, inv: null },
+      createdAt: '2026-02-10T00:00:00Z',
+    },
+  ]
+}
+
 // ── Row Conversion ────────────────────────────────────────────────
 
 function rowToOrder(row: OrderRow): Order {
@@ -112,7 +202,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       }
     } catch { /* ignore */ }
 
-    set({ orders: [], loading: false, initialized: true })
+    set({ orders: getDefaultOrders(), loading: false, initialized: true })
   },
 
   addOrder: async (input: OrderInput) => {

@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useOrderStore } from '@/store/order-store'
 
 const FLAVORS = ['Hot', 'Mild', 'Mango', 'Truffle', 'Sriracha', 'Thai'] as const
+const BOTTLES_PER_DRUM = 625
 
 export function ProductionDemand() {
   const orders = useOrderStore(s => s.orders)
@@ -27,6 +28,17 @@ export function ProductionDemand() {
     return map
   }, [activeOrders])
 
+  // Packed per flavor (across active orders)
+  const packedMap = useMemo(() => {
+    const p: Record<string, number> = {}
+    for (const order of activeOrders) {
+      for (const item of order.items) {
+        p[item.flavor] = (p[item.flavor] || 0) + item.packed
+      }
+    }
+    return p
+  }, [activeOrders])
+
   // Totals per flavor
   const totals = useMemo(() => {
     const t: Record<string, number> = {}
@@ -38,13 +50,21 @@ export function ProductionDemand() {
     return t
   }, [orderFlavorMap])
 
+  const grandTotalCases = Object.values(totals).reduce((a, b) => a + b, 0)
+  const grandTotalBottles = grandTotalCases * 6
+
   if (activeOrders.length === 0) return null
 
   return (
     <div className="border border-border rounded-lg p-4">
-      <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">
-        Production Demand
-      </h3>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          Production Demand
+        </h3>
+        <span className="text-[10px] text-muted-foreground/50 tabular-nums">
+          {grandTotalCases} cases · {grandTotalBottles} btl · {(grandTotalBottles / BOTTLES_PER_DRUM).toFixed(1)} drums
+        </span>
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -53,14 +73,20 @@ export function ProductionDemand() {
               {FLAVORS.map(f => (
                 <th key={f} className="pb-2 text-right px-2 min-w-[52px]">{f}</th>
               ))}
+              <th className="pb-2 text-right pl-3 border-l border-border/50 min-w-[52px]">Total</th>
             </tr>
           </thead>
           <tbody>
             {activeOrders.map(order => {
               const fc = orderFlavorMap.get(order.id) || {}
+              const orderTotal = Object.values(fc).reduce((a, b) => a + b, 0)
+              const hasItems = order.items.length > 0
               return (
                 <tr key={order.id} className="border-t border-border/50">
-                  <td className="py-1.5 pr-4 font-medium truncate max-w-[180px]">{order.title}</td>
+                  <td className="py-1.5 pr-4">
+                    <div className="font-medium truncate max-w-[180px]">{order.title}</div>
+                    <div className="text-[10px] text-muted-foreground/50">{order.dateStr}</div>
+                  </td>
                   {FLAVORS.map(f => (
                     <td key={f} className="py-1.5 text-right tabular-nums px-2">
                       {fc[f] ? (
@@ -70,6 +96,11 @@ export function ProductionDemand() {
                       )}
                     </td>
                   ))}
+                  <td className="py-1.5 text-right tabular-nums pl-3 border-l border-border/50 font-medium">
+                    {hasItems ? orderTotal : (
+                      <span className="text-muted-foreground/40 text-[10px]">no items</span>
+                    )}
+                  </td>
                 </tr>
               )
             })}
@@ -82,6 +113,9 @@ export function ProductionDemand() {
                   {totals[f] || <span className="text-muted-foreground/20">&mdash;</span>}
                 </td>
               ))}
+              <td className="pt-2 text-right tabular-nums pl-3 border-l border-border/50">
+                {grandTotalCases}
+              </td>
             </tr>
             <tr className="text-muted-foreground text-xs">
               <td className="pt-1 pr-4">Bottles</td>
@@ -90,6 +124,29 @@ export function ProductionDemand() {
                   {totals[f] ? totals[f] * 6 : <span className="text-muted-foreground/20">&mdash;</span>}
                 </td>
               ))}
+              <td className="pt-1 text-right tabular-nums pl-3 border-l border-border/50">
+                {grandTotalBottles}
+              </td>
+            </tr>
+            <tr className="text-muted-foreground text-xs">
+              <td className="pt-1 pr-4">Drums <span className="text-muted-foreground/40">(~625 btl)</span></td>
+              {FLAVORS.map(f => {
+                const bottles = (totals[f] || 0) * 6
+                if (!bottles) return (
+                  <td key={f} className="pt-1 text-right tabular-nums px-2">
+                    <span className="text-muted-foreground/20">&mdash;</span>
+                  </td>
+                )
+                const drums = bottles / BOTTLES_PER_DRUM
+                return (
+                  <td key={f} className="pt-1 text-right tabular-nums px-2">
+                    {drums < 1 ? drums.toFixed(1) : drums.toFixed(1)}
+                  </td>
+                )
+              })}
+              <td className="pt-1 text-right tabular-nums pl-3 border-l border-border/50">
+                {(grandTotalBottles / BOTTLES_PER_DRUM).toFixed(1)}
+              </td>
             </tr>
           </tfoot>
         </table>
