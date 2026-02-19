@@ -79,7 +79,7 @@ function UnifiedColumn({ column, todos }: { column: KanbanColumn; todos: Todo[] 
 // ── Board ────────────────────────────────────────────────────────
 
 export function UnifiedBoard() {
-  const { todos, moveTodo, reorderTodo } = useTodoStore()
+  const { todos, moveTodo, moveTodoWithChildren, reorderTodo } = useTodoStore()
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
 
   const sensors = useSensors(
@@ -145,11 +145,12 @@ export function UnifiedBoard() {
 
     const currentUnified = toUnifiedStatus(draggedTodo.status)
     if (targetColumnId !== currentUnified) {
-      moveTodo(draggedTodo.id, targetColumnId, newSortOrder)
+      // Atomic: parent + children move together
+      moveTodoWithChildren(draggedTodo.id, targetColumnId, newSortOrder)
     } else {
       reorderTodo(draggedTodo.id, newSortOrder)
     }
-  }, [todos, moveTodo, reorderTodo])
+  }, [todos, moveTodoWithChildren, reorderTodo])
 
   return (
     <DndContext

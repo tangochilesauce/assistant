@@ -10,7 +10,7 @@
 
 Dream Beds is a YouTube channel creating AI-generated "impossible sanctuary" bedrooms — underwater domes, cloud bedrooms, bioluminescent caves. 3-hour sleep/relaxation videos.
 
-**Status:** Automation workflow is BUILT. 5 videos live (66 views, 100% like ratio). Performance tracking system added. Now it's about consistent production + learning from data.
+**Status:** 🚀 PIPELINE REVOLUTION (Feb 18, 2026). Discovered ElevenLabs Seedance produces FAR better ambient motion than MidJourney Video. New pipeline: MidJourney render → Seedance (4-12s, 720p) → ElevenLabs Astra upscale (4K) → FFmpeg loop → YouTube. No slow-mo needed. Cheaper, faster, more realistic. 5 videos live (old pipeline). Ready to mass-produce with new pipeline.
 
 **The key insight:** Position as WELLNESS (not "ambient music") for 8x higher CPM ($10.92 vs $1.36).
 
@@ -86,31 +86,54 @@ Dream Beds is a YouTube channel creating AI-generated "impossible sanctuary" bed
 - **Underwater/aquatic is the niche** — Lowest competition, highest wellness CPM
 - **Wellness positioning = 8x CPM** — $10.92 RPM vs $1.36 for generic ambient
 - **3-hour format is optimal** — Not intimidating (vs 8-10hr), good ad inventory (70+ mid-rolls)
-- **Automation pipeline works** — MidJourney → Topaz Astra → FFmpeg loop → YouTube API upload
-- **Topaz Astra is the tool** — 16x slow-mo + upscale done manually in desktop app (not API)
+- **ElevenLabs Seedance is THE video engine** — Replaced MidJourney Video entirely (Feb 2026)
+- **Seedance motion is realistic enough to skip slow-mo** — Direct loop without time multiplication
+- **ElevenLabs Astra upscale is THE upscaler** — 720p → 4K looks incredible
+- **Topaz API upscale models are GARBAGE** — Tested gcg-5, ghq-5, prob-4, rhea-1 — all terrible on AI video
+- **Topaz API slow-mo (Apollo) is good** — 2x and 8x both looked great, but unnecessary with Seedance
+- **Slow-mo before upscale** — If ever needed, always slow-mo at 720p THEN upscale (cheaper, better quality)
 - **No Bloom needed** — MidJourney source images work as thumbnails (just compress <2MB)
 - **NEVER use browser for YouTube** — Always YouTube Data API for uploads, scheduling, updates
 - **API scope needed:** `youtube` (full access), not just `youtube.upload`
 
-### Animation Constraints
-Current MidJourney video + slow-mo workflow **cannot handle:**
-- Moving water (waves, rain, waterfalls, bubbling jacuzzis)
-- Swimming fish / sea creatures
-- Active flames (roaring fires)
-- Any realistic fluid dynamics
+### Animation Capabilities (Seedance)
+Seedance handles realistic motion that MidJourney Video COULDN'T:
+- ✅ Moving water, rain, waterfalls
+- ✅ Swimming fish / sea creatures
+- ✅ Active flames, roaring fires
+- ✅ Realistic fluid dynamics
+- ✅ Fabric sway, curtain movement
+- ✅ Floating particles, dust motes
+- ✅ Cloud/nebula drift
+- ✅ Bioluminescent pulses
 
-**Safe elements:** Flickering candle glow, ambient lighting, floating particles, fabric sway, drifting clouds, twinkling stars, subtle steam/mist, slow bioluminescent pulses.
+**Seedance I2V prompt tips:**
+- Don't re-describe what's in the image — model can see it
+- Front-load motion verbs (first 20-30 words matter most)
+- Use intensity adverbs: "gently," "slowly," "barely," "subtly"
+- NO negative prompts — can paradoxically introduce unwanted motion
+- One action per element
+- 30-100 words sweet spot
+- Use "camera fixed. still" in prompt for static shots (no dedicated UI toggle in ElevenLabs)
 
-### Topaz Labs API
+### ElevenLabs (Seedance + Astra)
+- **Current plan:** Starter ($5/mo, 30,000 credits) — ~9 videos/month
+- **Recommended plan:** Creator ($22/mo, 100,000 credits) — ~32 videos/month ✅
+- **Extra credits (Creator):** $0.30/1000
+- **Seedance generation cost:** ~629 credits (4s clip) to ~1,888 credits (12s clip)
+- **Astra 4K upscale cost:** ~2,454 credits
+- **Per video (4s + 4K upscale):** ~3,083 credits
+- **Per video (12s + 4K upscale):** ~4,342 credits
+- **Concurrency:** 3 (Starter), 5 (Creator)
+- **No API for video yet** — UI only. BytePlus Seedance API expected late Feb 2026.
+- **Also has:** Veo, Sora, Wan, Kling video engines accessible in same UI
+
+### Topaz Labs API (DEPRECATED — CANCEL)
+- **Status:** ⚠️ CANCEL THIS — $39.99/mo, no longer needed
 - **API Key stored:** `scripts/credentials/topaz_api_key.txt`
-- **Script:** `scripts/topaz_slowmo.py`
-- **Plan:** 400 credits/month @ $39.99/mo
-- **Cost per video:** 4 credits for 8x slowmo + 1080p upscale
-- **Budget:** ~100 videos/month
-- **Apollo model (apo-8):** Best quality slowmo, maxes at 8x per pass
-- **Gaia model (gcg-5):** Best for AI-generated content upscaling
-- **Processing time:** ~1.5 minutes per 5-second video
-- **Note:** "10 free credits" on signup are for web app only, NOT API
+- **Script:** `scripts/topaz_slowmo.py` (still works if ever needed for slow-mo)
+- **Upscale quality:** TERRIBLE on AI-generated content (all 4 models tested Feb 18)
+- **Slow-mo quality:** Good (Apollo 8x confirmed), but unnecessary with Seedance
 
 ---
 
@@ -129,32 +152,39 @@ Current MidJourney video + slow-mo workflow **cannot handle:**
 
 ## Automation Pipeline
 
-### The Atomic Formula
+### The Atomic Formula (v2 — Feb 2026)
 ```
-VISUAL SEED → TIME MULTIPLICATION → AUDIO LAYER → MONETIZABLE LENGTH
-(30 sec)         (16x slow-mo)        (ambient)       (3 hours)
+VISUAL SEED → AI MOTION → 4K UPSCALE → AUDIO LAYER → MONETIZABLE LENGTH
+(MidJourney)  (Seedance)   (Astra)      (ambient)     (3 hours loop)
 ```
-**The magic:** 30 seconds of AI content → 3 hours of watchable video = **360x content multiplication**.
+**The magic:** One MidJourney image → 4-12s of realistic AI motion → 4K upscale → 3 hours of beautiful video.
+**No slow-mo needed.** Seedance motion is realistic enough to loop directly.
 
-### Full Pipeline
+### Full Pipeline (NEW — Feb 2026)
 ```
-Dan (manual):
+Dan (manual, in ElevenLabs UI):
   MidJourney → Generate source image
        ↓
-  MidJourney Video → 30-second AI video
+  ElevenLabs Seedance 1.5 Pro → Image-to-video (4-12s, 720p, fixed camera)
        ↓
-  Topaz Astra (desktop app) → 16x slow-mo + upscale + frame interpolation
+  ElevenLabs Astra → Upscale to 4K (3840x2160)
        ↓
   Drop .mp4 + .jpg/.png into /_ queue/
 
 Claude (/dreamtime):
-  dream_beds_video_maker.sh → Reverse + loop to 3 hours + add audio
+  dream_beds_video_maker.sh → Loop to 3 hours + add audio
        ↓
   compress_thumbnail.sh → Compress MidJourney image <2MB (no Bloom)
        ↓
   Claude → Generate title/description/tags from thumbnail
        ↓
   youtube_upload.py → Upload with metadata (PUBLIC)
+```
+
+### OLD Pipeline (v1 — Jan 2026, DEPRECATED)
+```
+MidJourney → MidJourney Video (30s) → Topaz Astra desktop (16x slow-mo + upscale) → loop
+Problems: Bad physics, needed heavy slow-mo to hide artifacts, expensive ($45/mo total)
 ```
 
 ### System Architecture

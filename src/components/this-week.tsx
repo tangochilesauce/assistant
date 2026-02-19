@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { CalendarDays, ChevronDown, ChevronRight, Plus } from 'lucide-react'
+import { CalendarDays, ChevronDown, ChevronRight, Plus, X } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useTodoStore, type Todo } from '@/store/todo-store'
+import { useEventStore, type CalendarEvent } from '@/store/event-store'
 import { getProject, PROJECTS } from '@/data/projects'
 
 // ── Helpers ──────────────────────────────────────────────────────
@@ -41,15 +42,40 @@ function formatDayLabel(date: Date, today: Date): string {
   return `${DAY_NAMES[date.getDay()]} ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`
 }
 
+// ── Event Row ────────────────────────────────────────────────────
+
+function WeekEventRow({ event }: { event: CalendarEvent }) {
+  const { deleteEvent } = useEventStore()
+
+  return (
+    <div
+      className="group flex items-center gap-2 py-1 px-1.5 rounded-sm"
+      style={{ backgroundColor: event.color + '15' }}
+    >
+      <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: event.color }} />
+      <span className="text-xs flex-1 truncate" style={{ color: event.color }}>
+        {event.time && <span className="opacity-60">{event.time} </span>}
+        {event.title}
+      </span>
+      <button
+        onClick={() => deleteEvent(event.id)}
+        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive shrink-0"
+      >
+        <X className="size-3" />
+      </button>
+    </div>
+  )
+}
+
 // ── Task Row ─────────────────────────────────────────────────────
 
 function WeekTaskRow({ todo }: { todo: Todo }) {
-  const { toggleTodo } = useTodoStore()
+  const { toggleTodo, deleteTodo } = useTodoStore()
   const project = getProject(todo.projectSlug)
   const accentColor = project?.color ?? '#666'
 
   return (
-    <div className="flex items-center gap-2 py-1 px-1 rounded hover:bg-accent/20 transition-colors">
+    <div className="group flex items-center gap-2 py-1 px-1 rounded hover:bg-accent/20 transition-colors">
       <Checkbox
         checked={todo.completed}
         onCheckedChange={() => toggleTodo(todo.id)}
@@ -66,6 +92,12 @@ function WeekTaskRow({ todo }: { todo: Todo }) {
       >
         {project?.emoji}
       </span>
+      <button
+        onClick={() => deleteTodo(todo.id)}
+        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive shrink-0"
+      >
+        <X className="size-3" />
+      </button>
     </div>
   )
 }
@@ -74,7 +106,7 @@ function WeekTaskRow({ todo }: { todo: Todo }) {
 
 const activeProjects = PROJECTS.filter(p => !p.parentSlug && p.weight > 0)
 
-function DayColumn({ date, today, todos }: { date: Date; today: Date; todos: Todo[] }) {
+function DayColumn({ date, today, todos, events }: { date: Date; today: Date; todos: Todo[]; events: CalendarEvent[] }) {
   const dateStr = toDateStr(date)
   const isToday = dateStr === toDateStr(today)
   const isPast = date < today && !isToday
@@ -123,10 +155,13 @@ function DayColumn({ date, today, todos }: { date: Date; today: Date; todos: Tod
         )}
       </div>
 
-      {todos.length === 0 && !adding ? (
+      {todos.length === 0 && events.length === 0 && !adding ? (
         <div className="text-[10px] text-muted-foreground/30 px-1 py-2">—</div>
       ) : (
         <div className="space-y-0.5">
+          {events.map(event => (
+            <WeekEventRow key={event.id} event={event} />
+          ))}
           {todos.map(todo => (
             <WeekTaskRow key={todo.id} todo={todo} />
           ))}
@@ -175,6 +210,9 @@ function DayColumn({ date, today, todos }: { date: Date; today: Date; todos: Tod
 export function ThisWeek() {
   const [open, setOpen] = useState(false)
   const { todos } = useTodoStore()
+  const { events, fetchEvents } = useEventStore()
+
+  useEffect(() => { fetchEvents() }, [fetchEvents])
 
   const today = todayPST()
 
@@ -188,6 +226,16 @@ export function ThisWeek() {
   const dayBuckets = new Map<string, Todo[]>()
   for (const d of days) {
     dayBuckets.set(toDateStr(d), [])
+  }
+
+  // Group events by date
+  const eventBuckets = new Map<string, CalendarEvent[]>()
+  for (const d of days) {
+    eventBuckets.set(toDateStr(d), [])
+  }
+  for (const event of events) {
+    const bucket = eventBuckets.get(event.date)
+    if (bucket) bucket.push(event)
   }
 
   // Also collect tasks with no due date but status "this-week"
@@ -210,6 +258,9 @@ export function ThisWeek() {
   let totalThisWeek = unscheduled.length
   for (const [, todos] of dayBuckets) {
     totalThisWeek += todos.length
+  }
+  for (const [, evts] of eventBuckets) {
+    totalThisWeek += evts.length
   }
 
   return (
@@ -238,12 +289,14 @@ export function ThisWeek() {
             {days.map(date => {
               const dateStr = toDateStr(date)
               const dayTodos = dayBuckets.get(dateStr) ?? []
+              const dayEvents = eventBuckets.get(dateStr) ?? []
               return (
                 <DayColumn
                   key={dateStr}
                   date={date}
                   today={today}
                   todos={dayTodos}
+                  events={dayEvents}
                 />
               )
             })}

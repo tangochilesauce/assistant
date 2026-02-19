@@ -76,7 +76,7 @@ export const PROJECTS: Project[] = [
     color: '#f97316',
     weight: 65,
     goal: 'Ship EXP pallet, fix Amazon PPC, close DTC sales',
-    defaultActions: ['Pay Foodies $1,100 (Feb 23)', 'EXP pickup (Feb 19)', 'Pause SD-REMARKETING'],
+    defaultActions: ['Pay Foodies $1,900 invoice', 'EXP pickup (Feb 19)', 'Pause SD-REMARKETING'],
     defaultColumns: [
       { id: 'backlog', label: 'Backlog' },
       { id: 'this-week', label: 'This Week' },
@@ -165,7 +165,7 @@ export const PROJECTS: Project[] = [
     goal: 'Upload 28 videos, hit 100 subs',
     defaultActions: ['Batch 7 videos', 'Cut 5 Shorts', 'Cross-post TikTok + Reels'],
     tools: [
-      { href: '/dreamwatch', label: 'Dreamwatch', icon: 'Tv' },
+      { href: '/dreamwatch', label: 'Dreamwatch', icon: 'Tv', color: '#8b5cf6' },
     ],
   },
   {

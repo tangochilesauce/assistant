@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { X, Plus } from 'lucide-react'
+import { X, Plus, GripVertical } from 'lucide-react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ProjectBadge } from '@/components/project-badge'
 import { useTodoStore, type Todo } from '@/store/todo-store'
@@ -22,6 +24,24 @@ export function ActionLine({ todo, subTasks, showProject = false, isChild = fals
   const [childValue, setChildValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const childInputRef = useRef<HTMLInputElement>(null)
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: todo.id,
+    data: { type: 'action-line', todo },
+    disabled: isChild || editing,
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
 
   useEffect(() => {
     if (editing) {
@@ -57,9 +77,13 @@ export function ActionLine({ todo, subTasks, showProject = false, isChild = fals
 
   return (
     <>
-      <div className={`group flex items-center gap-3 hover:bg-accent/50 transition-colors border-b border-border/50 last:border-b-0 ${
-        isChild ? 'pl-10 pr-4 py-1.5' : 'px-4 py-2.5'
-      }`}>
+      <div
+        ref={isChild ? undefined : setNodeRef}
+        style={isChild ? undefined : style}
+        className={`group flex items-center gap-3 hover:bg-accent/50 transition-colors border-b border-border/50 last:border-b-0 ${
+          isChild ? 'pl-10 pr-4 py-1.5' : 'px-4 py-2.5'
+        } ${isDragging ? 'opacity-30' : ''}`}
+      >
         <Checkbox
           checked={todo.completed}
           onCheckedChange={() => toggleTodo(todo.id)}
@@ -126,6 +150,16 @@ export function ActionLine({ todo, subTasks, showProject = false, isChild = fals
         >
           <X className="size-3.5" />
         </button>
+        {/* Drag handle */}
+        {!isChild && (
+          <button
+            {...attributes}
+            {...listeners}
+            className="shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-muted-foreground touch-none"
+          >
+            <GripVertical className="size-4" />
+          </button>
+        )}
       </div>
 
       {/* Sub-tasks */}

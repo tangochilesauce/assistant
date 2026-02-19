@@ -24,8 +24,9 @@ export function QuickAdd() {
   const [open, setOpen] = useState(false)
   const [projectSlug, setProjectSlug] = useState('tango')
   const [rows, setRows] = useState<string[]>([''])
+  const [focusFlags, setFocusFlags] = useState<boolean[]>([false])
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
-  const { addTodo } = useTodoStore()
+  const { addTodo, updateTodo } = useTodoStore()
 
   // Focus the first input when dialog opens
   useEffect(() => {
@@ -45,6 +46,7 @@ export function QuickAdd() {
 
   const addRow = useCallback(() => {
     setRows(prev => [...prev, ''])
+    setFocusFlags(prev => [...prev, false])
     // Focus new row after render
     setTimeout(() => {
       const last = inputRefs.current[inputRefs.current.length - 1]
@@ -54,22 +56,42 @@ export function QuickAdd() {
 
   const removeRow = useCallback((index: number) => {
     setRows(prev => {
-      if (prev.length <= 1) return [''] // always keep at least one
+      if (prev.length <= 1) return ['']
+      return prev.filter((_, i) => i !== index)
+    })
+    setFocusFlags(prev => {
+      if (prev.length <= 1) return [false]
       return prev.filter((_, i) => i !== index)
     })
   }, [])
 
+  const toggleRowFocus = useCallback((index: number) => {
+    setFocusFlags(prev => {
+      const next = [...prev]
+      next[index] = !next[index]
+      return next
+    })
+  }, [])
+
   const handleSubmit = async () => {
-    const items = rows.map(r => r.trim()).filter(Boolean)
+    const items: { title: string; focus: boolean }[] = []
+    for (let i = 0; i < rows.length; i++) {
+      const trimmed = rows[i].trim()
+      if (trimmed) items.push({ title: trimmed, focus: focusFlags[i] ?? false })
+    }
     if (items.length === 0) return
 
-    // Add all todos
+    // Add all todos, then tag focused ones
     for (const item of items) {
-      await addTodo(projectSlug, item)
+      const id = await addTodo(projectSlug, item.title)
+      if (item.focus && id) {
+        await updateTodo(id, { tags: ['focus'] })
+      }
     }
 
     // Reset and close
     setRows([''])
+    setFocusFlags([false])
     setOpen(false)
   }
 
@@ -117,7 +139,7 @@ export function QuickAdd() {
         <Plus className="size-4" />
       </Button>
 
-      <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setRows(['']) }}>
+      <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setRows(['']); setFocusFlags([false]) } }}>
         <DialogContent className="sm:max-w-sm gap-3 p-4" showCloseButton={false}>
           <DialogHeader className="pb-0">
             <DialogTitle className="text-sm">Quick Add</DialogTitle>
@@ -161,13 +183,25 @@ export function QuickAdd() {
             {/* Multi-row inputs */}
             <div className="flex flex-col gap-2">
               {rows.map((row, i) => (
-                <div key={i} className="flex items-center gap-2">
+                <div key={i} className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => toggleRowFocus(i)}
+                    className={`shrink-0 text-sm leading-none font-black transition-colors ${
+                      focusFlags[i]
+                        ? 'text-orange-400'
+                        : 'text-muted-foreground/30 hover:text-orange-400'
+                    }`}
+                    title={focusFlags[i] ? 'Remove focus' : 'Mark as focus'}
+                  >
+                    !
+                  </button>
                   <Input
                     ref={el => { inputRefs.current[i] = el }}
                     placeholder={i === 0 ? 'What needs doing?' : 'Another one...'}
                     value={row}
                     onChange={e => updateRow(i, e.target.value)}
                     onKeyDown={e => handleKeyDown(e, i)}
+                    className={focusFlags[i] ? 'font-semibold' : ''}
                   />
                   {rows.length > 1 && (
                     <button
@@ -185,12 +219,11 @@ export function QuickAdd() {
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon-sm"
                 onClick={addRow}
-                className="gap-1 text-muted-foreground"
+                className="text-muted-foreground"
               >
                 <Plus className="size-3.5" />
-                Add row
               </Button>
               <Button
                 size="sm"

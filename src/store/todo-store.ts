@@ -23,7 +23,7 @@ interface TodoState {
   initialized: boolean
   _undoStack: Todo[][]
   fetchTodos: () => Promise<void>
-  addTodo: (projectSlug: string, title: string, status?: string, parentId?: string, dueDate?: string) => Promise<void>
+  addTodo: (projectSlug: string, title: string, status?: string, parentId?: string, dueDate?: string) => Promise<string>
   updateTodo: (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate' | 'tags'>>) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
   toggleFocus: (id: string) => Promise<void>
@@ -187,6 +187,8 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       if (parentId) row.parent_id = parentId
       await supabase.from('todos').insert(row)
     }
+
+    return id
   },
 
   updateTodo: async (id: string, changes: Partial<Pick<Todo, 'title' | 'dueDate' | 'tags'>>) => {

@@ -84,8 +84,10 @@ export const EXPENSES: Expense[] = [
   { name: 'Business Loans', monthly: 287, category: 'debt', notes: 'Parafin + Shopify Capital' },
   { name: 'Shipping / Postage', monthly: 500, category: 'business', notes: 'Stamps, Shipstation, FBA' },
 
-  // Production (averaged monthly — roughly 1 run/month)
-  { name: 'Production / COGS', monthly: 2500, category: 'production', notes: 'Foodies, ingredients, packaging' },
+  // Production (from Foodies invoice + supplier costs)
+  { name: 'Foodies Storage', monthly: 350, category: 'production', notes: 'Warehouse, shipping/receiving, pallets, barrels — 1st of month' },
+  { name: 'Foodies Co-Packing', monthly: 1200, category: 'production', notes: '~3 sessions/mo × $400 ($100/hr × 4hrs)' },
+  { name: 'Ingredients & Packaging', monthly: 950, category: 'production', notes: 'Deep (ingredients), labels, boxes, Daylight shipping' },
 ]
 
 // ── Credit Card Debt ──
@@ -104,7 +106,8 @@ export const DEBT: DebtCard[] = [
 
 export const PRODUCTION_COSTS: ProductionCost[] = [
   { name: 'Deep (ingredients)', perRun: 1300 },
-  { name: 'Foodies (co-pack)', perRun: 1100 },
+  { name: 'Foodies (co-pack session)', perRun: 400 },
+  { name: 'Foodies (storage/mo)', perRun: 350 },
   { name: 'Boxes (Acorn)', perRun: 804 },
   { name: 'Labels', perRun: 1500 },
   { name: 'Shipping (Daylight)', perRun: 400 },
