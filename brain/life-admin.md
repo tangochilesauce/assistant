@@ -15,7 +15,7 @@ Balance is extremely tight (~$45 as of Feb 17). Monthly income exceeds expenses 
 
 ## Financial Snapshot (Feb 18, 2026)
 
-**Balance:** ~$45
+**Balance:** ~-$300 (as of Feb 18)
 **Net Worth:** ~-$34,000
 
 ### Monthly Income (Actual 6-month avg from statements)
@@ -59,26 +59,28 @@ Balance is extremely tight (~$45 as of Feb 17). Monthly income exceeds expenses 
 | **TOTAL** | **$40,447** | | **$2,139/mo** | **$946/mo interest** |
 
 ### Outstanding Vendor Debts
-| To | Amount | Due |
-|----|--------|-----|
-| Deep (ingredients) | $1,299 | Feb 23 |
-| Off Record Studio | $300 | Mar 1 |
-| Acorn (boxes) | $804 | Next production run |
-| Labels | $1,500 | Next production run |
+| To | Amount | Due | Notes |
+|----|--------|-----|-------|
+| Deep (ingredients) | $1,299 | Feb 23 | |
+| Berlin Packaging | $4,129 | Net 30 (~Feb 28) | 17,100 8oz PET bottles. Goal: pay half (~$2,064) |
+| Off Record Studio | $300 | Mar 1 | |
+| Acorn (boxes) | $804 | Next production run | |
+| Labels | $1,500 | Next production run | |
 
 ### Upcoming Payments
-| Payment | Amount | Due |
-|---------|--------|-----|
-| Rent | $2,878 | Mar 1 (delay to Mar 11) |
-| Daylight shipping | $400 | Feb 19 |
-| Foodies hand-fill | $1,100 | Feb 23 |
+| Payment | Amount | Due | Notes |
+|---------|--------|-----|-------|
+| Rent | $2,878 | Mar 1 (delay to Mar 11) | PRIORITY #1 |
+| Foodies (Aria) | $1,100 | Feb 23 | Only $1,100 from MOR, not full invoice |
+| Berlin half | ~$2,064 | ~Feb 28 | PRIORITY #2 (equal to rent) |
 
 ### Upcoming Income
 | Source | Amount | Expected |
 |--------|--------|----------|
-| Amazon payout | $561 | ~Feb 17 |
 | UNFI MOR | $3,422 | ~Feb 23 |
+| Amazon payout | $553 | Feb 28 |
 | EXP invoice | $3,400 | ~Mar 21 |
+| UNFI NE PO #1102034 | $3,480 | ~April (pickup Mar 25) |
 
 ## Goal
 

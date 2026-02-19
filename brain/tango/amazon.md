@@ -9,7 +9,7 @@
 
 Amazon is Tango's biggest revenue driver. Truffle dominates (63% of revenue, 38.7% conversion). Traffic is the bottleneck, not conversion.
 
-**Status:** PPC audit complete Feb 12. SRIRACHA AUTO is the #1 campaign (21x ROAS). SD-REMARKETING burning $42/mo for nothing — pause it. Coupons audited — Truffle S&S is a 9:1 winner, renew before Feb 15. Variation family still needs Seller Support call (HOTT2 won't attach).
+**Status (Feb 18):** PPC running since Dec 14 with 2 check-ins/dialings since. Feb 18 campaign report: 6 active campaigns, $137 spent, $446 sales, 3.24x ROAS overall. SRIRACHA AUTO upgraded to 33x ROAS. TT-PT-DEFENSE-TRUFFLE = 60x ROAS (new star). SD-REMARKETING correctly paused. Coupons expired Feb 15, NOT renewed — need profitability review. Variation family still needs Seller Support call (HOTT2 won't attach).
 
 ---
 
@@ -33,15 +33,15 @@ Amazon is Tango's biggest revenue driver. Truffle dominates (63% of revenue, 38.
 
 ---
 
-## What's Working
+## What's Working (Updated Feb 18 Campaign Report)
 
-- **SRIRACHA AUTO** — 21x ROAS, $43.96 sales on $2.06 spend. #1 campaign.
-- **TT-PT-COMP-TRUFFLE** — 3x ROAS, competitor targeting on TRUFF's listing works
-- **TT-AUTO-CLOSE** — 24x ROAS (small sample but auto close-match is converting)
-- **TT-AUTO-SUBS** — 7x ROAS (auto substitutes also converting)
-- **Truffle S&S coupon** — 9:1 return ($210 sales / $23 cost)
+- **SRIRACHA AUTO** — 33x ROAS ($66.93 sales / $2.06 spend). Still #1 most efficient.
+- **TT-PT-DEFENSE-TRUFFLE** — 60x ROAS ($60.26 sales / $1.01 spend). NEW STAR. Product targeting defense.
+- **TT-PHRASE-TRUFFLE** — 3.8x ROAS ($277.69 sales / $73.32 spend). Biggest spender AND earner.
+- **TT-PT-COMP-TRUFFLE** — 4.4x ROAS ($40.85 sales / $9.25 spend). Competitor targeting still works.
 - **Truffle dominates** — 63% of revenue, 38.7% conversion
 - **Auto campaigns > Manual** — lower CPCs, better ROAS across the board
+- **PPC overall 3.24x ROAS** — $137 spent, $446 sales across 65 days (Dec 14 - Feb 18)
 
 ---
 
@@ -141,6 +141,7 @@ Amazon is Tango's biggest revenue driver. Truffle dominates (63% of revenue, 38.
 
 | Date | Action | Result | Learning |
 |------|--------|--------|----------|
+| Feb 18, 2026 | Full campaign CSV report analyzed | 6 active, $137 spent, $446 sales, 3.24x ROAS. SRIRACHA AUTO 33x, TT-PT-DEFENSE 60x, TT-PHRASE-TRUFFLE 3.8x (biggest earner). SR-PHRASE-TEST and TT-AUTO-LOOSE are losers (pause). | Bids still possibly too low — barely spending daily budgets. Defense targeting is a sleeper hit. |
 | Feb 12, 2026 | Full PPC + Coupon + Variation audit | SRIRACHA AUTO = star (21x ROAS). SD-REMARKETING = waste ($42.68/0 sales). Truffle S&S = 9:1 return. | Auto > manual. SD remarketing doesn't work. S&S coupons compound. |
 | Feb 11, 2026 | Uploaded v8 variation flat file | Deleted 2 dupes. HOTT2 still won't attach. | Need Seller Support for stubborn catalog issues. |
 | Jan 30, 2026 | MAJOR BID OVERHAUL | Raised bids across 18 campaigns. | ROOT CAUSE: Bids were $0.45-$0.55, suggested $1.25-$3.38. |

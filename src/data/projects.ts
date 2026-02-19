@@ -61,12 +61,12 @@ export const PROJECTS: Project[] = [
     emoji: '⚡',
     color: '#84cc16',   // lime green
     weight: 100,
-    goal: 'Ship pallet · Restart PPC · Drop single · Launch FFEEDD — $5K new revenue',
+    goal: 'Nail March rent · Berlin half · Site redesign · Launch FFEEDD · Drop single',
     defaultActions: [
-      'Ship EXP pallet (Feb 19)',
-      'Restart Amazon PPC campaigns',
+      'Site redesign (3 days)',
+      'Launch FFEEDD',
       'Drop Madder single (Feb 22)',
-      'Launch FFEEDD app',
+      'First DTC email campaign',
     ],
   },
   {
@@ -75,8 +75,8 @@ export const PROJECTS: Project[] = [
     emoji: '🛒',
     color: '#f97316',
     weight: 65,
-    goal: 'Ship EXP pallet, fix Amazon PPC, close DTC sales',
-    defaultActions: ['Pay Foodies $1,900 invoice', 'EXP pickup (Feb 19)', 'Pause SD-REMARKETING'],
+    goal: 'Site redesign, first DTC campaign, PPC optimization, Costco roadshow call',
+    defaultActions: ['Site redesign (tonight)', 'PPC bid check on 3 winners', 'Call Moses ~2/25'],
     defaultColumns: [
       { id: 'backlog', label: 'Backlog' },
       { id: 'this-week', label: 'This Week' },
@@ -94,8 +94,8 @@ export const PROJECTS: Project[] = [
     emoji: '🛒',
     color: '#f97316',
     weight: 25,
-    goal: 'Restart PPC, optimize Truffle listing, grow traffic',
-    defaultActions: ['Restart PPC campaigns', 'Truffle title + bullet optimization', 'Analyze search term report'],
+    goal: 'Optimize PPC bids, pause losers, grow ROAS',
+    defaultActions: ['Pause SR-PHRASE-TEST + TT-AUTO-LOOSE', 'Check bids on 3 winners', 'Review coupon profitability'],
     parentSlug: 'tango',
   },
   {
@@ -124,8 +124,8 @@ export const PROJECTS: Project[] = [
     emoji: '🛒',
     color: '#f97316',
     weight: 5,
-    goal: 'Drive direct website sales',
-    defaultActions: ['Set up Shopify promotions', 'Email list campaign'],
+    goal: 'Redesign site + templates, first email campaign to 11K subs',
+    defaultActions: ['Site redesign (3 days)', 'Redesign email templates', 'Deliverability test', 'Tier 1 campaign (115 VIPs)'],
     parentSlug: 'tango',
   },
   {
@@ -144,8 +144,8 @@ export const PROJECTS: Project[] = [
     emoji: '🐇',
     color: '#22c55e',
     weight: 15,
-    goal: 'Launch app, get first 15 paid downloads',
-    defaultActions: ['Submit to App Store', 'Reddit marketing blitz', 'TikTok screen recording'],
+    goal: 'Final build → App Store → launch',
+    defaultActions: ['Final build (tomorrow)', 'Submit to App Store', 'Live + announce (~Feb 22)'],
   },
   {
     slug: 'madder',
@@ -153,8 +153,8 @@ export const PROJECTS: Project[] = [
     emoji: '📀',
     color: '#0ea5e9',
     weight: 5,
-    goal: 'Drop single 2/22, build pre-save to 50+',
-    defaultActions: ['Finish arrangement', 'DistroKid upload (Feb 16)', 'Studio @ Off Record (Feb 17)'],
+    goal: 'Drop single 2/22, EP 3/3',
+    defaultActions: ['Finish single by 2/22', 'YouTube + socials release', 'Upload to DistroKid', 'EP drops 3/3'],
   },
   {
     slug: 'dream-beds',
@@ -183,8 +183,8 @@ export const PROJECTS: Project[] = [
     emoji: '🧪',
     color: '#ffffff',
     weight: 0,
-    goal: 'Pay all bills on time',
-    defaultActions: ['Delay rent to Mar 11', 'Pay Off Record $300 (Mar 1)', 'Organize financials'],
+    goal: 'Nail March rent + Berlin half. Cancel dead subs.',
+    defaultActions: ['Cancel Topaz, Illustrator, Fox One (-$82/mo)', 'Call Capital One re: hardship', 'Build expenses tracker'],
   },
 ]
 

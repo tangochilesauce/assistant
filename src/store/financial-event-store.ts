@@ -331,7 +331,7 @@ function getDefaultFinancialEvents(): FinancialEvent[] {
     seed('exp-misc', 'Personal / Misc', -200, 'personal', {
       dueDay: 1, notes: 'Smoke shops, misc purchases',
     }),
-    seed('exp-phone', 'Phone (AT&T)', -74, 'personal', {
+    seed('exp-internet', 'Internet (AT&T)', -74, 'personal', {
       dueDay: 22, vendor: 'AT&T',
     }),
     seed('exp-health', 'Health Insurance', -27, 'personal', {
@@ -354,11 +354,8 @@ function getDefaultFinancialEvents(): FinancialEvent[] {
     seed('sub-adobe', 'Adobe Illustrator', -23, 'business', {
       dueDay: 15, vendor: 'Adobe', notes: 'CUT — use alternatives',
     }),
-    seed('sub-claude', 'Claude AI', -20, 'business', {
+    seed('sub-claude', 'Claude AI', -100, 'business', {
       dueDay: 1, vendor: 'Anthropic', notes: 'Essential — operational brain',
-    }),
-    seed('sub-openai', 'OpenAI / ChatGPT', -20, 'business', {
-      dueDay: 1, vendor: 'OpenAI', notes: 'CUT — redundant with Claude',
     }),
     seed('sub-ionos', 'IONOS', -14, 'business', {
       dueDay: 1, vendor: 'IONOS', notes: 'Web hosting — essential',
@@ -454,14 +451,39 @@ function getDefaultFinancialEvents(): FinancialEvent[] {
     }),
 
     // ── One-Time Bills (Upcoming) ───────────────────────────────
-    seed('bill-foodies-13883', 'Foodies Invoice #13883', -1900, 'production', {
+    seed('bill-foodies-13883', 'Foodies Invoice #13883', -1100, 'production', {
       recurring: false,
       dueDate: '2026-02-23',
       status: 'unpaid',
       vendor: 'Foodies Urban Kitchen',
-      notes: 'Jan storage $350 + Feb storage $350 + 3 co-pack sessions ($400 ea)',
+      notes: 'Aria gets $1,100 from MOR (not full invoice)',
       color: '#ef4444',
       projectSlug: 'tango-production',
+    }),
+    seed('bill-berlin-bottles', 'Berlin Packaging (17,100 bottles)', -4129, 'production', {
+      recurring: false,
+      dueDate: '2026-02-28',
+      status: 'unpaid',
+      vendor: 'Berlin Packaging',
+      notes: 'PO TCS00858 — 8oz PET clear bottles. Cash In Advance. Goal: pay at least half (~$2,064)',
+      color: '#f97316',
+      projectSlug: 'tango-production',
+    }),
+    seed('inc-amazon-payout-0228', 'Amazon Payout', 553, 'income', {
+      recurring: false,
+      dueDate: '2026-02-28',
+      status: 'active',
+      vendor: 'Amazon',
+      notes: 'Biweekly payout',
+      projectSlug: 'tango-amazon',
+    }),
+    seed('inc-unfi-ne-po-1102034', 'UNFI NE PO #1102034', 3480, 'income', {
+      recurring: false,
+      dueDate: '2026-04-06',
+      status: 'active',
+      vendor: 'UNFI',
+      notes: '84cs Mild + 36cs Hot → Hudson Valley NE. Pickup Mar 25, ETA Apr 6. Payment ~April.',
+      projectSlug: 'tango-unfi',
     }),
   ]
 }

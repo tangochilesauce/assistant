@@ -1,6 +1,6 @@
 // ── Financial Data (from 7-year statement analysis, Feb 2026) ──────
 
-export const BALANCE = 45
+export const BALANCE = -300
 
 export type IncomeStatus = 'locked' | 'expected' | 'sporadic' | 'inactive'
 
@@ -55,7 +55,7 @@ export const EXPENSES: Expense[] = [
   { name: 'ATM Cash', monthly: 600, category: 'personal', notes: '~$250 weed/vapes, rest unclear' },
   { name: 'Gas & Transport', monthly: 250, category: 'personal' },
   { name: 'Personal / Misc', monthly: 200, category: 'personal', notes: 'Smoke shops, misc purchases' },
-  { name: 'Phone (AT&T)', monthly: 74, category: 'personal' },
+  { name: 'Internet (AT&T)', monthly: 74, category: 'personal' },
   { name: 'Health Insurance', monthly: 27, category: 'personal', notes: 'Blue Shield CA' },
 
   // Subscriptions (keeping essential, includes cuttable)
@@ -65,8 +65,7 @@ export const EXPENSES: Expense[] = [
   { name: 'Stamps.com', monthly: 30, category: 'business', notes: 'Postage — essential' },
   { name: 'Netflix', monthly: 25, category: 'personal', notes: 'CUT — entertainment luxury' },
   { name: 'Adobe Illustrator', monthly: 23, category: 'business', notes: 'CUT — use alternatives' },
-  { name: 'Claude AI', monthly: 20, category: 'business', notes: 'Essential — operational brain' },
-  { name: 'OpenAI / ChatGPT', monthly: 20, category: 'business', notes: 'CUT — redundant with Claude' },
+  { name: 'Claude AI', monthly: 100, category: 'business', notes: 'Essential — operational brain' },
   { name: 'Google One', monthly: 20, category: 'personal', notes: 'CUT — downgrade to free' },
   { name: 'Fox One', monthly: 20, category: 'personal', notes: 'CUT — entertainment' },
   { name: 'IONOS', monthly: 14, category: 'business', notes: 'Web hosting — essential' },
