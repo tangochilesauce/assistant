@@ -83,6 +83,7 @@ The philosophy: no scoring math, no rigid ranked lists. Show Dan the state of ev
 | transaction-store | transactions, settings | Income, expenses, balance, forecast |
 | column-store | kanban_columns | Custom kanban columns per project |
 | dreamwatch-store | dreamwatch_pipeline | Video pipeline polling |
+| dreamwatch-calendar-store | dreamwatch_calendar | Streak tracking, upload calendar |
 
 ## Pipeline
 
@@ -164,6 +165,7 @@ Dark theme only. Hides scrollbars on mobile. Geist font.
 | transactions | Income/expense records + recurring templates |
 | kanban_columns | Custom column definitions per project |
 | dreamwatch_pipeline | Video encode/upload pipeline state |
+| dreamwatch_calendar | Per-day publish/queue tracking for streak + calendar |
 
 ## Key Contacts
 

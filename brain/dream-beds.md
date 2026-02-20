@@ -36,9 +36,9 @@ Dream Beds is a YouTube channel creating AI-generated "impossible sanctuary" bed
 | Metric | Current | Target | Gap |
 |--------|---------|--------|-----|
 | Monthly Revenue | $0 | $5,000 | $5,000 |
-| Subscribers | 5 | 50,000 | 49,995 |
-| Videos | 5 | 50+ | 45 |
-| Total Views | 66 | 10,000 | 9,934 |
+| Subscribers | 1 | 50,000 | 49,999 |
+| Videos | 21 | 50+ | 29 |
+| Total Views | 235 | 10,000 | 9,765 |
 | Watch hours | ? | 4,000 | ? |
 | Like Ratio | 100% | 95%+ | Done |
 | Monetized | No | Yes | — |
@@ -198,8 +198,10 @@ Problems: Bad physics, needed heavy slow-mo to hide artifacts, expensive ($45/mo
 ### Active Scripts
 - `dream_beds_video_maker.sh` — video looping
 - `compress_thumbnail.sh` — thumbnail compression
-- `youtube_upload.py` — API upload with metadata
+- `youtube_upload.py` — API upload with metadata + scheduling
 - `youtube_metrics.py` — pull fresh channel stats
+- `dreamwatch_sync.py` — syncs pipeline state to Supabase every 5s
+- `dreamwatch_calendar_sync.py` — syncs YouTube publish history + auto-schedules queue pairs (every 10min)
 
 ### Manual Commands
 ```bash
@@ -435,7 +437,7 @@ oversaturation, cartoon style, anime, sharp angles, harsh lighting, noise, blur,
 
 ## Open Questions
 
-- What's the best posting schedule for algorithm?
+- ✅ **ANSWERED: Best posting schedule** — Daily at 5:00 PM ET. Catches East Coast wind-down + West Coast has video with engagement by evening.
 - Which scene types perform best? (Need more analytics data)
 - When do mattress brands typically reach out?
 - Should we do community engagement or just focus on volume?
@@ -463,6 +465,10 @@ oversaturation, cartoon style, anime, sharp angles, harsh lighting, noise, blur,
 - [x] Dreamwatch pipeline built and deployed
 - [x] Queue path fixed (`_ queue/` not `! queue`)
 - [x] Dreamwatch page live in PL8
+- [x] Streak counter + 60-day calendar added to Dreamwatch page (Feb 19, 2026)
+- [x] Auto-scheduling engine: pairs in queue auto-assigned to next empty day at 5 PM ET
+- [x] YouTube history sync: pulls all publish dates into calendar (dreamwatch_calendar_sync.py)
+- [x] Supabase table: dreamwatch_calendar (date-keyed, published/queued status)
 
 ---
 
