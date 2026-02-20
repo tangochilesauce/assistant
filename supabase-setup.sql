@@ -101,6 +101,22 @@ CREATE TABLE IF NOT EXISTS dreamwatch_pipeline (
 );
 
 -- ═══════════════════════════════════════════════════════════════
+-- DREAMWATCH CALENDAR (streak tracking + auto-scheduling)
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS dreamwatch_calendar (
+    date DATE PRIMARY KEY,
+    status TEXT NOT NULL DEFAULT 'empty',      -- 'published' | 'queued' | 'empty'
+    video_title TEXT,
+    youtube_url TEXT,
+    youtube_video_id TEXT,
+    published_at TIMESTAMPTZ,
+    queued_basename TEXT,                       -- links to dreamwatch_pipeline.basename
+    scheduled_time TEXT,                        -- ISO 8601 with ET offset, e.g. 2026-02-20T17:00:00-05:00
+    synced_at TIMESTAMPTZ DEFAULT now(),
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ═══════════════════════════════════════════════════════════════
 -- NOTES (per-project scratchpad / intel capture)
 -- ═══════════════════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS notes (
@@ -142,6 +158,7 @@ ALTER TABLE kanban_columns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dreamwatch_pipeline ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tango_orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE dreamwatch_calendar ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow all on todos" ON todos FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on settings" ON settings FOR ALL USING (true) WITH CHECK (true);
@@ -150,6 +167,7 @@ CREATE POLICY "Allow all on kanban_columns" ON kanban_columns FOR ALL USING (tru
 CREATE POLICY "Allow all on dreamwatch_pipeline" ON dreamwatch_pipeline FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on notes" ON notes FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on tango_orders" ON tango_orders FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on dreamwatch_calendar" ON dreamwatch_calendar FOR ALL USING (true) WITH CHECK (true);
 
 -- ═══════════════════════════════════════════════════════════════
 -- INDEXES
@@ -167,3 +185,5 @@ CREATE INDEX IF NOT EXISTS idx_notes_pinned ON notes(pinned);
 CREATE INDEX IF NOT EXISTS idx_notes_created ON notes(created_at);
 CREATE INDEX IF NOT EXISTS idx_tango_orders_stage ON tango_orders(stage);
 CREATE INDEX IF NOT EXISTS idx_tango_orders_channel ON tango_orders(channel);
+CREATE INDEX IF NOT EXISTS idx_dreamwatch_calendar_status ON dreamwatch_calendar(status);
+CREATE INDEX IF NOT EXISTS idx_dreamwatch_calendar_date ON dreamwatch_calendar(date);

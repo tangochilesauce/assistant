@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { PageHeader } from '@/components/layout/page-header'
+import { StreakHeader } from '@/components/dreamwatch/streak-header'
 import { useDreamwatchStore, type DreamwatchItem } from '@/store/dreamwatch-store'
 
 // ── Constants ────────────────────────────────────────────────────
@@ -438,6 +439,9 @@ export default function DreamwatchPage() {
       </PageHeader>
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-6">
+        {/* Motivation: streak counter + calendar */}
+        <StreakHeader />
+
         {!initialized ? (
           <div className="text-sm text-muted-foreground text-center py-8">Loading...</div>
         ) : items.length === 0 ? (
