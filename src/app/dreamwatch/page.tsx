@@ -88,16 +88,45 @@ function ProgressBar({ pct, done }: { pct: number; done: boolean }) {
 
 // ── Publish Target Pill ──────────────────────────────────────────
 
+/** Convert an ISO datetime to Pacific Time display string */
+function formatPublishPT(isoStr: string): string {
+  try {
+    const d = new Date(isoStr)
+    if (isNaN(d.getTime())) return isoStr
+    return '📅 ' + d.toLocaleString('en-US', {
+      timeZone: 'America/Los_Angeles',
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    }) + ' PT'
+  } catch {
+    return isoStr
+  }
+}
+
 function PublishPill({ target, display }: { target: string | null; display: string | null }) {
-  if (!display) return null
+  if (!display && !target) return null
   const isPublic = target === 'PUBLIC'
+
+  // Generate PT display from raw target if it looks like an ISO date
+  let label = display ?? ''
+  if (target && target !== 'PUBLIC' && target.includes('T')) {
+    label = formatPublishPT(target)
+  } else if (isPublic) {
+    label = '🌐 Public'
+  }
+
+  if (!label) return null
+
   return (
     <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
       isPublic
         ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
         : 'bg-violet-500/15 text-violet-300 border border-violet-500/20'
     }`}>
-      {display}
+      {label}
     </span>
   )
 }

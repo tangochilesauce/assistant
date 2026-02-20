@@ -8,10 +8,10 @@ import {
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-/** Get today's date string in Eastern Time */
-function getTodayET(): string {
+/** Get today's date string in Pacific Time (Dan's local timezone) */
+function getTodayPT(): string {
   return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/New_York',
+    timeZone: 'America/Los_Angeles',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -108,7 +108,7 @@ function CalendarCell({
     : ''
 
   // Future dates are slightly dimmer if empty
-  const today = getTodayET()
+  const today = getTodayPT()
   const isFuture = date > today
   const cellOpacity = isFuture && status === 'empty' ? 'opacity-40' : ''
 
@@ -160,7 +160,7 @@ function buildCalendarWindow(
   pastDays: number,
   futureDays: number
 ): CalendarEntry[] {
-  const today = getTodayET()
+  const today = getTodayPT()
   const start = addDays(today, -pastDays)
   const end = addDays(today, futureDays)
   const dayMap = new Map(days.map(d => [d.date, d]))
@@ -217,7 +217,7 @@ export function StreakHeader() {
 
   if (!initialized) return null
 
-  const today = getTodayET()
+  const today = getTodayPT()
   const motivation = getMotivation(streak)
   const calendarEntries = buildCalendarWindow(days, 30, 30)
 
@@ -306,7 +306,7 @@ export function StreakHeader() {
           <span className="w-1.5 h-1.5 rounded-full bg-zinc-800 inline-block" />
           Empty
         </span>
-        <span className="ml-auto">5:00 PM ET daily</span>
+        <span className="ml-auto">5:00 PM ET · 2:00 PM PT daily</span>
       </div>
     </div>
   )
