@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 // ── Types ────────────────────────────────────────────────────────
 
 export interface CalendarDay {
-  date: string                                    // YYYY-MM-DD (ET)
+  date: string                                    // YYYY-MM-DD (ET — switching to PT next session)
   status: 'published' | 'queued' | 'empty'
   videoTitle: string | null
   youtubeUrl: string | null

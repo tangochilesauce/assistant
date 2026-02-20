@@ -1,19 +1,28 @@
-# JEFF State — Last Updated Feb 18, 2026 (Session 5)
+# JEFF State — Last Updated Feb 19, 2026 (Session 6)
 
 This is the boot-up file. Read this first every session.
 
-## What Happened This Session (Session 5)
+## What Happened This Session (Session 6)
 
 ### Big Wins
-- **DNS CLEANED** — Removed all 6 stale Klaviyo/SendGrid records from IONOS. SPF, DKIM, DMARC now clean for Shopify Email.
-- **62K customer discovery** — Shopify has 62,007 customers. 11,472 (18.5%) are email subscribers. Shopify Email has native access to ALL of them.
-- **Klaviyo list analyzed & segmented** — 4,881 contacts exported, segmented into Tier 1 (115 VIPs), Tier 2 (987 warm), Tier 3 (1,346), Dead (1,736), Removed (697). CSVs in `_ plate drop/segments/`.
-- **Amazon PPC analyzed** — Campaign_Feb_18_2026.csv: 6 active campaigns, $137 spent, $446 sales, 3.24x ROAS. Winners: SRIRACHA AUTO (33x), TT-PT-DEFENSE (60x), TT-PHRASE-TRUFFLE (3.8x).
-- **Strategy C chosen** — Dan will continue Tango AND build freelance profiles (AI-powered builds, CPG consulting). First step: Upwork profile this week.
-- **Full 30-day plan built** — Project by project walkthrough completed. All events added to PL8 calendar + updated project goals/actions.
-- **PL8 financial data corrected** — Claude $100/mo (not $20), OpenAI removed (canceled), AT&T = internet, Foodies = $1,100 (Aria's portion), Berlin Packaging + UNFI NE PO + Amazon payout added.
-- **Dream Beds in full swing** — ~20 videos uploaded (Jan-Feb 2026), 173 views/28 days, +1 subscriber. Grind phase.
-- **FFEEDD 1 day from final build** — Dan working on it tonight, submit to App Store tomorrow.
+- **Dreamwatch Streak Counter + Calendar BUILT** — Full motivational system added to top of Dreamwatch page. Streak counter with drill-sergeant/encouraging messages, 60-day calendar strip (past 30 + future 30) with green (published) / amber (queued) / empty dots. Auto-scrolls to today.
+- **YouTube History Synced** — New Python daemon (`dreamwatch_calendar_sync.py`) fetches all published videos from YouTube API, populates `dreamwatch_calendar` Supabase table. 21 videos synced, 15 unique dates.
+- **Auto-Scheduling Engine Built** — Queue pairs auto-assigned to next empty calendar day at 5 PM ET. FIFO order. Writes schedule into metadata JSON for upload pipeline pickup.
+- **Leopard Upload Recovered** — Was stuck at 66% due to expired token + ServerNotFoundError. Re-authed, relaunched. Currently uploading, scheduled for Feb 20 5 PM ET.
+- **Deploy Cleaned Up** — Killed GitHub Pages workflow entirely. Vercel is sole deploy target. Removed basePath conditional from next.config.ts. Updated MEMORY.md.
+- **MEMORY.md Updated** — Added "NEVER use localhost" rule and "Vercel only" deployment info.
+
+### Sunday Feb 22 — Dream Beds Pipeline Rebuild
+Dan wants to rebuild the entire Dream Beds pipeline on Sunday. Two PL8 todos created with due date Feb 22:
+1. **Rebuild Dream Beds pipeline script (unified daemon)** — Merge `dreamwatch_sync.py` + `dreamwatch_calendar_sync.py` into one daemon. Add launchd plist for auto-start on boot. Upload watchdog for auto-retry. FSEvents file watcher on `_ queue/` for fully automatic pipeline (drop pair → encode → upload → schedule → publish). The whole thing.
+2. **Switch Dreamwatch calendar display to Pacific Time** — Dan lives in PT. Calendar currently shows ET. Need to change: `dreamwatch-calendar-store.ts` (getTodayET → getTodayPT), `streak-header.tsx` (same), and `dreamwatch_calendar_sync.py` (store dates as PT instead of ET). Upload scheduling stays at 5 PM ET. Started the change but reverted — saving for Sunday.
+
+### Previous Sessions
+- Session 5 (Feb 18): DNS cleanup, 62K customer discovery, Amazon PPC analysis, Strategy C, 30-day plan, financial corrections
+- Session 4 (Feb 18): Financial excavation (149 statements, 11,069 txns), 7 analysis reports, Dan profile, 10 revenue opportunities, 2026 Action Plan
+- Session 3 (Feb 17): Brain page built, DTC email recovery planned, all brain files updated
+- Session 2 (Feb 17): Vercel deploy, Tango Dashboard, notes system, UNFI sub-project
+- Session 1 (Feb 16-17): Schedule import, deadline tags, Goals dashboard, financial sidebar
 
 ### Key Discoveries
 - **Balance is -$300** (not $45 — updated from Dan tonight)
