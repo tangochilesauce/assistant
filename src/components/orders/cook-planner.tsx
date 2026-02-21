@@ -124,10 +124,16 @@ export function CookPlanner() {
     let totalLo = 0
     let totalHi = 0
 
-    const rows = keys.map(ing => {
+    const rows: {
+      ing: string; rawAmt: number; pkgs: number; ordered: number;
+      leftover: number; costLo: number; costHi: number; unit: string;
+      u: typeof UNITS[string]
+    }[] = []
+
+    for (const ing of keys) {
       const n = ingredients[ing]
       const u = UNITS[ing]
-      if (!u) return null
+      if (!u) continue
 
       const rawAmt = Math.round(n.amt)
       const pkgs = Math.ceil(n.amt / u.pkg)
@@ -138,8 +144,8 @@ export function CookPlanner() {
       totalLo += costLo
       totalHi += costHi
 
-      return { ing, rawAmt, pkgs, ordered, leftover, costLo, costHi, unit: n.unit, u }
-    }).filter(Boolean) as NonNullable<ReturnType<typeof Array.prototype.map>[number]>[]
+      rows.push({ ing, rawAmt, pkgs, ordered, leftover, costLo, costHi, unit: n.unit, u })
+    }
 
     totalLo += DELIVERY_FEE
     totalHi += DELIVERY_FEE
@@ -150,11 +156,10 @@ export function CookPlanner() {
   // Build copyable text
   const copyText = useMemo(() => {
     return ingredientRows.rows.map(r => {
-      const u = r.u as typeof UNITS[string]
       if (r.unit === 'gal') {
-        return `${r.ordered} gallons ${u.name} (${r.pkgs} cases)`
+        return `${r.ordered} gallons ${r.u.name} (${r.pkgs} cases)`
       }
-      return `${r.ordered}lb ${u.name} (${r.pkgs} ${u.label}${r.pkgs > 1 ? 's' : ''})`
+      return `${r.ordered}lb ${r.u.name} (${r.pkgs} ${r.u.label}${r.pkgs > 1 ? 's' : ''})`
     }).join('\n')
   }, [ingredientRows])
 
@@ -274,7 +279,7 @@ export function CookPlanner() {
               </thead>
               <tbody>
                 {ingredientRows.rows.map(r => {
-                  const u = r.u as typeof UNITS[string]
+                  const u = r.u
                   const costStr = r.costLo === r.costHi
                     ? `$${r.costLo.toFixed(0)}`
                     : `$${r.costLo.toFixed(0)}–$${r.costHi.toFixed(0)}`
