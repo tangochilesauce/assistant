@@ -1,87 +1,56 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useOrderStore } from '@/store/order-store'
+import {
+  useProductionStore,
+  FLAVORS,
+  OLLA_YIELDS,
+  BATCHES_PER_OLLA,
+  DRUM_BOTTLES,
+  UNITS,
+  DELIVERY_FEE,
+  SORT_ORDER,
+  MATERIAL_STATUSES,
+  getRecipe,
+} from '@/store/production-store'
+import type { MaterialStatus } from '@/store/production-store'
 
-const FLAVORS = ['Hot', 'Mild', 'Mango', 'Truffle', 'Sriracha', 'Thai'] as const
+// ── Flavor colors ──────────────────────────────────────────────
 
-// Confirmed Feb 2026
-const OLLA_YIELDS: Record<string, number> = {
-  Hot: 325, Mild: 325, Truffle: 325, Thai: 325,
-  Mango: 450, Sriracha: 450,
+const FLAVOR_COLORS: Record<string, string> = {
+  Hot: '#CC0000',
+  Mild: '#3BA226',
+  Mango: '#F5D623',
+  Truffle: '#1A1A1A',
+  Sriracha: '#2B6EC2',
+  Thai: '#F5D623',
 }
 
-const BATCHES_PER_OLLA: Record<string, number> = {
-  Hot: 4, Mild: 4, Truffle: 4, Thai: 4,
-  Mango: 2, Sriracha: 2,
+const STATUS_COLORS: Record<MaterialStatus, string> = {
+  Have: 'bg-green-500/15 text-green-700 dark:text-green-400',
+  Low: 'bg-yellow-500/15 text-yellow-700 dark:text-yellow-400',
+  Order: 'bg-red-500/15 text-red-600 dark:text-red-400',
+  OTW: 'bg-orange-500/15 text-orange-700 dark:text-orange-400',
 }
 
-// Per-batch ingredient needs for standard flavors (Hot/Mild/Truffle/Thai)
-// Derived from 3-olla / 12-batch baseline (400lb carrots, etc.)
-const STD_BATCH: Record<string, { amt: number; unit: string }> = {
-  carrots:  { amt: 33.33, unit: 'lb' },
-  garlic:   { amt: 12.5,  unit: 'lb' },
-  lime:     { amt: 1.67,  unit: 'gal' },
-  culantro: { amt: 3.5,   unit: 'lb' },
-  habanero: { amt: 1.67,  unit: 'lb' },
-  acv:      { amt: 3.33,  unit: 'gal' },
-  salt:     { amt: 4.17,  unit: 'lb' },
-}
-
-// Per-batch for Sriracha
-const SRI_BATCH: Record<string, { amt: number; unit: string; kitchen?: boolean }> = {
-  red_jalapeno: { amt: 25, unit: 'lb' },
-  garlic:       { amt: 13, unit: 'lb' },
-  sugar:        { amt: 4,  unit: 'lb' },
-  salt:         { amt: 3,  unit: 'lb' },
-  white_vinegar:{ amt: 11, unit: 'lb', kitchen: true },
-  water:        { amt: 10, unit: 'lb', kitchen: true },
-}
-
-// Per-batch for Mango
-const MANGO_BATCH: Record<string, { amt: number; unit: string }> = {
-  mango_fruit: { amt: 50,    unit: 'lb' },
-  carrots:     { amt: 33.33, unit: 'lb' },
-  garlic:      { amt: 12.5,  unit: 'lb' },
-  lime:        { amt: 1.67,  unit: 'gal' },
-  culantro:    { amt: 3.5,   unit: 'lb' },
-  habanero:    { amt: 1.67,  unit: 'lb' },
-  acv:         { amt: 3.33,  unit: 'gal' },
-  salt:        { amt: 4.17,  unit: 'lb' },
-}
-
-// Purchasable units from Deep + pricing
-const UNITS: Record<string, {
-  pkg: number; unit: string; label: string; name: string; pLo: number; pHi: number
-}> = {
-  carrots:      { pkg: 25,  unit: 'lb',  label: '25lb bag',    name: 'carrots',             pLo: 18,    pHi: 28 },
-  garlic:       { pkg: 30,  unit: 'lb',  label: '30lb box',    name: 'garlic',              pLo: 80,    pHi: 109 },
-  lime:         { pkg: 4,   unit: 'gal', label: 'case (4gal)', name: 'lime juice',          pLo: 58,    pHi: 58 },
-  culantro:     { pkg: 14,  unit: 'lb',  label: '14lb box',    name: 'culantro',            pLo: 69,    pHi: 69 },
-  habanero:     { pkg: 10,  unit: 'lb',  label: '~10lb box',   name: 'habanero',            pLo: 28,    pHi: 30 },
-  acv:          { pkg: 4,   unit: 'gal', label: 'case (4gal)', name: 'apple cider vinegar', pLo: 38.75, pHi: 38.75 },
-  salt:         { pkg: 50,  unit: 'lb',  label: '50lb bag',    name: 'salt',                pLo: 13,    pHi: 14 },
-  red_jalapeno: { pkg: 25,  unit: 'lb',  label: '~25lb case',  name: 'red jalapeno',        pLo: 44.75, pHi: 44.75 },
-  sugar:        { pkg: 50,  unit: 'lb',  label: '50lb bag',    name: 'cane sugar',          pLo: 37,    pHi: 37 },
-  mango_fruit:  { pkg: 30,  unit: 'lb',  label: '30lb case',   name: 'mango',               pLo: 46.50, pHi: 46.50 },
-}
-
-const DELIVERY_FEE = 80
-
-const SORT_ORDER = ['carrots', 'garlic', 'lime', 'culantro', 'habanero', 'acv', 'salt', 'red_jalapeno', 'sugar', 'mango_fruit']
-
-function getRecipe(flavor: string) {
-  if (flavor === 'Sriracha') return SRI_BATCH
-  if (flavor === 'Mango') return MANGO_BATCH
-  return STD_BATCH
-}
+// ── Component ──────────────────────────────────────────────────
 
 export function CookPlanner() {
   const orders = useOrderStore(s => s.orders)
-  const [ollas, setOllas] = useState<Record<string, number>>({})
+
+  const {
+    initialized, fetchProduction,
+    packed, drums, ollas, materials,
+    setPacked, setDrums, setOllas,
+    cycleMaterialStatus, setMaterialNote,
+  } = useProductionStore()
+
   const [copied, setCopied] = useState(false)
 
-  // Demand totals from active orders (bottles per flavor)
+  useEffect(() => { fetchProduction() }, [fetchProduction])
+
+  // ── Demand totals (bottles per flavor from active orders) ────
   const demandTotals = useMemo(() => {
     const t: Record<string, number> = {}
     for (const order of orders) {
@@ -93,12 +62,43 @@ export function CookPlanner() {
     return t
   }, [orders])
 
-  const totalOllas = useMemo(
-    () => FLAVORS.reduce((sum, f) => sum + (ollas[f] || 0), 0),
-    [ollas]
-  )
+  // ── Inventory per flavor ────────────────────────────────────
+  const inventory = useMemo(() => {
+    const inv: Record<string, { packed: number; drumBottles: number; total: number }> = {}
+    for (const f of FLAVORS) {
+      const p = packed[f] || 0
+      const dw = (drums[f] || 0) * DRUM_BOTTLES
+      inv[f] = { packed: p, drumBottles: dw, total: p + dw }
+    }
+    return inv
+  }, [packed, drums])
 
-  // Calculate ingredients needed
+  // ── Gap analysis ────────────────────────────────────────────
+  const gaps = useMemo(() => {
+    const g: Record<string, number> = {}
+    for (const f of FLAVORS) {
+      g[f] = (demandTotals[f] || 0) - (inventory[f]?.total || 0)
+    }
+    return g
+  }, [demandTotals, inventory])
+
+  // ── Cook plan calculations ──────────────────────────────────
+  const cookCalc = useMemo(() => {
+    const totalOllas = FLAVORS.reduce((sum, f) => sum + (ollas[f] || 0), 0)
+    const produced: Record<string, number> = {}
+    const postCook: Record<string, number> = {}
+    const surplus: Record<string, number> = {}
+
+    for (const f of FLAVORS) {
+      produced[f] = (ollas[f] || 0) * OLLA_YIELDS[f]
+      postCook[f] = (inventory[f]?.total || 0) + produced[f]
+      surplus[f] = postCook[f] - (demandTotals[f] || 0)
+    }
+
+    return { totalOllas, produced, postCook, surplus }
+  }, [ollas, inventory, demandTotals])
+
+  // ── Ingredients ─────────────────────────────────────────────
   const ingredients = useMemo(() => {
     const needs: Record<string, { amt: number; unit: string }> = {}
     for (const f of FLAVORS) {
@@ -153,7 +153,19 @@ export function CookPlanner() {
     return { rows, totalLo, totalHi }
   }, [ingredients])
 
-  // Build copyable text
+  // ── Tight spots (ingredients where ordered barely covers need) ──
+  const tightSpots = useMemo(() => {
+    const spots: string[] = []
+    for (const r of ingredientRows.rows) {
+      const ratio = r.ordered / r.rawAmt
+      if (ratio < 1.05 && r.rawAmt > 0) {
+        spots.push(`${r.u.name}: need ${r.rawAmt}${r.unit}, ordering ${r.ordered}${r.unit}`)
+      }
+    }
+    return spots
+  }, [ingredientRows])
+
+  // ── Copy text ───────────────────────────────────────────────
   const copyText = useMemo(() => {
     return ingredientRows.rows.map(r => {
       if (r.unit === 'gal') {
@@ -163,9 +175,7 @@ export function CookPlanner() {
     }).join('\n')
   }, [ingredientRows])
 
-  const handleOllaChange = useCallback((flavor: string, value: number) => {
-    setOllas(prev => ({ ...prev, [flavor]: Math.max(0, Math.min(9, value)) }))
-  }, [])
+  // ── Handlers ────────────────────────────────────────────────
 
   const handleCopy = useCallback(async () => {
     if (!copyText) return
@@ -174,67 +184,173 @@ export function CookPlanner() {
     setTimeout(() => setCopied(false), 2000)
   }, [copyText])
 
+  if (!initialized) {
+    return (
+      <div className="text-sm text-muted-foreground text-center py-8">
+        Loading production data...
+      </div>
+    )
+  }
+
+  // ── Render helpers ──────────────────────────────────────────
+
+  const numCell = (val: number, opts?: { color?: 'green' | 'red' | 'auto'; bold?: boolean; dash?: boolean }) => {
+    if (opts?.dash && val === 0) {
+      return <span className="text-muted-foreground/20">&mdash;</span>
+    }
+    let cls = 'tabular-nums'
+    if (opts?.bold) cls += ' font-semibold'
+    if (opts?.color === 'green') cls += ' text-green-600'
+    if (opts?.color === 'red') cls += ' text-red-500'
+    if (opts?.color === 'auto') cls += val < 0 ? ' text-red-500' : ' text-green-600'
+    return <span className={cls}>{val >= 0 && opts?.color === 'auto' ? '+' : ''}{val.toLocaleString()}</span>
+  }
+
+  const flavorDot = (f: string) => (
+    <span
+      className="inline-block w-2 h-2 rounded-full mr-1.5 relative top-[-1px]"
+      style={{ background: FLAVOR_COLORS[f] || '#999' }}
+    />
+  )
+
+  const sectionHeader = (title: string, badge?: string) => (
+    <div className="flex items-center justify-between mb-3">
+      <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        {title}
+      </h3>
+      {badge && (
+        <span className="text-[10px] text-muted-foreground/50 tabular-nums">
+          {badge}
+        </span>
+      )}
+    </div>
+  )
+
+  const flavorHeaders = (
+    <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+      <th className="pb-2 pr-4"></th>
+      {FLAVORS.map(f => (
+        <th key={f} className="pb-2 text-right px-2 min-w-[52px]">
+          {flavorDot(f)}{f}
+        </th>
+      ))}
+    </tr>
+  )
+
+  // ── Grand totals for the header badges ──────────────────────
+
+  const totalDemandBottles = Object.values(demandTotals).reduce((a, b) => a + b, 0)
+  const totalInventoryBottles = FLAVORS.reduce((sum, f) => sum + (inventory[f]?.total || 0), 0)
+  const totalGap = totalDemandBottles - totalInventoryBottles
+
   return (
     <div className="space-y-6">
-      {/* Cook Planner */}
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* 🔥 FLAVOR SNAPSHOT — What We Have                         */}
+      {/* ═══════════════════════════════════════════════════════════ */}
       <div className="border border-border rounded-lg p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            Cook Planner
-          </h3>
-          <span className="text-[10px] text-muted-foreground/50 tabular-nums">
-            {totalOllas > 0 ? `${totalOllas} olla${totalOllas > 1 ? 's' : ''} planned` : 'Set ollas below'}
-          </span>
-        </div>
+        {sectionHeader('🔥 Flavor Snapshot', `${totalInventoryBottles.toLocaleString()} bottles total`)}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
-                <th className="pb-2 pr-4"></th>
-                {FLAVORS.map(f => (
-                  <th key={f} className="pb-2 text-right px-2 min-w-[52px]">{f}</th>
-                ))}
-              </tr>
-            </thead>
+            <thead>{flavorHeaders}</thead>
             <tbody>
-              {/* Ollas to Cook (editable) */}
+              {/* Packed Bottles (editable) */}
               <tr className="border-t border-border/50">
-                <td className="py-1.5 pr-4 font-medium">Ollas to Cook</td>
+                <td className="py-1.5 pr-4 font-medium">Packed Bottles</td>
                 {FLAVORS.map(f => (
                   <td key={f} className="py-1.5 text-right px-2">
                     <input
                       type="number"
                       min={0}
-                      max={9}
-                      value={ollas[f] || 0}
-                      onChange={e => handleOllaChange(f, parseInt(e.target.value) || 0)}
-                      className="w-12 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                      value={packed[f] || 0}
+                      onChange={e => setPacked(f, parseInt(e.target.value) || 0)}
+                      className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
                     />
                   </td>
                 ))}
               </tr>
 
-              {/* Bottles Produced */}
-              <tr className="border-t border-border/50">
-                <td className="py-1.5 pr-4 font-medium">Bottles Produced</td>
-                {FLAVORS.map(f => {
-                  const v = (ollas[f] || 0) * OLLA_YIELDS[f]
-                  return (
-                    <td key={f} className="py-1.5 text-right tabular-nums px-2">
-                      {v > 0 ? v.toLocaleString() : <span className="text-muted-foreground/20">&mdash;</span>}
-                    </td>
-                  )
-                })}
+              {/* 6-Packs (cases) */}
+              <tr className="border-t border-border/50 text-muted-foreground text-xs">
+                <td className="py-1 pr-4">→ Cases (÷6)</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1 text-right tabular-nums px-2">
+                    {numCell(Math.floor((packed[f] || 0) / 6), { dash: true })}
+                  </td>
+                ))}
               </tr>
 
-              {/* Surplus After Orders */}
+              {/* Botes / Drums (editable) */}
+              <tr className="border-t border-border/50">
+                <td className="py-1.5 pr-4 font-medium">Botes (drums)</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1.5 text-right px-2">
+                    <input
+                      type="number"
+                      min={0}
+                      value={drums[f] || 0}
+                      onChange={e => setDrums(f, parseInt(e.target.value) || 0)}
+                      className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                    />
+                  </td>
+                ))}
+              </tr>
+
+              {/* Drum bottles */}
+              <tr className="border-t border-border/50 text-muted-foreground text-xs">
+                <td className="py-1 pr-4">→ Bottles (×{DRUM_BOTTLES})</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1 text-right tabular-nums px-2">
+                    {numCell(inventory[f]?.drumBottles || 0, { dash: true })}
+                  </td>
+                ))}
+              </tr>
+
+              {/* Total inventory */}
               <tr className="border-t border-border font-semibold">
-                <td className="pt-2 pr-4">Surplus After Orders</td>
+                <td className="pt-2 pr-4">Total Inventory</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="pt-2 text-right tabular-nums px-2">
+                    {numCell(inventory[f]?.total || 0, { bold: true, dash: true })}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* 📊 GAP ANALYSIS — Have vs Need                            */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      <div className="border border-border rounded-lg p-4">
+        {sectionHeader('📊 Gap Analysis', totalGap > 0 ? `${totalGap.toLocaleString()} bottles short` : 'Fully stocked')}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>{flavorHeaders}</thead>
+            <tbody>
+              <tr className="border-t border-border/50">
+                <td className="py-1.5 pr-4 font-medium">Order Demand</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1.5 text-right tabular-nums px-2">
+                    {numCell(demandTotals[f] || 0, { dash: true })}
+                  </td>
+                ))}
+              </tr>
+              <tr className="border-t border-border/50">
+                <td className="py-1.5 pr-4 font-medium">Have (total)</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1.5 text-right tabular-nums px-2">
+                    {numCell(inventory[f]?.total || 0, { dash: true, color: (inventory[f]?.total || 0) > 0 ? 'green' : undefined })}
+                  </td>
+                ))}
+              </tr>
+              <tr className="border-t border-border font-semibold">
+                <td className="pt-2 pr-4">Gap</td>
                 {FLAVORS.map(f => {
-                  const produced = (ollas[f] || 0) * OLLA_YIELDS[f]
-                  const demand = demandTotals[f] || 0
-                  const surplus = produced - demand
-                  if (produced === 0 && demand === 0) {
+                  const gap = gaps[f]
+                  if ((demandTotals[f] || 0) === 0 && (inventory[f]?.total || 0) === 0) {
                     return (
                       <td key={f} className="pt-2 text-right tabular-nums px-2">
                         <span className="text-muted-foreground/20">&mdash;</span>
@@ -242,10 +358,8 @@ export function CookPlanner() {
                     )
                   }
                   return (
-                    <td key={f} className={`pt-2 text-right tabular-nums px-2 ${
-                      surplus < 0 ? 'text-red-500' : 'text-green-600'
-                    }`}>
-                      {surplus >= 0 ? '+' : ''}{surplus.toLocaleString()}
+                    <td key={f} className="pt-2 text-right tabular-nums px-2">
+                      {numCell(gap <= 0 ? Math.abs(gap) : -gap, { color: 'auto', bold: true })}
                     </td>
                   )
                 })}
@@ -255,17 +369,96 @@ export function CookPlanner() {
         </div>
       </div>
 
-      {/* Deep Order */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* 🍳 COOK PLANNER — Plan Your Ollas                         */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      <div className="border border-border rounded-lg p-4">
+        {sectionHeader(
+          '🍳 Cook Planner',
+          cookCalc.totalOllas > 0
+            ? `${cookCalc.totalOllas} olla${cookCalc.totalOllas > 1 ? 's' : ''} planned`
+            : 'Set ollas below'
+        )}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>{flavorHeaders}</thead>
+            <tbody>
+              {/* Ollas (editable) */}
+              <tr className="border-t border-border/50">
+                <td className="py-1.5 pr-4 font-medium">Ollas to Cook</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1.5 text-right px-2">
+                    <input
+                      type="number"
+                      min={0}
+                      max={9}
+                      value={ollas[f] || 0}
+                      onChange={e => setOllas(f, parseInt(e.target.value) || 0)}
+                      className="w-12 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                    />
+                  </td>
+                ))}
+              </tr>
+
+              {/* Bottles produced */}
+              <tr className="border-t border-border/50">
+                <td className="py-1.5 pr-4 font-medium">Bottles Produced</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1.5 text-right tabular-nums px-2">
+                    {numCell(cookCalc.produced[f], { dash: true })}
+                  </td>
+                ))}
+              </tr>
+
+              {/* Post-Cook Total */}
+              <tr className="border-t border-border/50">
+                <td className="py-1.5 pr-4 font-medium">Post-Cook Total</td>
+                {FLAVORS.map(f => (
+                  <td key={f} className="py-1.5 text-right tabular-nums px-2">
+                    {numCell(cookCalc.postCook[f], { dash: true })}
+                  </td>
+                ))}
+              </tr>
+
+              {/* Surplus After Orders */}
+              <tr className="border-t border-border font-semibold">
+                <td className="pt-2 pr-4">Surplus After Orders</td>
+                {FLAVORS.map(f => {
+                  const s = cookCalc.surplus[f]
+                  if (cookCalc.produced[f] === 0 && (demandTotals[f] || 0) === 0 && (inventory[f]?.total || 0) === 0) {
+                    return (
+                      <td key={f} className="pt-2 text-right tabular-nums px-2">
+                        <span className="text-muted-foreground/20">&mdash;</span>
+                      </td>
+                    )
+                  }
+                  return (
+                    <td key={f} className="pt-2 text-right tabular-nums px-2">
+                      {numCell(s, { color: 'auto', bold: true })}
+                    </td>
+                  )
+                })}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* 🥕 DEEP ORDER — Ingredient Shopping List                   */}
+      {/* ═══════════════════════════════════════════════════════════ */}
       {ingredientRows.rows.length > 0 && (
         <div className="border border-border rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Deep Order
-            </h3>
-            <span className="text-[10px] text-muted-foreground/50">
-              Auto-calculated from cook plan
-            </span>
-          </div>
+          {sectionHeader('🥕 Deep Order', 'Auto-calculated from cook plan')}
+
+          {/* Tight spots warning */}
+          {tightSpots.length > 0 && (
+            <div className="mb-3 p-2 rounded bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-700 dark:text-yellow-400">
+              <span className="font-medium">⚠️ Tight fit:</span>{' '}
+              {tightSpots.join(' · ')}
+            </div>
+          )}
+
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -279,21 +472,20 @@ export function CookPlanner() {
               </thead>
               <tbody>
                 {ingredientRows.rows.map(r => {
-                  const u = r.u
                   const costStr = r.costLo === r.costHi
                     ? `$${r.costLo.toFixed(0)}`
                     : `$${r.costLo.toFixed(0)}–$${r.costHi.toFixed(0)}`
 
                   return (
                     <tr key={r.ing} className="border-t border-border/50">
-                      <td className="py-1.5 pr-4 font-medium capitalize">{u.name}</td>
+                      <td className="py-1.5 pr-4 font-medium capitalize">{r.u.name}</td>
                       <td className="py-1.5 text-right tabular-nums px-2">
                         {r.rawAmt} {r.unit}
                       </td>
                       <td className="py-1.5 text-right tabular-nums px-2 font-semibold">
                         <div>{r.ordered} {r.unit}</div>
                         <div className="text-[10px] text-muted-foreground/50 font-normal">
-                          {r.pkgs} × {u.label}
+                          {r.pkgs} × {r.u.label}
                         </div>
                       </td>
                       <td className="py-1.5 text-right tabular-nums px-2">{costStr}</td>
@@ -308,24 +500,24 @@ export function CookPlanner() {
                 {/* Delivery */}
                 <tr className="border-t border-border/50">
                   <td className="py-1.5 pr-4 font-medium">Delivery</td>
-                  <td className="py-1.5 text-right tabular-nums px-2"></td>
-                  <td className="py-1.5 text-right tabular-nums px-2"></td>
+                  <td className="py-1.5" />
+                  <td className="py-1.5" />
                   <td className="py-1.5 text-right tabular-nums px-2">${DELIVERY_FEE}</td>
-                  <td className="py-1.5 text-right tabular-nums px-2"></td>
+                  <td className="py-1.5" />
                 </tr>
               </tbody>
               <tfoot>
                 <tr className="border-t border-border font-semibold">
                   <td className="pt-2 pr-4">Total</td>
-                  <td className="pt-2 text-right tabular-nums px-2"></td>
-                  <td className="pt-2 text-right tabular-nums px-2"></td>
+                  <td className="pt-2" />
+                  <td className="pt-2" />
                   <td className="pt-2 text-right tabular-nums px-2">
                     {ingredientRows.totalLo === ingredientRows.totalHi
                       ? `$${ingredientRows.totalLo.toFixed(0)}`
                       : `$${ingredientRows.totalLo.toFixed(0)}–$${ingredientRows.totalHi.toFixed(0)}`
                     }
                   </td>
-                  <td className="pt-2 text-right tabular-nums px-2"></td>
+                  <td className="pt-2" />
                 </tr>
               </tfoot>
             </table>
@@ -337,11 +529,55 @@ export function CookPlanner() {
               onClick={handleCopy}
               className="text-xs font-medium uppercase tracking-wider px-4 py-2 rounded-full border border-foreground/20 hover:bg-foreground hover:text-background transition-colors"
             >
-              {copied ? '✅ Copied!' : '📋 Copy List'}
+              {copied ? '✅ Copied!' : '📋 Copy Deep List'}
             </button>
           </div>
         </div>
       )}
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* 📦 MATERIALS — Caps, Labels, Packaging                     */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      <div className="border border-border rounded-lg p-4">
+        {sectionHeader('📦 Materials', 'Tap status to cycle')}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+                <th className="pb-2 pr-4">Item</th>
+                <th className="pb-2 px-2 w-20">Status</th>
+                <th className="pb-2 px-2">Note</th>
+              </tr>
+            </thead>
+            <tbody>
+              {materials.map((mat, idx) => (
+                <tr key={mat.item} className="border-t border-border/50">
+                  <td className="py-1.5 pr-4 font-medium">{mat.item}</td>
+                  <td className="py-1.5 px-2">
+                    <button
+                      onClick={() => cycleMaterialStatus(idx)}
+                      className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full cursor-pointer select-none active:scale-95 transition-transform ${
+                        STATUS_COLORS[mat.status as MaterialStatus] || STATUS_COLORS.Have
+                      }`}
+                    >
+                      {mat.status}
+                    </button>
+                  </td>
+                  <td className="py-1.5 px-2">
+                    <input
+                      type="text"
+                      value={mat.note}
+                      onChange={e => setMaterialNote(idx, e.target.value)}
+                      placeholder="—"
+                      className="w-full bg-transparent text-sm border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/20"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   )
 }
