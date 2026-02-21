@@ -7,15 +7,16 @@ import { useDreamwatchStore, type DreamwatchItem } from '@/store/dreamwatch-stor
 
 // ── Constants ────────────────────────────────────────────────────
 
+// Step nums match dreampipe.py _step_to_supabase() mapping (1-indexed)
 const STEPS = [
-  { num: 0, label: 'Generate metadata' },
-  { num: 1, label: 'Reverse clip' },
-  { num: 2, label: 'Seamless loop' },
-  { num: 3, label: '3-hour 4K encode' },
-  { num: 4, label: 'Add audio' },
-  { num: 5, label: 'Compress thumbnail' },
-  { num: 6, label: 'Upload to YouTube' },
-  { num: 7, label: 'Cleanup' },
+  { num: 1, label: 'Generate metadata' },
+  { num: 2, label: 'Reverse clip' },
+  { num: 3, label: 'Seamless loop' },
+  { num: 4, label: '3-hour 4K encode' },
+  { num: 5, label: 'Add audio' },
+  { num: 6, label: 'Compress thumbnail' },
+  { num: 7, label: 'Upload to YouTube' },
+  { num: 8, label: 'Cleanup' },
 ]
 
 // ── Helpers ──────────────────────────────────────────────────────
@@ -62,7 +63,7 @@ function StepIcon({ stepNum, currentStep, isPublished, isFailed }: {
 
   return (
     <div className={`${base} ${styles[status]}`}>
-      {status === 'done' ? '✓' : status === 'failed' ? '✕' : stepNum + 1}
+      {status === 'done' ? '✓' : status === 'failed' ? '✕' : stepNum}
     </div>
   )
 }
@@ -162,8 +163,8 @@ function StatusPill({ status }: { status: string }) {
 function ActiveCard({ item }: { item: DreamwatchItem }) {
   const isPublished = item.state === 'PUBLISHED'
   const isFailed = item.state.includes('DEAD')
-  const isUploading = item.state === 'STEP6'
-  const isEncoding = item.step === 3 && !isPublished && !isFailed
+  const isUploading = item.state === 'UPLOADING'
+  const isEncoding = item.step === 4 && !isPublished && !isFailed
 
   // Current step progress
   let stepPct = 0
