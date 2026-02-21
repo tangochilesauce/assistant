@@ -7,6 +7,7 @@ import { OrderDropZone } from '@/components/orders/order-drop-zone'
 import { OrderDetail } from '@/components/orders/order-detail'
 import { OrderForm } from '@/components/orders/order-form'
 import { ProductionDemand } from '@/components/orders/production-demand'
+import { CookPlanner } from '@/components/orders/cook-planner'
 import { useOrderStore } from '@/store/order-store'
 
 export default function OrdersPage() {
@@ -35,6 +36,9 @@ export default function OrdersPage() {
 
             {/* Pipeline kanban */}
             <OrderPipeline />
+
+            {/* Cook planner + Deep order */}
+            <CookPlanner />
           </div>
         )}
       </div>
