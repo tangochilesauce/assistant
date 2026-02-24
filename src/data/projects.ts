@@ -86,6 +86,7 @@ export const PROJECTS: Project[] = [
     ],
     tools: [
       { href: '/orders', label: 'Orders', icon: 'Package' },
+      { href: '/recipes', label: 'Recipes', icon: 'CookingPot' },
     ],
   },
   {

@@ -12,6 +12,7 @@ import {
   Brain,
   Package,
   Tv,
+  CookingPot,
   type LucideIcon,
 } from 'lucide-react'
 import {
@@ -37,6 +38,7 @@ import { useTransactionStore } from '@/store/transaction-store'
 const ICON_MAP: Record<string, LucideIcon> = {
   Package,
   Tv,
+  CookingPot,
 }
 
 const TOOL_COLOR = '#c2956a'  // muted warm — visually distinct from bright channel colors
