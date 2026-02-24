@@ -30,18 +30,33 @@ export const BATCHES_PER_OLLA: Record<string, number> = {
   Mango: 2,
 }
 
-// Per-batch ingredient needs — standard flavors (Hot/Mild/Truffle/Thai)
-export const STD_BATCH: Record<string, { amt: number; unit: string }> = {
-  carrots:  { amt: 33.33, unit: 'lb' },
-  garlic:   { amt: 12.5,  unit: 'lb' },
-  lime:     { amt: 1.67,  unit: 'gal' },
-  culantro: { amt: 3.5,   unit: 'lb' },
-  habanero: { amt: 1.67,  unit: 'lb' },
-  acv:      { amt: 3.33,  unit: 'gal' },
-  salt:     { amt: 4.17,  unit: 'lb' },
+// Per-batch ingredient needs — HOT (from kitchen card, updated 5/10/24)
+export const HOT_BATCH: Record<string, { amt: number; unit: string }> = {
+  carrots:  { amt: 26.46, unit: 'lb' },  // 12000g
+  garlic:   { amt: 8.82,  unit: 'lb' },  // 4000g
+  lime:     { amt: 1.45,  unit: 'gal' }, // 5500g
+  culantro: { amt: 3.75,  unit: 'lb' },  // 1700g
+  habanero: { amt: 2.20,  unit: 'lb' },  // 1000g
+  acv:      { amt: 3.01,  unit: 'gal' }, // 11400g
+  salt:     { amt: 4.85,  unit: 'lb' },  // 2200g
 }
 
-// Per-batch for Sriracha
+// Per-batch — MILD / TRUFFLE (from kitchen card, updated 5/20/24)
+export const MILD_BATCH: Record<string, { amt: number; unit: string }> = {
+  carrots:  { amt: 26.46, unit: 'lb' },  // 12000g
+  garlic:   { amt: 8.82,  unit: 'lb' },  // 4000g
+  lime:     { amt: 1.45,  unit: 'gal' }, // 5500g
+  culantro: { amt: 3.09,  unit: 'lb' },  // 1400g
+  habanero: { amt: 1.10,  unit: 'lb' },  // 500g
+  acv:      { amt: 3.01,  unit: 'gal' }, // 11400g
+  salt:     { amt: 4.41,  unit: 'lb' },  // 2000g
+}
+
+// Alias — Thai uses Hot batch (same heat level, plus Thai chilies — TODO: confirm with Dan)
+export const STD_BATCH = HOT_BATCH
+export const THAI_BATCH = HOT_BATCH
+
+// Per-batch for Sriracha (confirmed correct by Dan)
 export const SRI_BATCH: Record<string, { amt: number; unit: string; kitchen?: boolean }> = {
   red_jalapeno: { amt: 25, unit: 'lb' },
   garlic:       { amt: 13, unit: 'lb' },
@@ -51,29 +66,29 @@ export const SRI_BATCH: Record<string, { amt: number; unit: string; kitchen?: bo
   water:        { amt: 10, unit: 'lb', kitchen: true },
 }
 
-// Per-batch for Mango
+// Per-batch for Mango (TODO: confirm with Dan — using Mild base + mango for now)
 export const MANGO_BATCH: Record<string, { amt: number; unit: string }> = {
   mango_fruit: { amt: 50,    unit: 'lb' },
-  carrots:     { amt: 33.33, unit: 'lb' },
-  garlic:      { amt: 12.5,  unit: 'lb' },
-  lime:        { amt: 1.67,  unit: 'gal' },
-  culantro:    { amt: 3.5,   unit: 'lb' },
-  habanero:    { amt: 1.67,  unit: 'lb' },
-  acv:         { amt: 3.33,  unit: 'gal' },
-  salt:        { amt: 4.17,  unit: 'lb' },
+  carrots:     { amt: 26.46, unit: 'lb' },
+  garlic:      { amt: 8.82,  unit: 'lb' },
+  lime:        { amt: 1.45,  unit: 'gal' },
+  culantro:    { amt: 3.09,  unit: 'lb' },
+  habanero:    { amt: 1.10,  unit: 'lb' },
+  acv:         { amt: 3.01,  unit: 'gal' },
+  salt:        { amt: 4.41,  unit: 'lb' },
 }
 
 // Purchasable units from Deep + pricing
 export const UNITS: Record<string, {
   pkg: number; unit: string; label: string; name: string; pLo: number; pHi: number
 }> = {
-  carrots:      { pkg: 25,  unit: 'lb',  label: '25lb bag',    name: 'carrots',             pLo: 18,    pHi: 28 },
-  garlic:       { pkg: 30,  unit: 'lb',  label: '30lb box',    name: 'garlic',              pLo: 80,    pHi: 109 },
-  lime:         { pkg: 4,   unit: 'gal', label: 'case (4gal)', name: 'lime juice',          pLo: 58,    pHi: 58 },
+  carrots:      { pkg: 25,  unit: 'lb',  label: '25lb bag',    name: 'carrots',             pLo: 14.95, pHi: 14.95 },
+  garlic:       { pkg: 30,  unit: 'lb',  label: '30lb box',    name: 'garlic',              pLo: 84,    pHi: 84 },
+  lime:         { pkg: 4,   unit: 'gal', label: 'case (4gal)', name: 'lime juice',          pLo: 59.50, pHi: 59.50 },
   culantro:     { pkg: 14,  unit: 'lb',  label: '14lb box',    name: 'culantro',            pLo: 69,    pHi: 69 },
-  habanero:     { pkg: 10,  unit: 'lb',  label: '~10lb box',   name: 'habanero',            pLo: 28,    pHi: 30 },
-  acv:          { pkg: 4,   unit: 'gal', label: 'case (4gal)', name: 'apple cider vinegar', pLo: 38.75, pHi: 38.75 },
-  salt:         { pkg: 50,  unit: 'lb',  label: '50lb bag',    name: 'salt',                pLo: 13,    pHi: 14 },
+  habanero:     { pkg: 10,  unit: 'lb',  label: '~10lb box',   name: 'habanero',            pLo: 34.50, pHi: 34.50 },
+  acv:          { pkg: 4,   unit: 'gal', label: 'case (4gal)', name: 'apple cider vinegar', pLo: 39.75, pHi: 39.75 },
+  salt:         { pkg: 50,  unit: 'lb',  label: '50lb bag',    name: 'salt',                pLo: 14.95, pHi: 14.95 },
   red_jalapeno: { pkg: 25,  unit: 'lb',  label: '~25lb case',  name: 'red jalapeno',        pLo: 44.75, pHi: 44.75 },
   sugar:        { pkg: 50,  unit: 'lb',  label: '50lb bag',    name: 'cane sugar',          pLo: 37,    pHi: 37 },
   mango_fruit:  { pkg: 30,  unit: 'lb',  label: '30lb case',   name: 'mango',               pLo: 46.50, pHi: 46.50 },
@@ -137,7 +152,9 @@ async function saveSetting(key: string, value: unknown): Promise<void> {
 export function getRecipe(flavor: string) {
   if (flavor === 'Sriracha') return SRI_BATCH
   if (flavor === 'Mango') return MANGO_BATCH
-  return STD_BATCH
+  if (flavor === 'Mild' || flavor === 'Truffle') return MILD_BATCH
+  if (flavor === 'Thai') return THAI_BATCH
+  return HOT_BATCH
 }
 
 // ── Store Interface ────────────────────────────────────────────
