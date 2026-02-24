@@ -21,7 +21,7 @@ const KEYS = {
 export const DRUM_BOTTLES = 625
 
 export const OLLA_YIELDS: Record<string, number> = {
-  Hot: 325, Mild: 325, Truffle: 325, Thai: 325, Sriracha: 325,
+  Hot: 400, Mild: 400, Truffle: 400, Thai: 400, Sriracha: 400,
   Mango: 450,
 }
 

@@ -260,17 +260,17 @@ Worked with food scientists at Cornell University for over a year to achieve FDA
 | 1 drum (bote) | ~625 bottles |
 | 1 case | 6 bottles |
 | 1 cook shift (4hr) | 3 ollas |
-| 1 pack shift (4hr) | 1,000 bottles |
+| 1 pack shift (4hr) | ~1,000 bottles |
 
 ### Olla Yields (CONFIRMED Feb 2026)
 Ollas are 45-gallon pots filled to within 3-6 inches from the top.
 
 | Flavor Group | Batches/Olla | Bottles/Olla |
 |-------------|-------------|-------------|
-| Hot/Mild/Truffle/Thai/Sriracha | 4 batches | **~300-350** |
+| Hot/Mild/Truffle/Thai/Sriracha | 4 batches | **~400** |
 | Mango | 2 (larger batches) | **~450** |
 
-**Key distinction:** 1 olla ≠ 1 drum. A drum holds ~625 bottles. A standard olla (Hot/Mild/Sriracha) yields ~325 bottles — roughly half a drum. Only Mango yields ~450 (2 larger batches).
+**Key distinction:** 1 olla ≠ 1 drum. A drum holds ~625 bottles. A standard olla yields ~400 bottles — roughly 2/3 of a drum. Mango yields ~450 (2 larger batches, higher volume per batch).
 
 ### Process Flow
 Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pack) → Cases
@@ -450,7 +450,7 @@ For each order, multiply cases × 6 = bottles. Sum across all orders per flavor.
 **Don't trust the dashboard defaults** — ask Dan for actual counts. Need:
 - Filled bottles by flavor (already packed, ready to go)
 - Drums by flavor (sauce made but not yet bottled)
-- Half drums count as ~162 bottles (half of 325, NOT half of 625)
+- Half drums count as ~200 bottles (half of 400, NOT half of 625)
 - Already-built pallets are DONE — subtract those orders from the need
 
 ### Step 4: Calculate Gap
@@ -458,8 +458,8 @@ Gap = Total Need − Bottles on hand − Drum bottle equivalents
 Negative gap = short, need to cook. Positive = covered.
 
 ### Step 5: Plan Ollas
-- Standard ollas (Hot/Mild/Truffle/Thai): ~300-350 bottles each
-- Big ollas (Mango/Sriracha): ~450 bottles each
+- Standard ollas (Hot/Mild/Truffle/Thai/Sriracha): ~400 bottles each
+- Mango ollas: ~450 bottles each (2 larger batches)
 - 1 cook shift = 3 ollas max (4 hours, $400)
 - Prioritize by pickup date urgency
 
