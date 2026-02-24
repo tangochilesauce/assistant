@@ -262,12 +262,15 @@ Worked with food scientists at Cornell University for over a year to achieve FDA
 | 1 cook shift (4hr) | 3 ollas |
 | 1 pack shift (4hr) | 1,000 bottles |
 
-### Batches per Olla
-| Flavor | Batches/Olla |
-|--------|-------------|
-| Hot/Mild/Truffle | 4 |
-| Mango | 2 (larger batch) |
-| Sriracha | 2 or 3 |
+### Olla Yields (CONFIRMED Feb 2026)
+Ollas are 45-gallon pots filled to within 3-6 inches from the top.
+
+| Flavor Group | Batches/Olla | Bottles/Olla |
+|-------------|-------------|-------------|
+| Hot/Mild/Truffle/Thai/Sriracha | 4 batches | **~300-350** |
+| Mango | 2 (larger batches) | **~450** |
+
+**Key distinction:** 1 olla ≠ 1 drum. A drum holds ~625 bottles. A standard olla (Hot/Mild/Sriracha) yields ~325 bottles — roughly half a drum. Only Mango yields ~450 (2 larger batches).
 
 ### Process Flow
 Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pack) → Cases
@@ -307,7 +310,7 @@ Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pa
 Foodies Urban Kitchen, 8922 Norris Ave, Sun Valley
 
 ### Data Source
-All production data lives in Supabase settings table (keys: `tango_production_*`). **Tango Dashboard is the single source of truth** — editable directly (packed counts, drum counts, status pills, ingredient inventory, bill plans, material status). Notion "Tango Production" page is **retired** as of Feb 17, 2026. Don't update it — update the dashboard instead.
+All production data lives in Supabase settings table (keys: `tango_production_*`). **PL8 Orders page (`assistant-k5go.vercel.app/orders`) is the single source of truth** — editable directly (packed counts, drum counts, status pills, ingredient inventory, bill plans, material status). Standalone Tango Dashboard is retired. Notion "Tango Production" page is also retired.
 
 ## Channel Revenue Targets
 
@@ -340,7 +343,7 @@ All production data lives in Supabase settings table (keys: `tango_production_*`
 
 ## Orders System (NEXT BUILD)
 
-**Goal:** Full order lifecycle management on Tango Dashboard
+**Goal:** Full order lifecycle management on PL8 Orders page
 
 ### What We Need
 1. **Supabase `orders` table** — id, channel, po_number, value, date, stage (new/processing/shipped/paid), doc paths (po_url, bol_url, inv_url), notes
@@ -352,7 +355,7 @@ All production data lives in Supabase settings table (keys: `tango_production_*`
 ### Architecture
 - Order DATA → Supabase (stage, value, dates, doc URLs)
 - Order FILES → Local folders (PDFs on machine, organized by channel/PO)
-- Tango Dashboard reads from Supabase
+- PL8 Orders page reads from Supabase
 - Drop zone: browser-side file handling → parse → create folder → insert row
 
 ## Key Decisions
@@ -369,13 +372,24 @@ All production data lives in Supabase settings table (keys: `tango_production_*`
 ### Vinegar:Veg Ratio
 In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:Veg**
 
-### Ingredient Weights (Per Box)
-| Ingredient | Weight/Box |
-|-----------|------------|
-| Peppers | 3,573g |
-| Culantro | 2,900g (fills ~3 buckets) |
-| Garlic | 2,280g |
-| Lime Juice | 3,930g/gallon |
+### How Ingredients Come (CONFIRMED Feb 2026)
+| Ingredient | Unit | Size | Supplier |
+|-----------|------|------|----------|
+| Carrots | bag | 25 lb | Deep |
+| Garlic | box | 30 lb | Deep |
+| Lime juice | case | 4 gallons | Deep |
+| Culantro (sawtooth cilantro) | box | 14 lb | Deep |
+| Habanero | box | ~10 lb | Deep |
+| Apple cider vinegar | case | 4 gallons | Deep |
+| Salt | bag | 50 lb | Deep |
+| Red jalapeno (Sriracha) | case | ??lb per case | Deep |
+| Cane sugar (Sriracha) | bag | 50 lb | Deep |
+
+**Notes:**
+- No scotch bonnet currently — just habanero for all flavors (Feb 2026)
+- **Deep supplies ALL ingredients** including Sriracha
+- **White vinegar already at kitchen** — don't need to order
+- Water for Sriracha — just water, no order needed
 
 ### Ingredient Orders by Run Size
 
@@ -389,7 +403,7 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 - 18 cases of vinegar
 
 **Half Day — 3 Ollas (e.g. 2 Hot + 1 Mild):**
-- 12x 25lb bags of carrots (~400 lb total needed)
+- 16x 25lb bags of carrots (~400 lb total needed)
 - 5 cases of lime juice
 - 5 cases of garlic
 - 3 cases of culantro
@@ -419,6 +433,100 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 - 1x 50lb bag of salt
 - 13x cases of apple cider vinegar (52 gallons)
 
+## Production Planning — How To Do This (Feb 2026)
+
+This is the process for figuring out what to cook. PL8 Orders page handles most of this now but verify with Dan:
+
+### Step 1: Gather All Active Orders
+Pull every PO that's in "processing" or "new" stage. Check:
+- PL8 Orders page (Supabase `tango_orders` table)
+- Plate drop folder for new POs not yet added to dashboard
+- Note the pickup dates — separate near-term vs later orders
+
+### Step 2: Total Bottles Needed by Flavor
+For each order, multiply cases × 6 = bottles. Sum across all orders per flavor.
+
+### Step 3: Count Real Inventory
+**Don't trust the dashboard defaults** — ask Dan for actual counts. Need:
+- Filled bottles by flavor (already packed, ready to go)
+- Drums by flavor (sauce made but not yet bottled)
+- Half drums count as ~162 bottles (half of 325, NOT half of 625)
+- Already-built pallets are DONE — subtract those orders from the need
+
+### Step 4: Calculate Gap
+Gap = Total Need − Bottles on hand − Drum bottle equivalents
+Negative gap = short, need to cook. Positive = covered.
+
+### Step 5: Plan Ollas
+- Standard ollas (Hot/Mild/Truffle/Thai): ~300-350 bottles each
+- Big ollas (Mango/Sriracha): ~450 bottles each
+- 1 cook shift = 3 ollas max (4 hours, $400)
+- Prioritize by pickup date urgency
+
+### Step 6: Build Ingredient Order for Deep
+Use the per-olla ingredient lists below. Scale by number of ollas per flavor.
+**IMPORTANT:** Break down per-batch needs FIRST, then total across all ollas, THEN round up to purchasable units. Check for tight spots (where rounding down leaves you short) before finalizing the list. Garlic and lime juice are the most common tight spots when scaling down from the 3-olla reference.
+
+---
+
+### Feb 24 Cook Plan (CONFIRMED)
+
+**Orders driving this cook:**
+| Order | Channel | Pickup | Hot | Mild | Mango | Truffle | Sriracha |
+|-------|---------|--------|-----|------|-------|---------|----------|
+| PO #12165 | EXP Corp | Feb 28 | 300 | 180 | 180 | 60 | 120 |
+| PO #1102034 | UNFI HVA | Mar 25 | 216 | 504 | — | — | — |
+| **Total** | | | **516** | **684** | **180** | **60** | **120** |
+
+*Note: PO #1052998 (UNFI HVA, Feb 25 pickup) already palletized and done.*
+
+**Post-Cook Inventory (Feb 24 — cook complete, Sriracha short on garlic):**
+| | Hot | Mild | Mango | Truffle | Sriracha | Thai |
+|--|-----|------|-------|---------|----------|------|
+| Packed bottles (home) | 75 | 300 (wrong caps) | 0 | 0 | 40 | 200 |
+| Botes at kitchen | 1.5 (~937) | 1.0 (~625) | 2.0 (~1,250) | 0.5 (~312) | 0.3 (~187) | — |
+| **Total** | **~1,012** | **~925** | **~1,250** | **~312** | **~227** | **200** |
+
+**EXP order updated:** Sriracha back to 20 cases (120 btl). Total 140 cases.
+**Friday Feb 28:** Combined 8hr pack shift — EXP (140 cases) + UNFI #1102034 (120 cases) = 260 cases / 1,560 bottles.
+
+**Post-Friday free stock (after both orders filled):**
+| Hot | Mild | Sriracha | Mango | Truffle | Thai |
+|-----|------|----------|-------|---------|------|
+| ~496 (82 cases) | ~241 (40 cases) | ~107 (17 cases) | ~1,070 (178 cases) | ~252 (42 cases) | 200 (33 cases) |
+
+**Combined ingredient order for Deep (1 Hot + 1 Mild + 1 Sriracha):**
+
+| Ingredient | Qty | Unit | Total | Notes |
+|-----------|-----|------|-------|-------|
+| Carrots | 11 | 25 lb bags | ~275 lb | 2/3 of 400lb (3-olla baseline) |
+| Garlic | 4 | 30 lb boxes | 120 lb | 3 boxes for Hot/Mild + 26lb Sriracha = ~116lb, round up to 4 |
+| Lime juice | 3 | cases (4 gal ea) | 12 gal | Hot/Mild only |
+| Culantro | 2 | 14 lb boxes | 28 lb | Hot/Mild only |
+| Habanero | 2 | ~10 lb boxes | ~20 lb | Hot/Mild only |
+| Apple cider vinegar | 7 | cases (4 gal ea) | 28 gal | Hot/Mild only |
+| Salt | 1 | 50 lb bag | 50 lb | Covers Hot/Mild (50lb) + Sriracha (6lb) |
+| Red jalapeno | 50 | lb | 50 lb | Sriracha only |
+| Cane sugar | 8 | lb | 8 lb | Sriracha only |
+
+**Already at kitchen — don't order:**
+- White vinegar (for Sriracha)
+- Water (for Sriracha)
+
+**Notes:** No scotch bonnet — habanero only (Feb 2026). Deep supplies ALL ingredients.
+
+---
+
+### New PO: UNFI HVA #1102034 (received Feb 18, 2026)
+- **From:** Shawn Lantry / catherine.r.garcia@unfi.com
+- **Pickup:** Mar 25, 2026
+- **ETA:** Apr 6, 2026
+- **Items:** 84 cases Mild ($2,436) + 36 cases Hot ($1,044) = $3,480
+- **Ref:** HH-79667-B18
+- **Status:** Needs to be added to PL8 Orders page
+
+---
+
 ## Goal
 
 **This month:** Ship EXP pallet, fix Amazon PPC, close DTC sales
@@ -428,7 +536,7 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 
 ### 📋 To Do
 - [ ] Ship EXP pallet (Feb 28 pickup — pushed from Feb 19)
-- [ ] Mon Feb 24: Cook (1 olla Hot + 1 olla Sriracha, 4hr)
+- [ ] Mon Feb 24: Cook (1 Hot + 1 Mild + 1 Sriracha, 4hr) — see Production Planning below
 - [ ] Thu Feb 27: Pack (4hr)
 - [ ] Restart Amazon PPC
 - [ ] Clean tangochilesauce.com DNS
@@ -441,12 +549,12 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 - [x] DTC email recovery plan designed
 
 ### ✅ Done
-- [x] Production Brain on Tango Dashboard — editable, Supabase-backed (Feb 17)
+- [x] Production Brain on PL8 Orders page — editable, Supabase-backed (Feb 17)
 - [x] Notion "Tango Production" page retired — dashboard is source of truth (Feb 17)
 - [x] All production data synced Notion → Supabase (11 settings keys) (Feb 17)
 - [x] Flavor Snapshot + Order Demand + Gap Analysis tables built (Feb 17)
 - [x] DNS audit (Feb 17) — found stale Klaviyo SPF/DKIM
-- [x] Tango Dashboard deployed (GitHub Pages)
+- [x] Orders/Production absorbed into PL8
 - [x] Orders pipeline built (drag-and-drop kanban)
 
 ## Product Marketing Descriptions
@@ -515,19 +623,30 @@ After a dozen batches, he ended up with his own version of her recipe. When frie
 
 ## Files
 
-*Scanned Feb 16, 2026 from /Projects/🔥 tango/ (symlinked at /⚡ claudio/tango/)*
+*Scanned Feb 20, 2026 from /Projects/🔥 tango/ (symlinked at /⚡ claudio/tango/). Reorg complete — flat structure, channel-first, 92GB (25GB deduped).*
 
 | Folder | Files | What's In There |
 |--------|-------|-----------------|
-| amazon/ | 1,776 | Listings, A+ content, flat files, FNSKU labels, PPC data |
-| brand/ | 2,834 | Labels, logos, nutrition facts, UPCs, 2026 brand system |
-| business/ | 421 | Legal, FDA, insurance, certificates, BOL, food safety |
-| production/ | 1,201 | Kitchen photos, packaging suppliers, POs, billing |
-| distribution/ | 563 | UNFI docs, Costco materials, Faire, old retailers |
-| images/ | 2,882 | Product photography (new label, old label) |
-| sales/ | 264 | Decks, data exports, one-sheets |
-| marketing/ | 804 | Ads, collabs, events |
-| media/ | 1,086 | Video, audio, press, Pixar intro, No More Clog |
-| website/ | 1,847 | Old web builds, 2026-02-12 website data |
-| tangofest/ | 1,586 | The big summer event |
-| orders-invoices/ | 23 | By channel: Amazon, Costco, DTC, EXP, Faire, Mable, UNFI |
+| amazon/ | 69 | Active listings, PPC, flat files, sales metrics |
+| unfi/ | 153 | POs, setup docs, endless aisle, WF data, chargebacks |
+| costco/ | 9 | Deck, onboarding docs |
+| exp/ | 0 | EXP Corp POs/invoices (placeholder) |
+| faire/ | 3 | Faire marketplace assets |
+| shopify-theme/ | 290 | Active Dawn theme (liquid, CSS, fonts, sections) |
+| labels/ | 69 | Current label AI files per flavor, finals, samples |
+| logo/ | 35 | Current logos |
+| nutrition-facts/ | 11 | Current nutrition panels (Feb 2025) |
+| upcs/ | 25 | UPC barcodes |
+| fonts/ | 9 | All brand fonts (GT Pressura, Beast, American Typewriter) |
+| brand-system/ | 224 | 2026 brand system (has .git) |
+| photos/ | 819 | All photography, deduplicated (new-label/ + old-label/) |
+| production/ | 60 | Kitchen, billing, POs, suppliers, photos |
+| business/ | 351 | Legal, FDA, insurance, certs, BOLs, food safety |
+| sales/ | 45 | Decks, data exports, one-sheets |
+| social/ | 14 | Recent social posts |
+| orders-invoices/ | 11 | Order lifecycle docs by channel |
+| merch/ | 5 | Tango flame beanie |
+| tangofest/ | 1,179 | TangoFest (seasonal) |
+| backburner/ | 228 | Side products (Dragon Jelly, Gobblins, Mega Jerk) |
+| dtc/ | 0 | DTC strategy docs (placeholder) |
+| _archive/ | 7,081 | All historical content — old amazon, brand, labels, marketing, media, website, etc. |

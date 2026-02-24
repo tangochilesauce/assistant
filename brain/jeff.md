@@ -69,7 +69,7 @@ The philosophy: no scoring math, no rigid ranked lists. Show Dan the state of ev
 - Auto-archive completed items (status: 'archived', not deleted)
 - Notes per project (pin, edit inline, delete)
 - Brain file viewer per project (renders markdown brain files in app)
-- External link to Tango Dashboard (tangochilesauce.github.io/tango-dashboard/)
+- Orders/Production page (formerly standalone Tango Dashboard — now built into PL8)
 
 ### Sub-Projects
 - Tango → Amazon, Costco, UNFI, DTC
@@ -104,10 +104,10 @@ The philosophy: no scoring math, no rigid ranked lists. Show Dan the state of ev
 - [x] Vercel deployment (no more localhost)
 - [x] Square apple-icon for iPhone
 - [x] UNFI sub-project
-- [x] Tango Dashboard external link
+- [x] Orders/Production page (absorbed Tango Dashboard into PL8)
 
 ### To Do
-- [ ] Orders system v2 (Supabase-backed orders + drop zone intake on Tango Dashboard)
+- [ ] Orders system v2 (Supabase-backed orders + drop zone intake)
 - [ ] Rich About/README pages for all projects (only JEFF populated)
 - [ ] Supabase tables for contacts, learnings, intel
 - [ ] Pattern detection and insights

@@ -1,6 +1,6 @@
 # Tango Production — Brain
 
-**NOTE:** Live production data (inventory, orders, demand) lives on the **Tango Dashboard** (Supabase-backed). This brain file is the strategy/reference layer. Dashboard is the operational layer.
+**NOTE:** Live production data (inventory, orders, demand) lives on the **PL8 Orders page** (`https://assistant-k5go.vercel.app/orders`, Supabase-backed). This brain file is the strategy/reference layer. PL8 is the operational layer.
 
 ---
 
@@ -175,9 +175,9 @@ Delivery $80 | 2-day lead | Due on Receipt
 | Salt 50 lb | bag | $13.00-$13.95 |
 | Carrots Jumbo | 25-50 lb bag | $17.95-$28.00 |
 | Habanero Chillies | 10# box | $28.00-$29.95 |
-| Red Jalapeno | lb | $44.75 |
+| Red Jalapeno | case (??lb) | $44.75 |
 | White Vinegar | case | $17.95 |
-| Sugar | case | $37.00 |
+| Sugar | 50 lb bag | $37.00 |
 | Mango Chunks | 30 lb case | $46.50 |
 | Thai Chili | 30# case | $49.50 |
 

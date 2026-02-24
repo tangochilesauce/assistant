@@ -60,7 +60,7 @@
 
 **Path to first client:**
 1. Create Toptal/Gun.io profile (1 day)
-2. Portfolio: PL8 app, FFEEDD, Tango Dashboard, financial extraction pipeline
+2. Portfolio: PL8 app, FFEEDD, Dream Beds pipeline, financial extraction pipeline
 3. Niche: "Full-stack Next.js + AI automation for small businesses"
 4. Target: 10-20 hrs/week at $100-150/hr = $4,000-12,000/month
 

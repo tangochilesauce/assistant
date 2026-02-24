@@ -109,7 +109,7 @@ Tango's production is cold-fill (no heat treatment). This is a significant barri
 Moses at Costco, Brittney at UNFI, John at WF, Lauren at Erewhon. These relationships took years to build. You can't buy them or build them quickly.
 
 ### 4. Full-Stack Tech Skills
-Can build his own tools (PL8, FFEEDD, Tango Dashboard, Dream Beds pipeline, financial extraction). No need to hire developers. This is a massive cost advantage for a solo operator.
+Can build his own tools (PL8, FFEEDD, Dream Beds pipeline, financial extraction). No need to hire developers. This is a massive cost advantage for a solo operator.
 
 ### 5. Multi-Channel Distribution
 Amazon + UNFI + Faire + Mable + EXP + DTC. If one channel dips, others compensate. Most small CPG brands have 1-2 channels.

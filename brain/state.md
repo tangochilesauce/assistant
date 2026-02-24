@@ -1,8 +1,33 @@
-# JEFF State — Last Updated Feb 19, 2026 (Session 6)
+# JEFF State — Last Updated Feb 20, 2026 (Session 8)
 
 This is the boot-up file. Read this first every session.
 
-## What Happened This Session (Session 6)
+## What Happened This Session (Session 8)
+
+### Full Production Planning Dashboard BUILT in PL8
+- **Complete production planning workflow automated** — The entire 2-hour manual process Dan does with Claude (inventory → demand → gap → cook plan → ingredients → materials) is now a reactive dashboard in PL8's Orders page
+- **New production-store.ts** — Zustand + Supabase settings store for all production state (packed bottles, drums, ollas, materials). Uses same Supabase keys as the old Tango Dashboard for compatibility.
+- **6 connected sections built:**
+  1. 🔥 Flavor Snapshot — editable packed bottles + drums per flavor, auto-calculates cases and total inventory
+  2. 📊 Gap Analysis — demand vs inventory with color-coded gaps
+  3. 🍳 Cook Planner — editable ollas → bottles produced → post-cook total → surplus after orders
+  4. 🥕 Deep Order — auto-calculated ingredient shopping list from cook plan, with "tight spot" warnings, copy button
+  5. 📦 Materials — caps, labels, packaging with tappable status cycling (Have/Low/Order/OTW)
+- **All sections reactive** — changing inventory recalculates gaps, changing ollas recalculates ingredients
+- **Tight spot warnings** — flags when ordered quantities barely cover what's needed (learned from session 7 mistake)
+- **Previously built as standalone Tango Dashboard** (vanilla JS) in session 7, now fully ported to PL8 React
+- **Standalone Tango Dashboard is RETIRED** — everything lives in PL8 Orders page now
+
+### Previous Session (Session 7)
+- Production planning for Monday Feb 24 — 3 ollas (1 Hot, 1 Mild, 1 Sriracha)
+- Ingredient order for Deep finalized: 275lb carrots, 120lb garlic, 12gal lime, 28lb culantro, 20lb habanero, 28gal ACV, 50lb salt, 50lb red jalapeno, 50lb sugar
+- Cook Planner + Deep Order first built as standalone (vanilla JS), now in PL8
+- Key learning: ALWAYS do batch math FIRST, then build order list — garlic and lime were tight fits
+
+### Previous Sessions
+- Session 6 (Feb 19): Dreamwatch streak counter + calendar, YouTube sync, auto-scheduling, Vercel deploy cleanup
+
+## What Happened Last Session (Session 6)
 
 ### Big Wins
 - **Dreamwatch Streak Counter + Calendar BUILT** — Full motivational system added to top of Dreamwatch page. Streak counter with drill-sergeant/encouraging messages, 60-day calendar strip (past 30 + future 30) with green (published) / amber (queued) / empty dots. Auto-scrolls to today.
@@ -72,9 +97,16 @@ Dan wants to rebuild the entire Dream Beds pipeline on Sunday. Two PL8 todos cre
 - [ ] Build expenses/cash flow tracker (noted for later session)
 
 ### 🟠 Tango Amazon
-- [ ] Pause SR-PHRASE-TEST + TT-AUTO-LOOSE — TONIGHT
-- [ ] Check bids on 3 winning campaigns — TONIGHT
-- [ ] Review coupon profitability — when Dan drops report
+- [x] Pause SD-REMARKETING — Done
+- [x] Raise budgets on winners (SRIRACHA AUTO $25, TT-PT-COMP $20, TT-AUTO-SUBS $5, TT-AUTO-CLOSE $5) — Done
+- [x] Renew Truffle S&S coupon — Done Feb 20 (10%, $100, thru May 23)
+- [x] Create Sriracha S&S coupon — Done Feb 20 (10%, $100, thru May 23)
+- [ ] Launch TT-CATEGORY test — enable, check keywords, $3/day
+- [ ] Launch TT-HOT-HONEY test — enable, check keywords, $3/day
+- [ ] Build PEPPER-PLANT-PT campaign — new, product targeting, $5/day
+- [ ] Audit TT-PHRASE-TRUFFLE search terms — 25.7% ACOS
+- [ ] Decide SR-PHRASE-TEST fate — check search terms
+- [ ] Decide TT-AUTO-LOOSE fate — check search terms
 
 ### 🟠 Tango DTC
 - [ ] Start site redesign — TONIGHT
@@ -115,7 +147,7 @@ Dan wants to rebuild the entire Dream Beds pipeline on Sunday. Two PL8 todos cre
 | Project | Weight | Status | Current Goal |
 |---------|--------|--------|-------------|
 | 🟠 Tango | 65% | Active | Site redesign + first DTC campaign + PPC optimization |
-| 🟠 → Amazon | 25% | **ACTION** | Pause losers, check bids on winners (3.24x ROAS) |
+| 🟠 → Amazon | 25% | **ACTION** | Coupons renewed, budgets raised, 3 new tests launching ($11/day). 3.12x ROAS. |
 | 🟠 → Costco | 15% | Waiting | Call Moses ~2/25 |
 | 🟠 → UNFI | 25% | Active | New NE PO ($3,480), John Lawson follow-up |
 | 🟠 → DTC | 5% | **SPRINT** | Site redesign tonight → email campaign by Feb 26 |
@@ -140,8 +172,8 @@ Dan wants to rebuild the entire Dream Beds pipeline on Sunday. Two PL8 todos cre
 
 - **JEFF app:** /Users/danfrieber/⚡ claudio/jeff/ (Next.js 16, Vercel)
 - **JEFF live:** assistant-k5go.vercel.app (auto-deploys from GitHub main)
-- **Tango Dashboard:** tangochilesauce.github.io/tango-dashboard/ (GitHub Pages)
+- **Tango Dashboard:** RETIRED — absorbed into PL8 Orders page (assistant-k5go.vercel.app/orders)
 - **Brain files:** /Users/danfrieber/⚡ claudio/jeff/brain/ → built to src/data/brain.ts on deploy
 - **Financial data:** /Users/danfrieber/⚡ claudio/_/financial/ (scripts, parsed, analysis)
 - **Supabase:** muowpjabnjkqgwgzfmoj.supabase.co
-- **GitHub repos:** tangochilesauce/assistant (JEFF), tangochilesauce/tango-dashboard
+- **GitHub repos:** tangochilesauce/assistant (PL8)
