@@ -21,13 +21,13 @@ const KEYS = {
 export const DRUM_BOTTLES = 625
 
 export const OLLA_YIELDS: Record<string, number> = {
-  Hot: 325, Mild: 325, Truffle: 325, Thai: 325,
-  Mango: 450, Sriracha: 450,
+  Hot: 325, Mild: 325, Truffle: 325, Thai: 325, Sriracha: 325,
+  Mango: 450,
 }
 
 export const BATCHES_PER_OLLA: Record<string, number> = {
-  Hot: 4, Mild: 4, Truffle: 4, Thai: 4,
-  Mango: 2, Sriracha: 2,
+  Hot: 4, Mild: 4, Truffle: 4, Thai: 4, Sriracha: 4,
+  Mango: 2,
 }
 
 // Per-batch ingredient needs — standard flavors (Hot/Mild/Truffle/Thai)
