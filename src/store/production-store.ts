@@ -52,9 +52,20 @@ export const MILD_BATCH: Record<string, { amt: number; unit: string }> = {
   salt:     { amt: 4.41,  unit: 'lb' },  // 2000g
 }
 
-// Alias — Thai uses Hot batch (same heat level, plus Thai chilies — TODO: confirm with Dan)
+// Alias for backward compat
 export const STD_BATCH = HOT_BATCH
-export const THAI_BATCH = HOT_BATCH
+
+// Per-batch — THAI (updated from 2021 card + 2024 garlic correction, confirmed by Dan)
+export const THAI_BATCH: Record<string, { amt: number; unit: string }> = {
+  carrots:    { amt: 26.46, unit: 'lb' },  // 12000g
+  garlic:     { amt: 8.82,  unit: 'lb' },  // 4000g (was 2700g pre-2024)
+  lime:       { amt: 1.45,  unit: 'gal' }, // 5500g
+  culantro:   { amt: 4.41,  unit: 'lb' },  // 2000g
+  habanero:   { amt: 4.41,  unit: 'lb' },  // 2000g
+  thai_chili: { amt: 6.61,  unit: 'lb' },  // 3000g
+  acv:        { amt: 3.01,  unit: 'gal' }, // 11400g
+  salt:       { amt: 4.85,  unit: 'lb' },  // 2200g
+}
 
 // Per-batch for Sriracha (confirmed correct by Dan)
 export const SRI_BATCH: Record<string, { amt: number; unit: string; kitchen?: boolean }> = {
@@ -66,16 +77,17 @@ export const SRI_BATCH: Record<string, { amt: number; unit: string; kitchen?: bo
   water:        { amt: 10, unit: 'lb', kitchen: true },
 }
 
-// Per-batch for Mango (TODO: confirm with Dan — using Mild base + mango for now)
+// Per-batch for Mango (updated from 2021 card + 2024 garlic correction, confirmed by Dan)
 export const MANGO_BATCH: Record<string, { amt: number; unit: string }> = {
-  mango_fruit: { amt: 50,    unit: 'lb' },
-  carrots:     { amt: 26.46, unit: 'lb' },
-  garlic:      { amt: 8.82,  unit: 'lb' },
-  lime:        { amt: 1.45,  unit: 'gal' },
-  culantro:    { amt: 3.09,  unit: 'lb' },
-  habanero:    { amt: 1.10,  unit: 'lb' },
-  acv:         { amt: 3.01,  unit: 'gal' },
-  salt:        { amt: 4.41,  unit: 'lb' },
+  mango_fruit: { amt: 50,    unit: 'lb' },        // 50lb
+  carrots:     { amt: 26.46, unit: 'lb' },         // 12000g
+  garlic:      { amt: 8.82,  unit: 'lb' },         // 4000g (was 2700g pre-2024)
+  lime:        { amt: 1.45,  unit: 'gal' },        // 5500g
+  culantro:    { amt: 4.41,  unit: 'lb' },         // 2000g
+  habanero:    { amt: 1.10,  unit: 'lb' },         // 500g
+  acv:         { amt: 3.01,  unit: 'gal' },        // 11400g
+  agave:       { amt: 2.20,  unit: 'lb' },         // 1000g
+  salt:        { amt: 4.85,  unit: 'lb' },         // 2200g
 }
 
 // Purchasable units from Deep + pricing
@@ -92,6 +104,8 @@ export const UNITS: Record<string, {
   red_jalapeno: { pkg: 25,  unit: 'lb',  label: '~25lb case',  name: 'red jalapeno',        pLo: 44.75, pHi: 44.75 },
   sugar:        { pkg: 50,  unit: 'lb',  label: '50lb bag',    name: 'cane sugar',          pLo: 37,    pHi: 37 },
   mango_fruit:  { pkg: 30,  unit: 'lb',  label: '30lb case',   name: 'mango',               pLo: 46.50, pHi: 46.50 },
+  thai_chili:   { pkg: 30,  unit: 'lb',  label: '30lb case',   name: 'thai chilies',        pLo: 49.50, pHi: 49.50 },
+  agave:        { pkg: 10,  unit: 'lb',  label: '~10lb jug',   name: 'agave nectar',        pLo: 25,    pHi: 30 },
 }
 
 export const DELIVERY_FEE = 80
