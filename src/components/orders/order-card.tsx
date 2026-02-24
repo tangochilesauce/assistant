@@ -76,6 +76,17 @@ export function OrderCard({ order, overlay }: OrderCardProps) {
             </span>
           </div>
 
+          {/* Flavor case counts */}
+          {order.items.length > 0 && (
+            <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1.5">
+              {order.items.map(item => (
+                <span key={item.flavor} className="text-[10px] tabular-nums text-muted-foreground">
+                  {item.flavor} <span className="font-medium text-foreground/70">{item.cases}</span>
+                </span>
+              ))}
+            </div>
+          )}
+
           {/* Date + doc indicators */}
           <div className="flex items-center justify-between mt-1.5">
             <span className="text-[10px] text-muted-foreground">

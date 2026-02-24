@@ -540,6 +540,8 @@ export function CookPlanner() {
       {/* ═══════════════════════════════════════════════════════════ */}
       <div className="border border-border rounded-lg p-4">
         {sectionHeader('📦 Materials', 'Tap status to cycle')}
+
+        {/* Generic materials (non-flavor-specific) */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -550,28 +552,73 @@ export function CookPlanner() {
               </tr>
             </thead>
             <tbody>
-              {materials.map((mat, idx) => (
-                <tr key={mat.item} className="border-t border-border/50">
-                  <td className="py-1.5 pr-4 font-medium">{mat.item}</td>
-                  <td className="py-1.5 px-2">
-                    <button
-                      onClick={() => cycleMaterialStatus(idx)}
-                      className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full cursor-pointer select-none active:scale-95 transition-transform ${
-                        STATUS_COLORS[mat.status as MaterialStatus] || STATUS_COLORS.Have
-                      }`}
-                    >
-                      {mat.status}
-                    </button>
-                  </td>
-                  <td className="py-1.5 px-2">
-                    <input
-                      type="text"
-                      value={mat.note}
-                      onChange={e => setMaterialNote(idx, e.target.value)}
-                      placeholder="—"
-                      className="w-full bg-transparent text-sm border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/20"
-                    />
-                  </td>
+              {materials.map((mat, idx) => {
+                // Skip caps and labels — they get the flavor grid below
+                if (mat.item.startsWith('Caps —') || mat.item.startsWith('Labels —')) return null
+                return (
+                  <tr key={mat.item} className="border-t border-border/50">
+                    <td className="py-1.5 pr-4 font-medium">{mat.item}</td>
+                    <td className="py-1.5 px-2">
+                      <button
+                        onClick={() => cycleMaterialStatus(idx)}
+                        className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full cursor-pointer select-none active:scale-95 transition-transform ${
+                          STATUS_COLORS[mat.status as MaterialStatus] || STATUS_COLORS.Have
+                        }`}
+                      >
+                        {mat.status}
+                      </button>
+                    </td>
+                    <td className="py-1.5 px-2">
+                      <input
+                        type="text"
+                        value={mat.note}
+                        onChange={e => setMaterialNote(idx, e.target.value)}
+                        placeholder="—"
+                        className="w-full bg-transparent text-sm border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/20"
+                      />
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Caps & Labels — flavor grid */}
+        <div className="overflow-x-auto mt-4 pt-4 border-t border-border/50">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+                <th className="pb-2 pr-4"></th>
+                {FLAVORS.map(f => (
+                  <th key={f} className="pb-2 text-center px-1 min-w-[60px]">
+                    {flavorDot(f)}{f}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {(['Caps', 'Labels'] as const).map(category => (
+                <tr key={category} className="border-t border-border/50">
+                  <td className="py-2 pr-4 font-medium">{category}</td>
+                  {FLAVORS.map(f => {
+                    const matName = `${category} — ${f}`
+                    const idx = materials.findIndex(m => m.item === matName)
+                    if (idx === -1) return <td key={f} className="py-2 text-center px-1"><span className="text-muted-foreground/20">&mdash;</span></td>
+                    const mat = materials[idx]
+                    return (
+                      <td key={f} className="py-2 text-center px-1">
+                        <button
+                          onClick={() => cycleMaterialStatus(idx)}
+                          className={`text-[10px] font-medium px-2 py-0.5 rounded-full cursor-pointer select-none active:scale-95 transition-transform ${
+                            STATUS_COLORS[mat.status as MaterialStatus] || STATUS_COLORS.Have
+                          }`}
+                        >
+                          {mat.status}
+                        </button>
+                      </td>
+                    )
+                  })}
                 </tr>
               ))}
             </tbody>

@@ -84,6 +84,7 @@ export function ProductionDemand() {
               return (
                 <tr key={order.id} className="border-t border-border/50">
                   <td className="py-1.5 pr-4">
+                    <div className="text-[10px] uppercase tracking-wider text-orange-400 font-medium truncate max-w-[180px]">{order.channel}</div>
                     <div className="font-medium truncate max-w-[180px]">{order.title}</div>
                     <div className="text-[10px] text-muted-foreground/50">{order.dateStr}</div>
                   </td>
