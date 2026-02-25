@@ -106,6 +106,7 @@ export const UNITS: Record<string, {
   mango_fruit:  { pkg: 30,  unit: 'lb',  label: '30lb case',   name: 'mango',               pLo: 46.50, pHi: 46.50 },
   thai_chili:   { pkg: 30,  unit: 'lb',  label: '30lb case',   name: 'thai chilies',        pLo: 49.50, pHi: 49.50 },
   agave:        { pkg: 10,  unit: 'lb',  label: '~10lb jug',   name: 'agave nectar',        pLo: 25,    pHi: 30 },
+  white_vinegar:{ pkg: 4,   unit: 'gal', label: 'case (4gal)', name: 'white vinegar',       pLo: 20,    pHi: 20 },
 }
 
 export const DELIVERY_FEE = 80

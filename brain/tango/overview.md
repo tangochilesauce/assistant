@@ -150,11 +150,11 @@ Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic I
 ### Bill of Materials
 | Component | Part # | Supplier | Cost/Unit |
 |-----------|--------|----------|-----------|
-| Bottle | B320 | Container & Packaging | ~$0.28 |
+| Bottle | B320 | Berlin (owes $4,100 Feb 2026) | ~$0.28 |
 | Cap | 24-410 TOTC | Owen Xiang (Alibaba) | $0.025 |
 | Seal | — | Container & Packaging | $0.02 |
 | Label (set) | — | K Sidrane | $0.373 |
-| 6-Pack Box | — | Acorn (Gary) | ~$1.00 |
+| 6-Pack Box | — | U-LINE (Acorn too expensive) | ~$1.00 |
 
 ### Label Colors (Hex)
 | Flavor | Color | Hex |
@@ -272,18 +272,25 @@ Ollas are 45-gallon pots filled to within 3-6 inches from the top.
 
 **Key distinction:** 1 olla ≠ 1 drum. A drum holds ~625 bottles. A standard olla yields ~400 bottles — roughly 2/3 of a drum. Mango yields ~450 (2 larger batches, higher volume per batch).
 
+### Cook Setup (Standard Tango — not Mango)
+3 ollas on 3 burners simultaneously. 4 batches per olla = **12 batches total per cook shift**. All ingredients get blended, brought to a boil, flame killed. Poured into drums (botes) to cool at room temp. Drums need ~2 days to cool before packing.
+
+**Truffle** is NOT a separate cook — it's the Mild recipe. Truffle oil flavoring is added right after cooking.
+
+**Mango** uses larger batches (2 per olla), so it's a different cook setup.
+
 ### Process Flow
-Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pack) → Cases
+Ingredients (Deep delivers) → Prep → Cook (3 ollas, 3 burners) → Pour into drums → Cool 2 days → Pre-step: fill seals into caps (manual, ideally day before pack) → Pack: pneumatic piston fill (8oz) from drum → Hand-screw caps with pre-fitted seals → Label machine (2 at a time, foot pedal) → Inkjet date encoding on belt → Box into 6-packs → Case stickers (flavor-specific) → Palletize → BOL + invoice in pallet wrap
 
 ### Production Costs (Per Run)
 | Item | Vendor | Cost |
 |------|--------|------|
-| Ingredients | Deep (My Orchard) | $1,300 |
-| Co-pack | Foodies (Aria) | $1,100 |
-| Boxes | Acorn | $804 |
+| Ingredients | Deep (My Orchard) | ~$1,300 |
+| Co-pack | Foodies (Aria) | $800-$1,000 (see shift costs) |
+| Bottles | Berlin | ~$0.28/ea (owes $4,100 as of Feb 2026) |
+| Boxes | U-LINE (Acorn too expensive at $804) | varies |
 | Labels | KSidrane (Zachary) | $695-$910 (see below) |
-| Shipping | Daylight | $400 |
-| **Total per run** | | **$5,104** |
+| Shipping | Daylight (~$400, NOT needed for UNFI — they send own carrier) | $0-$400 |
 
 ### Label Pricing — KSidrane (Quote #23728, Feb 17 2026, valid 30 days)
 **Contact:** Zachary Sidrane, ksidrane.com, (631) 393-6974
@@ -301,13 +308,37 @@ Ingredients → Batches → Ollas (cook) → Drums (cool 2 days) → Bottles (pa
 **Note:** This quote is for **Mild labels only**. Sweet spot is 5K-10K range — nearly double labels for +$215. Quote expires ~March 19, 2026.
 
 ### Shift Costs
-| Type | Hours | Cost |
-|------|-------|------|
-| COOK | 4 | $400 |
-| PACK | 8 | $1,000 |
+| Type | 4hr | 8hr |
+|------|-----|-----|
+| COOK | $400 | $800 |
+| PACK | $500 | $1,000 |
+
+### Pack Sequence (Detailed)
+1. **Pre-step (ideally day before):** Fill foil seals into caps by hand — flavor-specific caps, manual process
+2. **Pre-step:** Ensure case stickers are ready — also flavor-specific
+3. **Bottling:** Pneumatic piston filler set to 8oz, draws sauce from drum through tube
+4. **Capping:** Hand-screw caps onto bottles (caps have pre-fitted seals). Hurts the fingers.
+5. **Labeling:** Machine-operated, rolls 2 labels at a time using a foot pedal
+6. **Date encoding:** Inkjet sprayer on a manufacturing belt stamps the date
+7. **Boxing:** Pack 6 bottles per case, apply case sticker
+8. **Palletizing:** Stack cases on pallet, wrap, insert BOL + invoice into wrap
+
+**Dan helps Foodies with all of this.** Everything normally stays at the kitchen — bottles on two racks, labels in lockers. Things are at Dan's house temporarily (Feb 2026) because playing catch-up on a budget.
 
 ### Kitchen
 Foodies Urban Kitchen, 8922 Norris Ave, Sun Valley
+
+### Suppliers
+| Supplier | What | Notes |
+|----------|------|-------|
+| Deep (My Orchard) | ALL ingredients including white vinegar for Sriracha | $80 delivery fee |
+| Berlin | Empty bottles | Owes $4,100 (Feb 2026) |
+| U-LINE | 6-pack boxes | Current supplier (Acorn/Gary = $804, too expensive) |
+| KSidrane (Zachary) | Labels | See pricing below |
+| Owen Xiang (Alibaba) | Caps | $0.025/ea, flavor-specific colors |
+| Daylight | Shipping/logistics | ~$400/shipment (not needed for UNFI) |
+
+**Invoice timing:** Dan invoices AFTER pickup, not before.
 
 ### Data Source
 All production data lives in Supabase settings table (keys: `tango_production_*`). **PL8 Orders page (`assistant-k5go.vercel.app/orders`) is the single source of truth** — editable directly (packed counts, drum counts, status pills, ingredient inventory, bill plans, material status). Standalone Tango Dashboard is retired. Notion "Tango Production" page is also retired.
@@ -382,14 +413,17 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 | Habanero | box | ~10 lb | Deep |
 | Apple cider vinegar | case | 4 gallons | Deep |
 | Salt | bag | 50 lb | Deep |
-| Red jalapeno (Sriracha) | case | ??lb per case | Deep |
+| Red jalapeno (Sriracha) | case | ~25 lb | Deep |
 | Cane sugar (Sriracha) | bag | 50 lb | Deep |
+| White vinegar (Sriracha) | — | — | Deep |
+| Thai chilies (Thai) | case | 30 lb | Deep |
+| Mango | case | 30 lb | Deep |
+| Agave nectar (Mango) | jug | ~10 lb | Deep |
 
 **Notes:**
 - No scotch bonnet currently — just habanero for all flavors (Feb 2026)
-- **Deep supplies ALL ingredients** including Sriracha
-- **White vinegar already at kitchen** — don't need to order
-- Water for Sriracha — just water, no order needed
+- **Deep supplies ALL ingredients** — including white vinegar for Sriracha
+- Water for Sriracha = just water, available at kitchen, no order needed
 
 ### Ingredient Orders by Run Size
 
@@ -510,7 +544,6 @@ Use the per-olla ingredient lists below. Scale by number of ollas per flavor.
 | Cane sugar | 8 | lb | 8 lb | Sriracha only |
 
 **Already at kitchen — don't order:**
-- White vinegar (for Sriracha)
 - Water (for Sriracha)
 
 **Notes:** No scotch bonnet — habanero only (Feb 2026). Deep supplies ALL ingredients.
