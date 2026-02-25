@@ -12,6 +12,7 @@ import { DemandSummary } from '@/components/orders/demand-summary'
 import { GapAnalysis } from '@/components/orders/gap-analysis'
 import { OllaPlanner } from '@/components/orders/olla-planner'
 import { DeepOrderGenerator } from '@/components/orders/deep-order-generator'
+import { PackDay } from '@/components/orders/pack-day'
 import { PackReadiness } from '@/components/orders/pack-readiness'
 import { PackPlan } from '@/components/orders/pack-plan'
 import { ShipTracker } from '@/components/orders/ship-tracker'
@@ -98,6 +99,7 @@ export default function OrdersPage() {
 
             <TabsContent value="pack">
               <div className="space-y-6 pt-4">
+                <PackDay />
                 <PackReadiness />
                 <PackPlan />
               </div>
