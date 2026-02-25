@@ -305,13 +305,13 @@ export function PackDay() {
                 transition-all cursor-pointer select-none
                 ${isSelected
                   ? 'text-white shadow-sm'
-                  : 'border border-border text-muted-foreground/50 hover:text-muted-foreground hover:border-border/80'
+                  : 'hover:opacity-80'
                 }
               `}
               style={
                 isSelected
                   ? { background: FLAVOR_COLORS[f] || '#999' }
-                  : undefined
+                  : { background: `${FLAVOR_COLORS[f] || '#999'}18`, border: `1px solid ${FLAVOR_COLORS[f] || '#999'}40`, color: FLAVOR_COLORS[f] || '#999' }
               }
             >
               <span
@@ -345,7 +345,6 @@ export function PackDay() {
             {allPrepped ? (
               <div className="rounded-md bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-xs text-emerald-700 dark:text-emerald-400">
                 <span className="font-medium">All prepped &mdash; ready to pack</span>
-                <div className="mt-1 opacity-80 italic">{verdict}</div>
               </div>
             ) : (
               <div className="space-y-1">
@@ -355,10 +354,6 @@ export function PackDay() {
                     <span>{issue.message}</span>
                   </div>
                 ))}
-                {/* Verdict */}
-                <div className="text-xs text-muted-foreground italic pt-2 px-1">
-                  {verdict}
-                </div>
               </div>
             )}
           </div>
@@ -461,6 +456,11 @@ export function PackDay() {
                 )
               })}
             </div>
+          </div>
+
+          {/* Verdict — bottom of card */}
+          <div className="text-sm text-muted-foreground italic pt-1 border-t border-border/30 mt-1">
+            {verdict}
           </div>
         </div>
       )}
