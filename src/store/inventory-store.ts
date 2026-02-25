@@ -32,6 +32,7 @@ interface InventoryState {
   labels: Record<string, number>
   sealFilledCaps: Record<string, string>
   boxes: Record<string, number>
+  caseLabels: Record<string, number>
 
   // Pack day manual overrides
   packDayFlavors: string[]
@@ -49,6 +50,7 @@ interface InventoryState {
   setLabels: (flavor: string, value: number) => void
   setSealFilledCaps: (flavor: string, value: string) => void
   setBoxes: (flavor: string, value: number) => void
+  setCaseLabels: (flavor: string, value: number) => void
   setPackDayFlavors: (flavors: string[]) => void
 
   // Computed
@@ -69,6 +71,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   labels: {},
   sealFilledCaps: {},
   boxes: {},
+  caseLabels: {},
   packDayFlavors: [],
 
   refetchInventory: async () => {
@@ -80,7 +83,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     if (get().initialized) return
     set({ loading: true })
 
-    const [packedData, packed25Data, drumsData, ingredientsData, materialsData, capsData, labelsData, sealFilledCapsData, boxesData, packDayData] = await Promise.all([
+    const [packedData, packed25Data, drumsData, ingredientsData, materialsData, capsData, labelsData, sealFilledCapsData, boxesData, caseLabelsData, packDayData] = await Promise.all([
       loadSetting<{ packed?: { flavor: string; bottles: number }[] }>(SETTINGS_KEYS.packed),
       loadSetting<{ packed?: { flavor: string; bottles: number }[] }>(SETTINGS_KEYS.packed25),
       loadSetting<{ drums?: { flavor: string; drums: number }[] }>(SETTINGS_KEYS.drums),
@@ -90,6 +93,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       loadSetting<Record<string, number>>(SETTINGS_KEYS.labels),
       loadSetting<Record<string, string>>(SETTINGS_KEYS.sealFilledCaps),
       loadSetting<Record<string, number>>(SETTINGS_KEYS.boxes),
+      loadSetting<Record<string, number>>(SETTINGS_KEYS.caseLabels),
       loadSetting<{ flavors?: string[]; date?: string }>(SETTINGS_KEYS.packDay),
     ])
 
@@ -130,16 +134,18 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     const labels: Record<string, number> = {}
     const sealFilledCaps: Record<string, string> = {}
     const boxes: Record<string, number> = {}
+    const caseLabels: Record<string, number> = {}
     for (const f of FLAVORS) {
       caps[f] = capsData?.[f] || 0
       labels[f] = labelsData?.[f] || 0
       sealFilledCaps[f] = sealFilledCapsData?.[f] || 'none'
       boxes[f] = boxesData?.[f] || 0
+      caseLabels[f] = caseLabelsData?.[f] || 0
     }
 
     const packDayFlavors = packDayData?.flavors || []
 
-    set({ packed, packed25, drums, ingredients, materials, caps, labels, sealFilledCaps, boxes, packDayFlavors, initialized: true, loading: false })
+    set({ packed, packed25, drums, ingredients, materials, caps, labels, sealFilledCaps, boxes, caseLabels, packDayFlavors, initialized: true, loading: false })
   },
 
   setPacked: (flavor: string, value: number) => {
@@ -233,6 +239,12 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     const v = Math.max(0, Math.round(value))
     set(s => ({ boxes: { ...s.boxes, [flavor]: v } }))
     saveSetting(SETTINGS_KEYS.boxes, get().boxes)
+  },
+
+  setCaseLabels: (flavor: string, value: number) => {
+    const v = Math.max(0, Math.round(value))
+    set(s => ({ caseLabels: { ...s.caseLabels, [flavor]: v } }))
+    saveSetting(SETTINGS_KEYS.caseLabels, get().caseLabels)
   },
 
   setPackDayFlavors: (flavors: string[]) => {

@@ -18,6 +18,7 @@ export function PackagingInventory() {
     labels, setLabels,
     sealFilledCaps, setSealFilledCaps,
     boxes, setBoxes,
+    caseLabels, setCaseLabels,
   } = useInventoryStore()
 
   // Filter to non-flavor items only (caps/labels/boxes/seal-filled live in flavor grid)
@@ -126,6 +127,16 @@ export function PackagingInventory() {
                       <option key={opt} value={opt}>{opt}</option>
                     ))}
                   </select>
+                </td>
+              ))}
+            </tr>
+            <tr className="border-t border-border/50">
+              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
+                Case Labels <span className="text-[10px] text-muted-foreground/50 font-normal">sheets</span>
+              </td>
+              {FLAVORS.map(f => (
+                <td key={f} className="py-1.5 px-1 text-center">
+                  <StepperInput value={caseLabels[f] || 0} step={1} onSave={v => setCaseLabels(f, v)} />
                 </td>
               ))}
             </tr>
