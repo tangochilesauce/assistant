@@ -128,11 +128,22 @@ export interface MaterialItem {
 
 export const DEFAULT_MATERIALS: MaterialItem[] = [
   { item: 'Empty Bottles', status: 'Have', note: '' },
-  { item: 'Foil Seals', status: 'Order', note: '' },
-  { item: '6-Pack Boxes', status: 'Have', note: '' },
-  { item: '25-Pack Boxes', status: 'Order', note: '' },
-  { item: 'Stickers (case)', status: 'Have', note: '' },
-  { item: 'Packing Tape', status: 'Have', note: '' },
+  { item: 'Seals', status: 'Have', note: '' },
+  { item: 'Seal-Filled Caps', status: 'Have', note: '' },
+  { item: 'Caps — Hot', status: 'Have', note: '' },
+  { item: 'Caps — Mild', status: 'Have', note: '' },
+  { item: 'Caps — Mango', status: 'Have', note: '' },
+  { item: 'Caps — Truffle', status: 'Have', note: '' },
+  { item: 'Caps — Sriracha', status: 'Have', note: '' },
+  { item: 'Caps — Thai', status: 'Have', note: '' },
+  { item: 'Labels — Hot', status: 'Have', note: '' },
+  { item: 'Labels — Mild', status: 'Have', note: '' },
+  { item: 'Labels — Mango', status: 'Have', note: '' },
+  { item: 'Labels — Truffle', status: 'Have', note: '' },
+  { item: 'Labels — Sriracha', status: 'Have', note: '' },
+  { item: 'Labels — Thai', status: 'Have', note: '' },
+  { item: '6-Pack Boxes (XL)', status: 'Have', note: '' },
+  { item: '6-Pack Boxes (Logo)', status: 'Have', note: '' },
 ]
 
 export const STATUS_COLORS: Record<MaterialStatus, string> = {
