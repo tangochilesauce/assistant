@@ -84,10 +84,15 @@ function getDefaultOrders(): Order[] {
       value: '$3,422',
       dateStr: 'Shipped: Feb 9',
       stage: 'ship',
-      shipTo: null,
+      shipTo: 'Moreno Valley DC, 24501 Elder Ave, Moreno Valley, CA 92553',
       notes: 'Pays ~Feb 23 (Net 14)',
-      items: [],
-      checklist: [],
+      items: [
+        { sku: '224137', flavor: 'Mild', cases: 82, price: 29, packed: 82 },
+        { sku: '224132', flavor: 'Hot', cases: 36, price: 29, packed: 36 },
+      ],
+      checklist: [
+        { id: 'ck-mv-1', text: 'Shipped via UNFI carrier', done: true },
+      ],
       docs: { po: null, bol: null, inv: null },
       createdAt: '2026-01-20T00:00:00Z',
       carrier: 'unfi',
@@ -207,6 +212,7 @@ interface OrderState {
 
   // CRUD
   fetchOrders: () => Promise<void>
+  refetchOrders: () => Promise<void>
   addOrder: (input: OrderInput) => Promise<string>
   updateOrder: (id: string, changes: Partial<Order>) => Promise<void>
   deleteOrder: (id: string) => Promise<void>
@@ -235,6 +241,11 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   loading: false,
   initialized: false,
   selectedOrderId: null,
+
+  refetchOrders: async () => {
+    set({ initialized: false })
+    await get().fetchOrders()
+  },
 
   fetchOrders: async () => {
     if (get().initialized) return

@@ -30,6 +30,7 @@ interface InventoryState {
 
   // Actions
   fetchInventory: () => Promise<void>
+  refetchInventory: () => Promise<void>
   setPacked: (flavor: string, value: number) => void
   setDrums: (flavor: string, value: number) => void
   setIngredient: (key: string, onHand: number, note?: string) => void
@@ -50,6 +51,11 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   drums: {},
   ingredients: {},
   materials: DEFAULT_MATERIALS,
+
+  refetchInventory: async () => {
+    set({ initialized: false })
+    await get().fetchInventory()
+  },
 
   fetchInventory: async () => {
     if (get().initialized) return

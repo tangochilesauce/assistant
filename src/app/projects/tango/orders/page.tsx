@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { PageHeader } from '@/components/layout/page-header'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { OrderPipeline } from '@/components/orders/order-pipeline'
@@ -21,16 +21,39 @@ import { useInventoryStore } from '@/store/inventory-store'
 import { useCookPlanStore } from '@/store/cook-plan-store'
 
 export default function OrdersPage() {
-  const { initialized, fetchOrders, orders } = useOrderStore()
+  const { initialized, fetchOrders, refetchOrders, orders } = useOrderStore()
   const fetchInventory = useInventoryStore(s => s.fetchInventory)
+  const refetchInventory = useInventoryStore(s => s.refetchInventory)
   const fetchCookPlan = useCookPlanStore(s => s.fetchCookPlan)
+  const refetchCookPlan = useCookPlanStore(s => s.refetchCookPlan)
   const [tab, setTab] = useState('orders')
 
+  // Initial fetch
   useEffect(() => {
     fetchOrders()
     fetchInventory()
     fetchCookPlan()
   }, [fetchOrders, fetchInventory, fetchCookPlan])
+
+  // Refetch everything when tab/window regains focus (phone → desktop sync)
+  const refetchAll = useCallback(() => {
+    refetchOrders()
+    refetchInventory()
+    refetchCookPlan()
+  }, [refetchOrders, refetchInventory, refetchCookPlan])
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') refetchAll()
+    }
+    const onFocus = () => refetchAll()
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('focus', onFocus)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('focus', onFocus)
+    }
+  }, [refetchAll])
 
   return (
     <>
@@ -51,7 +74,6 @@ export default function OrdersPage() {
               <TabsTrigger value="ship" className="flex-1">Ship & Pay</TabsTrigger>
             </TabsList>
 
-            {/* ── Orders Tab ── */}
             <TabsContent value="orders">
               <div className="space-y-4 pt-4">
                 <OrderDropZone />
@@ -59,14 +81,12 @@ export default function OrdersPage() {
               </div>
             </TabsContent>
 
-            {/* ── Inventory Tab ── */}
             <TabsContent value="inventory">
               <div className="space-y-6 pt-4">
                 <InventoryDashboard />
               </div>
             </TabsContent>
 
-            {/* ── Cook Tab ── */}
             <TabsContent value="cook">
               <div className="space-y-6 pt-4">
                 <DemandSummary />
@@ -76,7 +96,6 @@ export default function OrdersPage() {
               </div>
             </TabsContent>
 
-            {/* ── Pack Tab ── */}
             <TabsContent value="pack">
               <div className="space-y-6 pt-4">
                 <PackReadiness />
@@ -84,7 +103,6 @@ export default function OrdersPage() {
               </div>
             </TabsContent>
 
-            {/* ── Ship & Pay Tab ── */}
             <TabsContent value="ship">
               <div className="space-y-6 pt-4">
                 <ShipTracker />
@@ -95,7 +113,6 @@ export default function OrdersPage() {
         )}
       </div>
 
-      {/* Detail sheet (works across all tabs) */}
       <OrderDetail />
     </>
   )

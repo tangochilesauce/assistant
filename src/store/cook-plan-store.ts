@@ -11,6 +11,7 @@ interface CookPlanState {
 
   // Actions
   fetchCookPlan: () => Promise<void>
+  refetchCookPlan: () => Promise<void>
   setOllas: (flavor: string, value: number) => void
   autoPlan: (gaps: Record<string, number>) => void
 
@@ -24,6 +25,11 @@ export const useCookPlanStore = create<CookPlanState>((set, get) => ({
   initialized: false,
   loading: false,
   ollas: {},
+
+  refetchCookPlan: async () => {
+    set({ initialized: false })
+    await get().fetchCookPlan()
+  },
 
   fetchCookPlan: async () => {
     if (get().initialized) return
