@@ -52,7 +52,7 @@ const RECIPES: RecipeCard[] = [
   },
   {
     flavor: 'Mild',
-    subtitle: 'Same base as Truffle (add truffle oil after cooking)',
+    subtitle: 'Same base as Truffle (without the truffle oil)',
     ingredients: [
       { name: 'Carrots',              grams: 12000, unit: 'weight', unitKey: 'carrots' },
       { name: 'Garlic',               grams: 4000,  unit: 'weight', unitKey: 'garlic' },
@@ -252,10 +252,10 @@ function RecipeSection({ recipe, notes, onAddNote, onDeleteNote }: RecipeSection
                   <td className="py-1.5 text-right tabular-nums px-4 text-muted-foreground whitespace-nowrap">
                     {fmtImperial(ing, 1)}
                   </td>
-                  <td className="py-1.5 text-right tabular-nums px-4 text-muted-foreground/50 whitespace-nowrap">
+                  <td className="py-1.5 text-right tabular-nums px-4 text-orange-400 font-medium whitespace-nowrap">
                     {fmtCommodity(ing, 1)}
                   </td>
-                  <td className="py-1.5 text-right tabular-nums px-4 border-l border-border/30 whitespace-nowrap">
+                  <td className="py-1.5 text-right tabular-nums px-4 text-muted-foreground border-l border-border/30 whitespace-nowrap">
                     {fmtImperial(ing, batches)}
                   </td>
                   <td className="py-1.5 text-right tabular-nums px-4 text-orange-400 font-medium whitespace-nowrap">
