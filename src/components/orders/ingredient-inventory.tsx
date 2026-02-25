@@ -18,8 +18,8 @@ export function IngredientInventory() {
           <thead>
             <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
               <th className="pb-2 pr-4">Ingredient</th>
-              <th className="pb-2 px-2 w-20 text-center">Qty</th>
-              <th className="pb-2 px-2 w-24">Format</th>
+              <th className="pb-2 px-2 w-20 text-center">On Hand</th>
+              <th className="pb-2 px-2 w-32">Format</th>
               <th className="pb-2 px-2">Note</th>
             </tr>
           </thead>
@@ -29,11 +29,9 @@ export function IngredientInventory() {
               if (!u) return null
               const inv = ingredients[key] || { onHand: 0, unit: u.unit, lastUpdated: '', note: '' }
 
-              // Commodified display: convert raw amount to packages
+              // Convert raw units → packages for display/input
               const pkgs = inv.onHand > 0 ? inv.onHand / u.pkg : 0
-              const pkgsDisplay = pkgs > 0
-                ? (pkgs % 1 === 0 ? `${pkgs}` : pkgs.toFixed(1)) + ` ${u.label}${pkgs !== 1 ? 's' : ''}`
-                : ''
+              const pkgsRounded = pkgs % 1 === 0 ? pkgs : Math.round(pkgs * 10) / 10
 
               return (
                 <tr key={key} className="border-t border-border/50">
@@ -42,17 +40,22 @@ export function IngredientInventory() {
                     <SaveInput
                       type="number"
                       min={0}
-                      step="any"
+                      step="0.5"
                       inputMode="decimal"
-                      value={inv.onHand || ''}
-                      onSave={v => setIngredient(key, parseFloat(v) || 0)}
+                      value={pkgsRounded || ''}
+                      onSave={v => {
+                        const numPkgs = parseFloat(v) || 0
+                        setIngredient(key, numPkgs * u.pkg)
+                      }}
                       placeholder="0"
-                      className="w-16 text-center tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                      className="w-14 text-center tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
                     />
-                    <span className="text-[10px] text-muted-foreground/50 ml-1">{u.unit}</span>
                   </td>
-                  <td className="py-1.5 px-2 text-xs text-muted-foreground tabular-nums">
-                    {pkgsDisplay || <span className="text-muted-foreground/20">&mdash;</span>}
+                  <td className="py-1.5 px-2 text-xs text-muted-foreground">
+                    {u.label}
+                    {inv.onHand > 0 && (
+                      <span className="text-muted-foreground/40 ml-1">({inv.onHand}{u.unit})</span>
+                    )}
                   </td>
                   <td className="py-1.5 px-2">
                     <SaveInput
