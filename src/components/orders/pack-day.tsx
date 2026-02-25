@@ -3,7 +3,7 @@
 import { useMemo, useEffect } from 'react'
 import { useOrderStore } from '@/store/order-store'
 import { useInventoryStore } from '@/store/inventory-store'
-import { FLAVORS, FLAVOR_COLORS } from '@/data/tango-constants'
+import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS } from '@/data/tango-constants'
 
 // ── Pack order priority ──────────────────────────────────────
 // Sriracha always first, Truffle always last, middle sorted by demand.
@@ -22,7 +22,6 @@ function sortPackOrder(flavors: string[], bottlesNeeded: Record<string, number>)
     const pa = PACK_PRIORITY[a] ?? 50
     const pb = PACK_PRIORITY[b] ?? 50
     if (pa !== pb) return pa - pb
-    // Tiebreak middle flavors by demand (most needed first)
     return (bottlesNeeded[b] || 0) - (bottlesNeeded[a] || 0)
   })
 }
@@ -32,20 +31,20 @@ function sortPackOrder(flavors: string[], bottlesNeeded: Record<string, number>)
 export function PackDay() {
   const orders = useOrderStore(s => s.orders)
   const {
-    packed, drums, sealFilledCaps, labels, materials,
+    packed, packed25, drums, sealFilledCaps, labels, materials,
     packDayFlavors, setPackDayFlavors,
   } = useInventoryStore()
 
-  // Orders in cook or pack stage (cook = cooked and coming, pack = actively packing)
-  const packOrders = useMemo(
-    () => orders.filter(o => o.stage === 'cook' || o.stage === 'pack'),
+  // Orders in cook stage only
+  const cookOrders = useMemo(
+    () => orders.filter(o => o.stage === 'cook'),
     [orders]
   )
 
-  // Bottles needed per flavor from cook + pack stage orders
-  const bottlesNeeded = useMemo(() => {
+  // Total bottles needed per flavor from cook-stage orders (gross demand)
+  const bottlesDemand = useMemo(() => {
     const need: Record<string, number> = {}
-    for (const order of packOrders) {
+    for (const order of cookOrders) {
       for (const item of order.items) {
         const remaining = (item.cases - item.packed) * 6
         if (remaining > 0) {
@@ -54,33 +53,44 @@ export function PackDay() {
       }
     }
     return need
-  }, [packOrders])
+  }, [cookOrders])
 
-  // Auto-suggested flavors from pack-stage orders
+  // Available bottles per flavor (packed 6-pk + packed 25-pk)
+  const bottlesAvailable = useMemo(() => {
+    const avail: Record<string, number> = {}
+    for (const f of FLAVORS) {
+      avail[f] = (packed[f] || 0) + (packed25[f] || 0)
+    }
+    return avail
+  }, [packed, packed25])
+
+  // Net bottles still needed (demand - available, floored at 0)
+  const bottlesNet = useMemo(() => {
+    const net: Record<string, number> = {}
+    for (const f of Object.keys(bottlesDemand)) {
+      net[f] = Math.max(0, (bottlesDemand[f] || 0) - (bottlesAvailable[f] || 0))
+    }
+    return net
+  }, [bottlesDemand, bottlesAvailable])
+
+  // Auto-suggested flavors from cook-stage orders
   const suggestedFlavors = useMemo(
-    () => sortPackOrder(Object.keys(bottlesNeeded), bottlesNeeded),
-    [bottlesNeeded]
+    () => sortPackOrder(Object.keys(bottlesDemand), bottlesDemand),
+    [bottlesDemand]
   )
 
   // Merged selection: start with suggested, layer manual overrides
   const selectedFlavors = useMemo(() => {
     if (packDayFlavors.length === 0) return suggestedFlavors
-    // Keep manual list but filter to valid flavors
     const valid = new Set(FLAVORS as readonly string[])
     return sortPackOrder(
       packDayFlavors.filter(f => valid.has(f)),
-      bottlesNeeded
+      bottlesDemand
     )
-  }, [packDayFlavors, suggestedFlavors, bottlesNeeded])
+  }, [packDayFlavors, suggestedFlavors, bottlesDemand])
 
-  // Auto-sync: when suggested changes and user has no manual overrides, reset
-  useEffect(() => {
-    if (packDayFlavors.length === 0 && suggestedFlavors.length > 0) return
-    // If user has overrides but there are no pack orders, clear
-    if (suggestedFlavors.length === 0 && packDayFlavors.length > 0) {
-      // Don't auto-clear — user might be prepping ahead
-    }
-  }, [suggestedFlavors, packDayFlavors])
+  // Auto-sync: no-op for now (don't auto-clear manual overrides)
+  useEffect(() => {}, [suggestedFlavors, packDayFlavors])
 
   // Toggle a flavor on/off
   const toggleFlavor = (flavor: string) => {
@@ -96,7 +106,7 @@ export function PackDay() {
 
   // Readiness checks
   const getReadiness = (flavor: string) => {
-    const hasSauce = (packed[flavor] || 0) > 0 || (drums[flavor] || 0) > 0
+    const hasSauce = (packed[flavor] || 0) > 0 || (packed25[flavor] || 0) > 0 || (drums[flavor] || 0) > 0
     const hasCaps = sealFilledCaps[flavor] !== 'none' && sealFilledCaps[flavor] !== undefined
     const hasLabels = (labels[flavor] || 0) > 0
     return { hasSauce, hasCaps, hasLabels }
@@ -110,6 +120,11 @@ export function PackDay() {
     const issues: { flavor: string; message: string }[] = []
     for (const flavor of selectedFlavors) {
       const { hasSauce, hasCaps, hasLabels } = getReadiness(flavor)
+      // Rebox check: bottles exist in 25-packs that need to move to 6-packs
+      const in25 = packed25[flavor] || 0
+      if (in25 > 0) {
+        issues.push({ flavor, message: `Rebox ${in25} ${flavor} bottles from 25-packs to 6-packs` })
+      }
       if (!hasCaps) issues.push({ flavor, message: `Stuff seals into ${flavor} caps` })
       if (!hasLabels) issues.push({ flavor, message: `Need ${flavor} labels` })
       if (!hasSauce) issues.push({ flavor, message: `No ${flavor} sauce ready (no drums or packed bottles)` })
@@ -119,12 +134,13 @@ export function PackDay() {
     }
     return issues
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFlavors, packed, drums, sealFilledCaps, labels, materials])
+  }, [selectedFlavors, packed, packed25, drums, sealFilledCaps, labels, materials])
 
-  const totalBottles = selectedFlavors.reduce((s, f) => s + (bottlesNeeded[f] || 0), 0)
+  const totalDemand = selectedFlavors.reduce((s, f) => s + (bottlesDemand[f] || 0), 0)
+  const totalNet = selectedFlavors.reduce((s, f) => s + (bottlesNet[f] || 0), 0)
   const allPrepped = prepIssues.length === 0 && selectedFlavors.length > 0
 
-  // Flavor dot helper
+  // Helpers
   const flavorDot = (f: string) => (
     <span
       className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
@@ -138,12 +154,12 @@ export function PackDay() {
     </span>
   )
 
-  if (packOrders.length === 0 && packDayFlavors.length === 0) {
+  if (cookOrders.length === 0 && packDayFlavors.length === 0) {
     return (
       <div className="border border-border rounded-lg p-4">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Pack Day</h3>
         <p className="text-sm text-muted-foreground/50 text-center py-4">
-          No orders in cook or pack stage.
+          No orders in cook stage.
         </p>
       </div>
     )
@@ -157,7 +173,11 @@ export function PackDay() {
           <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Pack Day</h3>
           {selectedFlavors.length > 0 && (
             <p className="text-[11px] text-muted-foreground/60 mt-0.5 tabular-nums">
-              {selectedFlavors.length} flavor{selectedFlavors.length !== 1 ? 's' : ''} &middot; {totalBottles.toLocaleString()} bottles
+              {selectedFlavors.length} flavor{selectedFlavors.length !== 1 ? 's' : ''} &middot;{' '}
+              {totalDemand.toLocaleString()} needed
+              {totalNet < totalDemand && (
+                <> &middot; {totalNet.toLocaleString()} to fill</>
+              )}
             </p>
           )}
         </div>
@@ -168,7 +188,7 @@ export function PackDay() {
         {FLAVORS.map(f => {
           const isSelected = selectedFlavors.includes(f)
           const isSuggested = suggestedFlavors.includes(f)
-          const btls = bottlesNeeded[f] || 0
+          const demand = bottlesDemand[f] || 0
           return (
             <button
               key={f}
@@ -192,9 +212,9 @@ export function PackDay() {
               }
             >
               {f}
-              {btls > 0 && (
+              {demand > 0 && (
                 <span className={`tabular-nums text-[10px] ${isSelected && isSuggested ? 'opacity-80' : 'opacity-50'}`}>
-                  {btls}
+                  {demand}
                 </span>
               )}
             </button>
@@ -238,7 +258,10 @@ export function PackDay() {
             </h4>
             <div className="space-y-1">
               {selectedFlavors.map((flavor, idx) => {
-                const btls = bottlesNeeded[flavor] || 0
+                const demand = bottlesDemand[flavor] || 0
+                const avail = bottlesAvailable[flavor] || 0
+                const net = bottlesNet[flavor] || 0
+                const in25 = packed25[flavor] || 0
                 const { hasSauce, hasCaps, hasLabels } = getReadiness(flavor)
                 return (
                   <div
@@ -249,9 +272,22 @@ export function PackDay() {
                       {idx + 1}.
                     </span>
                     {flavorDot(flavor)}
-                    <span className="text-sm font-medium flex-1">{flavor}</span>
-                    <span className="text-xs tabular-nums text-muted-foreground mr-2">
-                      {btls > 0 ? `${btls} btls` : 'stock'}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-medium">{flavor}</span>
+                      {demand > 0 && avail > 0 && (
+                        <span className="text-[10px] text-muted-foreground/50 ml-1.5">
+                          {demand} needed &minus; {Math.min(avail, demand)} have
+                          {in25 > 0 && <> ({in25} in 25s)</>}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs tabular-nums text-muted-foreground font-medium mr-2 whitespace-nowrap">
+                      {demand > 0
+                        ? net > 0
+                          ? `${net} to fill`
+                          : '\u2713 have all'
+                        : 'stock'
+                      }
                     </span>
                     <span className="flex items-center gap-2 text-xs tabular-nums">
                       <span title="Sauce">{checkMark(hasSauce)} <span className="text-muted-foreground/50">sauce</span></span>

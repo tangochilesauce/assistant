@@ -17,7 +17,8 @@ interface InventoryState {
   loading: boolean
 
   // Sauce inventory — packed bottles + drums per flavor
-  packed: Record<string, number>
+  packed: Record<string, number>    // bottles in 6-packs (ready to palletize)
+  packed25: Record<string, number>  // bottles in 25-packs (need reboxing)
   drums: Record<string, number>
 
   // Ingredient inventory (fridge)
@@ -39,6 +40,7 @@ interface InventoryState {
   fetchInventory: () => Promise<void>
   refetchInventory: () => Promise<void>
   setPacked: (flavor: string, value: number) => void
+  setPacked25: (flavor: string, value: number) => void
   setDrums: (flavor: string, value: number) => void
   setIngredient: (key: string, onHand: number, note?: string) => void
   setMaterialNote: (index: number, note: string) => void
@@ -59,6 +61,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   initialized: false,
   loading: false,
   packed: {},
+  packed25: {},
   drums: {},
   ingredients: {},
   materials: DEFAULT_MATERIALS,
@@ -77,8 +80,9 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     if (get().initialized) return
     set({ loading: true })
 
-    const [packedData, drumsData, ingredientsData, materialsData, capsData, labelsData, sealFilledCapsData, boxesData, packDayData] = await Promise.all([
+    const [packedData, packed25Data, drumsData, ingredientsData, materialsData, capsData, labelsData, sealFilledCapsData, boxesData, packDayData] = await Promise.all([
       loadSetting<{ packed?: { flavor: string; bottles: number }[] }>(SETTINGS_KEYS.packed),
+      loadSetting<{ packed?: { flavor: string; bottles: number }[] }>(SETTINGS_KEYS.packed25),
       loadSetting<{ drums?: { flavor: string; drums: number }[] }>(SETTINGS_KEYS.drums),
       loadSetting<Record<string, IngredientInventory>>(SETTINGS_KEYS.ingredients),
       loadSetting<{ materials?: MaterialItem[] }>(SETTINGS_KEYS.materials),
@@ -90,10 +94,15 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     ])
 
     const packed: Record<string, number> = {}
+    const packed25: Record<string, number> = {}
     const drums: Record<string, number> = {}
 
     if (packedData?.packed) {
       for (const p of packedData.packed) packed[p.flavor] = p.bottles || 0
+    }
+
+    if (packed25Data?.packed) {
+      for (const p of packed25Data.packed) packed25[p.flavor] = p.bottles || 0
     }
 
     if (drumsData?.drums) {
@@ -130,7 +139,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
     const packDayFlavors = packDayData?.flavors || []
 
-    set({ packed, drums, ingredients, materials, caps, labels, sealFilledCaps, boxes, packDayFlavors, initialized: true, loading: false })
+    set({ packed, packed25, drums, ingredients, materials, caps, labels, sealFilledCaps, boxes, packDayFlavors, initialized: true, loading: false })
   },
 
   setPacked: (flavor: string, value: number) => {
@@ -140,6 +149,18 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     const packed = get().packed
     const arr = Object.entries(packed).map(([f, bottles]) => ({ flavor: f, bottles }))
     saveSetting(SETTINGS_KEYS.packed, {
+      packed: arr,
+      updated: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    })
+  },
+
+  setPacked25: (flavor: string, value: number) => {
+    const v = Math.max(0, value)
+    set(s => ({ packed25: { ...s.packed25, [flavor]: v } }))
+
+    const packed25 = get().packed25
+    const arr = Object.entries(packed25).map(([f, bottles]) => ({ flavor: f, bottles }))
+    saveSetting(SETTINGS_KEYS.packed25, {
       packed: arr,
       updated: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     })
@@ -224,6 +245,6 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
   getTotalInventory: (flavor: string) => {
     const s = get()
-    return (s.packed[flavor] || 0) + (s.drums[flavor] || 0) * DRUM_BOTTLES
+    return (s.packed[flavor] || 0) + (s.packed25[flavor] || 0) + (s.drums[flavor] || 0) * DRUM_BOTTLES
   },
 }))

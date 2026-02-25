@@ -5,13 +5,14 @@ import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS } from '@/data/tango-constants'
 import { StepperInput } from './stepper-input'
 
 export function SauceInventory() {
-  const { packed, drums, setPacked, setDrums } = useInventoryStore()
+  const { packed, packed25, drums, setPacked, setPacked25, setDrums } = useInventoryStore()
 
   const inventory = FLAVORS.map(f => {
     const p = packed[f] || 0
+    const p25 = packed25[f] || 0
     const d = drums[f] || 0
     const dw = Math.round(d * DRUM_BOTTLES)
-    return { flavor: f, packed: p, drums: d, drumBottles: dw, total: p + dw }
+    return { flavor: f, packed: p, packed25: p25, drums: d, drumBottles: dw, total: p + p25 + dw }
   })
 
   const totalBottles = inventory.reduce((s, i) => s + i.total, 0)
@@ -37,9 +38,9 @@ export function SauceInventory() {
             </tr>
           </thead>
           <tbody>
-            {/* Packed Bottles */}
+            {/* Packed Bottles (6-packs) */}
             <tr className="border-t border-border/50">
-              <td className="py-1.5 pr-4 font-medium">Packed Bottles</td>
+              <td className="py-1.5 pr-4 font-medium">Packed (6-pk)</td>
               {FLAVORS.map(f => (
                 <td key={f} className="py-1.5 text-right px-1">
                   <StepperInput
@@ -50,9 +51,22 @@ export function SauceInventory() {
                 </td>
               ))}
             </tr>
-            {/* Cases derived */}
+            {/* Packed Bottles (25-packs — need reboxing) */}
+            <tr className="border-t border-border/50">
+              <td className="py-1.5 pr-4 font-medium">Packed (25-pk)</td>
+              {FLAVORS.map(f => (
+                <td key={f} className="py-1.5 text-right px-1">
+                  <StepperInput
+                    value={packed25[f] || 0}
+                    step={1}
+                    onSave={v => setPacked25(f, Math.round(v))}
+                  />
+                </td>
+              ))}
+            </tr>
+            {/* Cases derived (6-pack only) */}
             <tr className="border-t border-border/30 text-muted-foreground text-xs">
-              <td className="py-1 pr-4">&rarr; Cases</td>
+              <td className="py-1 pr-4">&rarr; Cases (6-pk)</td>
               {FLAVORS.map(f => {
                 const cases = (packed[f] || 0) / 6
                 return (
