@@ -8,7 +8,9 @@ import type {
   ChecklistItem,
   OrderDocs,
   FlavorDemand,
+  CarrierType,
 } from '@/lib/types/order'
+import { migrateStage } from '@/lib/types/order'
 
 // ── Seed Data ─────────────────────────────────────────────────────
 
@@ -20,7 +22,7 @@ function getDefaultOrders(): Order[] {
       title: 'PO #1102034',
       value: '$3,480',
       dateStr: 'Pickup: Mar 25',
-      stage: 'processing',
+      stage: 'cook',
       shipTo: 'Hudson Valley Warehouse, 525 Neelytown Rd, Montgomery, NY 12549',
       notes: 'Sent 02/18/26 from catherine.r.garcia@unfi.com. Ref: HH-79667-B18. ETA: 04/06/26. Packing Friday Feb 28 (combined with EXP #12165).',
       items: [
@@ -37,6 +39,14 @@ function getDefaultOrders(): Order[] {
       ],
       docs: { po: 'PO1102034.pdf', bol: null, inv: null },
       createdAt: '2026-02-18T08:40:00Z',
+      carrier: 'unfi',
+      pickupDate: null,
+      trackingNumber: null,
+      invoiceSentAt: null,
+      invoiceNumber: null,
+      expectedPayDate: null,
+      paidAt: null,
+      paidAmount: null,
     },
     {
       id: 'unfi-1052998',
@@ -44,7 +54,7 @@ function getDefaultOrders(): Order[] {
       title: 'PO #1052998',
       value: '$3,422',
       dateStr: 'Pickup: Feb 25',
-      stage: 'processing',
+      stage: 'cook',
       shipTo: 'Hudson Valley Warehouse, 525 Neelytown Rd, Montgomery, NY 12549',
       notes: 'Palletized and ready. Pays ~Mar 11 (Net 14).',
       items: [
@@ -58,6 +68,14 @@ function getDefaultOrders(): Order[] {
       ],
       docs: { po: null, bol: null, inv: null },
       createdAt: '2026-02-01T00:00:00Z',
+      carrier: 'unfi',
+      pickupDate: null,
+      trackingNumber: null,
+      invoiceSentAt: null,
+      invoiceNumber: null,
+      expectedPayDate: null,
+      paidAt: null,
+      paidAmount: null,
     },
     {
       id: 'unfi-044849783',
@@ -65,13 +83,21 @@ function getDefaultOrders(): Order[] {
       title: 'PO #044849783',
       value: '$3,422',
       dateStr: 'Shipped: Feb 9',
-      stage: 'shipped',
+      stage: 'ship',
       shipTo: null,
       notes: 'Pays ~Feb 23 (Net 14)',
       items: [],
       checklist: [],
       docs: { po: null, bol: null, inv: null },
       createdAt: '2026-01-20T00:00:00Z',
+      carrier: 'unfi',
+      pickupDate: null,
+      trackingNumber: null,
+      invoiceSentAt: null,
+      invoiceNumber: null,
+      expectedPayDate: null,
+      paidAt: null,
+      paidAmount: null,
     },
     {
       id: 'exp-12165',
@@ -79,7 +105,7 @@ function getDefaultOrders(): Order[] {
       title: 'PO #12165',
       value: '$3,750',
       dateStr: 'Pickup: Feb 28',
-      stage: 'processing',
+      stage: 'cook',
       shipTo: 'EXP Warehouse, 28-13 119th St, College Point, NY 11354',
       notes: 'Sriracha back to 20 cases (cooked Feb 24). Mango $25/case. Mild caps swapped to green at home. Daylight pickup ~$400 net 7. Packing Friday Feb 28 (8hr shift, combined with UNFI #1102034).',
       items: [
@@ -105,6 +131,14 @@ function getDefaultOrders(): Order[] {
       ],
       docs: { po: 'EXP-PO-12165.pdf', bol: null, inv: null },
       createdAt: '2026-02-10T00:00:00Z',
+      carrier: 'daylight',
+      pickupDate: null,
+      trackingNumber: null,
+      invoiceSentAt: null,
+      invoiceNumber: null,
+      expectedPayDate: null,
+      paidAt: null,
+      paidAmount: null,
     },
   ]
 }
@@ -118,13 +152,21 @@ function rowToOrder(row: OrderRow): Order {
     title: row.title,
     value: row.value,
     dateStr: row.date_str,
-    stage: row.stage as OrderStage,
+    stage: migrateStage(row.stage),
     shipTo: row.ship_to,
     notes: row.notes,
     items: row.items || [],
     checklist: row.checklist || [],
     docs: row.docs || { po: null, bol: null, inv: null },
     createdAt: row.created_at,
+    carrier: row.carrier ?? null,
+    pickupDate: row.pickup_date ?? null,
+    trackingNumber: row.tracking_number ?? null,
+    invoiceSentAt: row.invoice_sent_at ?? null,
+    invoiceNumber: row.invoice_number ?? null,
+    expectedPayDate: row.expected_pay_date ?? null,
+    paidAt: row.paid_at ?? null,
+    paidAmount: row.paid_amount ?? null,
   }
 }
 
@@ -142,6 +184,14 @@ function orderToRow(order: Order): Omit<OrderRow, 'created_at'> {
     checklist: order.checklist,
     docs: order.docs,
     updated_at: new Date().toISOString(),
+    carrier: order.carrier,
+    pickup_date: order.pickupDate,
+    tracking_number: order.trackingNumber,
+    invoice_sent_at: order.invoiceSentAt,
+    invoice_number: order.invoiceNumber,
+    expected_pay_date: order.expectedPayDate,
+    paid_at: order.paidAt,
+    paid_amount: order.paidAmount,
   }
 }
 
@@ -175,6 +225,7 @@ interface OrderState {
   // Computed
   getOrdersByStage: () => Record<OrderStage, Order[]>
   getProductionDemand: () => FlavorDemand[]
+  getActiveOrders: () => Order[]
 }
 
 // ── Store ─────────────────────────────────────────────────────────
@@ -206,7 +257,20 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       const raw = localStorage.getItem('tango-orders')
       if (raw) {
         const parsed = JSON.parse(raw) as Order[]
-        set({ orders: parsed, loading: false, initialized: true })
+        // Migrate old stages
+        const migrated = parsed.map(o => ({
+          ...o,
+          stage: migrateStage(o.stage),
+          carrier: o.carrier ?? null,
+          pickupDate: o.pickupDate ?? null,
+          trackingNumber: o.trackingNumber ?? null,
+          invoiceSentAt: o.invoiceSentAt ?? null,
+          invoiceNumber: o.invoiceNumber ?? null,
+          expectedPayDate: o.expectedPayDate ?? null,
+          paidAt: o.paidAt ?? null,
+          paidAmount: o.paidAmount ?? null,
+        }))
+        set({ orders: migrated, loading: false, initialized: true })
         return
       }
     } catch { /* ignore */ }
@@ -362,9 +426,10 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   getOrdersByStage: () => {
     const orders = get().orders
     const grouped: Record<OrderStage, Order[]> = {
-      new: [],
-      processing: [],
-      shipped: [],
+      order: [],
+      cook: [],
+      pack: [],
+      ship: [],
       paid: [],
     }
     for (const order of orders) {
@@ -376,7 +441,8 @@ export const useOrderStore = create<OrderState>((set, get) => ({
   },
 
   getProductionDemand: () => {
-    const orders = get().orders.filter(o => o.stage === 'new' || o.stage === 'processing')
+    // Active = order + cook stages (not yet packed/shipped/paid)
+    const orders = get().orders.filter(o => o.stage === 'order' || o.stage === 'cook')
     const demandMap = new Map<string, { cases: number; sources: string[] }>()
 
     for (const order of orders) {
@@ -400,5 +466,9 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     }
 
     return demand.sort((a, b) => b.cases - a.cases)
+  },
+
+  getActiveOrders: () => {
+    return get().orders.filter(o => o.stage === 'order' || o.stage === 'cook')
   },
 }))

@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useOrderStore } from '@/store/order-store'
+import type { CarrierType } from '@/lib/types/order'
 
 const CHANNEL_OPTIONS = [
   'UNFI Hudson Valley',
@@ -33,6 +34,13 @@ const CHANNEL_OPTIONS = [
   'Other',
 ]
 
+const CARRIER_OPTIONS: { value: string; label: string }[] = [
+  { value: 'none', label: 'Not set' },
+  { value: 'unfi', label: 'UNFI (their carrier)' },
+  { value: 'daylight', label: 'Daylight Transport' },
+  { value: 'pickup', label: 'Customer pickup' },
+]
+
 export function OrderForm() {
   const [open, setOpen] = useState(false)
   const { addOrder } = useOrderStore()
@@ -42,6 +50,7 @@ export function OrderForm() {
   const [value, setValue] = useState('')
   const [dateStr, setDateStr] = useState('')
   const [shipTo, setShipTo] = useState('')
+  const [carrier, setCarrier] = useState('none')
 
   const reset = () => {
     setChannel('UNFI Hudson Valley')
@@ -49,6 +58,7 @@ export function OrderForm() {
     setValue('')
     setDateStr('')
     setShipTo('')
+    setCarrier('none')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +68,6 @@ export function OrderForm() {
     const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''))
     const displayValue = numericValue ? `$${numericValue.toLocaleString('en-US', { minimumFractionDigits: 0 })}` : '$0'
 
-    // Format date for display
     let displayDate = 'No date'
     if (dateStr) {
       const d = new Date(dateStr + 'T12:00:00')
@@ -71,12 +80,20 @@ export function OrderForm() {
       title: `PO #${poNumber.replace(/^#/, '')}`,
       value: displayValue,
       dateStr: displayDate,
-      stage: 'new',
+      stage: 'order',
       shipTo: shipTo || null,
       notes: null,
       items: [],
       checklist: [],
       docs: { po: null, bol: null, inv: null },
+      carrier: (carrier === 'none' ? null : carrier) as CarrierType,
+      pickupDate: dateStr || null,
+      trackingNumber: null,
+      invoiceSentAt: null,
+      invoiceNumber: null,
+      expectedPayDate: null,
+      paidAt: null,
+      paidAmount: null,
     })
 
     reset()
@@ -142,6 +159,20 @@ export function OrderForm() {
                   className="mt-1"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="text-xs text-muted-foreground">Carrier</label>
+              <Select value={carrier} onValueChange={setCarrier}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CARRIER_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>

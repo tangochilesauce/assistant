@@ -85,7 +85,7 @@ export const PROJECTS: Project[] = [
       { id: 'done', label: 'Done' },
     ],
     tools: [
-      { href: '/projects/tango/orders', label: 'Orders', icon: 'Package' },
+      { href: '/projects/tango/orders', label: 'Ops', icon: 'Package' },
       { href: '/projects/tango/recipes', label: 'Recipes', icon: 'CookingPot' },
     ],
   },
@@ -170,7 +170,7 @@ export const PROJECTS: Project[] = [
     ],
   },
   {
-    slug: 'jeff',
+    slug: 'pl8',
     name: 'PL8',
     emoji: '🍽️',
     color: '#94a3b8',

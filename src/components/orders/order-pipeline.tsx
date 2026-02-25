@@ -32,7 +32,7 @@ function OrderColumn({ stageId, label, color, orders }: {
   })
 
   return (
-    <div className="flex flex-col min-w-[220px] flex-1">
+    <div className="flex flex-col min-w-[180px] flex-1">
       <div className="flex items-center gap-2 px-3 py-2.5 mb-2">
         {color ? (
           <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
@@ -115,9 +115,10 @@ export function OrderPipeline() {
 
   // Group orders by stage
   const grouped: Record<OrderStage, Order[]> = {
-    new: [],
-    processing: [],
-    shipped: [],
+    order: [],
+    cook: [],
+    pack: [],
+    ship: [],
     paid: [],
   }
   for (const order of orders) {

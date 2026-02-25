@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { X, Plus } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { useRecipeStore } from '@/store/recipe-store'
-import { BATCHES_PER_OLLA, OLLA_YIELDS, UNITS } from '@/store/production-store'
+import { BATCHES_PER_OLLA, OLLA_YIELDS, UNITS } from '@/data/tango-constants'
 
 // ── Flavor colors (brand) ───────────────────────────────────────
 

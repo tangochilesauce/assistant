@@ -12,7 +12,14 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ORDER_STAGES, type OrderDocs } from '@/lib/types/order'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { ORDER_STAGES, type OrderDocs, type CarrierType } from '@/lib/types/order'
 import { useOrderStore } from '@/store/order-store'
 import { supabase } from '@/lib/supabase'
 
@@ -22,11 +29,19 @@ const DOC_TYPES: { key: keyof OrderDocs; label: string; icon: typeof FileText }[
   { key: 'inv', label: 'Invoice', icon: Receipt },
 ]
 
+const CARRIER_OPTIONS: { value: string; label: string }[] = [
+  { value: 'none', label: 'Not set' },
+  { value: 'unfi', label: 'UNFI (their carrier)' },
+  { value: 'daylight', label: 'Daylight Transport' },
+  { value: 'pickup', label: 'Customer pickup' },
+]
+
 export function OrderDetail() {
   const {
     orders,
     selectedOrderId,
     selectOrder,
+    updateOrder,
     updateItems,
     toggleChecklistItem,
     addChecklistItem,
@@ -95,7 +110,6 @@ export function OrderDetail() {
         uploadDoc(order.id, uploadingDocType, path)
       }
     } else {
-      // Fallback: just store the filename
       uploadDoc(order.id, uploadingDocType, file.name)
     }
 
@@ -105,6 +119,8 @@ export function OrderDetail() {
 
   const completedChecks = order.checklist.filter(c => c.done).length
   const totalChecks = order.checklist.length
+
+  const showShipPayFields = order.stage === 'ship' || order.stage === 'paid'
 
   return (
     <Sheet open={!!selectedOrderId} onOpenChange={open => !open && selectOrder(null)}>
@@ -119,7 +135,7 @@ export function OrderDetail() {
           </SheetTitle>
           <SheetDescription>
             {order.dateStr}
-            {order.shipTo && <span className="ml-2 text-[11px]">→ {order.shipTo}</span>}
+            {order.shipTo && <span className="ml-2 text-[11px]">&rarr; {order.shipTo}</span>}
           </SheetDescription>
         </SheetHeader>
 
@@ -142,6 +158,24 @@ export function OrderDetail() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Carrier */}
+          <div>
+            <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Carrier</label>
+            <Select
+              value={order.carrier || 'none'}
+              onValueChange={(v) => updateOrder(order.id, { carrier: (v === 'none' ? null : v) as CarrierType })}
+            >
+              <SelectTrigger className="mt-1.5 h-8 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CARRIER_OPTIONS.map(opt => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Items table */}
@@ -269,6 +303,85 @@ export function OrderDetail() {
               onChange={handleFileSelected}
             />
           </div>
+
+          {/* Ship & Pay fields (visible when relevant) */}
+          {showShipPayFields && (
+            <div className="space-y-3">
+              <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Shipping & Payment
+              </label>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-muted-foreground">Pickup Date</label>
+                  <Input
+                    type="date"
+                    value={order.pickupDate || ''}
+                    onChange={e => updateOrder(order.id, { pickupDate: e.target.value || null })}
+                    className="mt-0.5 h-7 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground">Tracking #</label>
+                  <Input
+                    value={order.trackingNumber || ''}
+                    onChange={e => updateOrder(order.id, { trackingNumber: e.target.value || null })}
+                    placeholder="N/A"
+                    className="mt-0.5 h-7 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-muted-foreground">Invoice #</label>
+                  <Input
+                    value={order.invoiceNumber || ''}
+                    onChange={e => updateOrder(order.id, { invoiceNumber: e.target.value || null })}
+                    placeholder="INV-001"
+                    className="mt-0.5 h-7 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground">Invoice Sent</label>
+                  <Input
+                    type="date"
+                    value={order.invoiceSentAt || ''}
+                    onChange={e => updateOrder(order.id, { invoiceSentAt: e.target.value || null })}
+                    className="mt-0.5 h-7 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-muted-foreground">Expected Pay</label>
+                  <Input
+                    type="date"
+                    value={order.expectedPayDate || ''}
+                    onChange={e => updateOrder(order.id, { expectedPayDate: e.target.value || null })}
+                    className="mt-0.5 h-7 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground">Paid Amount</label>
+                  <Input
+                    type="number"
+                    value={order.paidAmount ?? ''}
+                    onChange={e => {
+                      const v = parseFloat(e.target.value)
+                      updateOrder(order.id, {
+                        paidAmount: isNaN(v) ? null : v,
+                        paidAt: isNaN(v) ? null : new Date().toISOString(),
+                      })
+                    }}
+                    placeholder="$0"
+                    className="mt-0.5 h-7 text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Notes */}
           <div>

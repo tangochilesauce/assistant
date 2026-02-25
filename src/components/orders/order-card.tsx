@@ -11,6 +11,14 @@ interface OrderCardProps {
   overlay?: boolean
 }
 
+const STAGE_BADGE: Record<string, { label: string; cls: string }> = {
+  order: { label: 'ORDER', cls: 'bg-blue-500/15 text-blue-400' },
+  cook: { label: 'COOK', cls: 'bg-orange-500/15 text-orange-400' },
+  pack: { label: 'PACK', cls: 'bg-purple-500/15 text-purple-400' },
+  ship: { label: 'SHIP', cls: 'bg-cyan-500/15 text-cyan-400' },
+  paid: { label: 'PAID', cls: 'bg-green-500/15 text-green-400' },
+}
+
 function DocDot({ present, icon: Icon, label }: { present: boolean; icon: typeof FileText; label: string }) {
   return (
     <span
@@ -43,6 +51,8 @@ export function OrderCard({ order, overlay }: OrderCardProps) {
     transition,
   }
 
+  const badge = STAGE_BADGE[order.stage]
+
   return (
     <div
       ref={overlay ? undefined : setNodeRef}
@@ -63,9 +73,16 @@ export function OrderCard({ order, overlay }: OrderCardProps) {
         </button>
 
         <div className="flex-1 min-w-0">
-          {/* Channel */}
-          <div className="text-[10px] uppercase tracking-wider text-orange-400 font-medium truncate">
-            {order.channel}
+          {/* Channel + badge */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] uppercase tracking-wider text-orange-400 font-medium truncate">
+              {order.channel}
+            </span>
+            {badge && (
+              <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${badge.cls}`}>
+                {badge.label}
+              </span>
+            )}
           </div>
 
           {/* Title + value */}

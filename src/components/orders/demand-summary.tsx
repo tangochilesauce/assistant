@@ -2,44 +2,28 @@
 
 import { useMemo } from 'react'
 import { useOrderStore } from '@/store/order-store'
+import { FLAVORS, DRUM_BOTTLES } from '@/data/tango-constants'
 
-const FLAVORS = ['Hot', 'Mild', 'Mango', 'Truffle', 'Sriracha', 'Thai'] as const
-const BOTTLES_PER_DRUM = 625
-
-export function ProductionDemand() {
+export function DemandSummary() {
   const orders = useOrderStore(s => s.orders)
 
   const activeOrders = useMemo(
-    () => orders.filter(o => o.stage === 'new' || o.stage === 'processing'),
+    () => orders.filter(o => o.stage === 'order' || o.stage === 'cook'),
     [orders]
   )
 
-  // Build a map: orderId → { flavor → cases }
   const orderFlavorMap = useMemo(() => {
     const map = new Map<string, Record<string, number>>()
     for (const order of activeOrders) {
       const flavorCases: Record<string, number> = {}
       for (const item of order.items) {
-        const f = item.flavor
-        flavorCases[f] = (flavorCases[f] || 0) + item.cases
+        flavorCases[item.flavor] = (flavorCases[item.flavor] || 0) + item.cases
       }
       map.set(order.id, flavorCases)
     }
     return map
   }, [activeOrders])
 
-  // Packed per flavor (across active orders)
-  const packedMap = useMemo(() => {
-    const p: Record<string, number> = {}
-    for (const order of activeOrders) {
-      for (const item of order.items) {
-        p[item.flavor] = (p[item.flavor] || 0) + item.packed
-      }
-    }
-    return p
-  }, [activeOrders])
-
-  // Totals per flavor
   const totals = useMemo(() => {
     const t: Record<string, number> = {}
     for (const fc of orderFlavorMap.values()) {
@@ -59,10 +43,10 @@ export function ProductionDemand() {
     <div className="border border-border rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          Production Demand
+          Demand Summary
         </h3>
         <span className="text-[10px] text-muted-foreground/50 tabular-nums">
-          {grandTotalCases} cases · {grandTotalBottles} btl · {(grandTotalBottles / BOTTLES_PER_DRUM).toFixed(1)} drums
+          {grandTotalCases} cases &middot; {grandTotalBottles} btl &middot; {(grandTotalBottles / DRUM_BOTTLES).toFixed(1)} drums
         </span>
       </div>
       <div className="overflow-x-auto">
@@ -90,17 +74,11 @@ export function ProductionDemand() {
                   </td>
                   {FLAVORS.map(f => (
                     <td key={f} className="py-1.5 text-right tabular-nums px-2">
-                      {fc[f] ? (
-                        <span>{fc[f]}</span>
-                      ) : (
-                        <span className="text-muted-foreground/20">&mdash;</span>
-                      )}
+                      {fc[f] ? <span>{fc[f]}</span> : <span className="text-muted-foreground/20">&mdash;</span>}
                     </td>
                   ))}
                   <td className="py-1.5 text-right tabular-nums pl-3 border-l border-border/50 font-medium">
-                    {hasItems ? orderTotal : (
-                      <span className="text-muted-foreground/40 text-[10px]">no items</span>
-                    )}
+                    {hasItems ? orderTotal : <span className="text-muted-foreground/40 text-[10px]">no items</span>}
                   </td>
                 </tr>
               )
@@ -114,9 +92,7 @@ export function ProductionDemand() {
                   {totals[f] || <span className="text-muted-foreground/20">&mdash;</span>}
                 </td>
               ))}
-              <td className="pt-2 text-right tabular-nums pl-3 border-l border-border/50">
-                {grandTotalCases}
-              </td>
+              <td className="pt-2 text-right tabular-nums pl-3 border-l border-border/50">{grandTotalCases}</td>
             </tr>
             <tr className="text-muted-foreground text-xs">
               <td className="pt-1 pr-4">Bottles</td>
@@ -125,29 +101,7 @@ export function ProductionDemand() {
                   {totals[f] ? totals[f] * 6 : <span className="text-muted-foreground/20">&mdash;</span>}
                 </td>
               ))}
-              <td className="pt-1 text-right tabular-nums pl-3 border-l border-border/50">
-                {grandTotalBottles}
-              </td>
-            </tr>
-            <tr className="text-muted-foreground text-xs">
-              <td className="pt-1 pr-4">Drums <span className="text-muted-foreground/40">(~625 btl)</span></td>
-              {FLAVORS.map(f => {
-                const bottles = (totals[f] || 0) * 6
-                if (!bottles) return (
-                  <td key={f} className="pt-1 text-right tabular-nums px-2">
-                    <span className="text-muted-foreground/20">&mdash;</span>
-                  </td>
-                )
-                const drums = bottles / BOTTLES_PER_DRUM
-                return (
-                  <td key={f} className="pt-1 text-right tabular-nums px-2">
-                    {drums < 1 ? drums.toFixed(1) : drums.toFixed(1)}
-                  </td>
-                )
-              })}
-              <td className="pt-1 text-right tabular-nums pl-3 border-l border-border/50">
-                {(grandTotalBottles / BOTTLES_PER_DRUM).toFixed(1)}
-              </td>
+              <td className="pt-1 text-right tabular-nums pl-3 border-l border-border/50">{grandTotalBottles}</td>
             </tr>
           </tfoot>
         </table>

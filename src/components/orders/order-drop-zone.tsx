@@ -44,12 +44,20 @@ export function OrderDropZone() {
         title: `PO #${parsed.poNumber || 'Unknown'}`,
         value,
         dateStr,
-        stage: 'new',
+        stage: 'order',
         shipTo: parsed.shipTo,
         notes: null,
         items: parsed.items,
         checklist: [],
         docs: { po: file.name, bol: null, inv: null },
+        carrier: warehouse.startsWith('UNFI') ? 'unfi' : null,
+        pickupDate: parsed.pickupDate || null,
+        trackingNumber: null,
+        invoiceSentAt: null,
+        invoiceNumber: null,
+        expectedPayDate: null,
+        paidAt: null,
+        paidAmount: null,
       })
 
       setParsing(false)
