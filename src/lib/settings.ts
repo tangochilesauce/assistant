@@ -35,4 +35,5 @@ export const SETTINGS_KEYS = {
   caps:            'tango_inventory_caps',
   labels:          'tango_inventory_labels',
   sealFilledCaps:  'tango_inventory_seal_filled_caps',
+  boxes:           'tango_inventory_boxes',
 } as const

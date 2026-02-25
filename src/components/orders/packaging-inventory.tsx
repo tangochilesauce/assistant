@@ -5,15 +5,18 @@ import { FLAVORS, FLAVOR_COLORS } from '@/data/tango-constants'
 import { StepperInput } from './stepper-input'
 import { SaveInput } from './save-input'
 
+const SEAL_OPTIONS = ['none', 'some', 'a lot'] as const
+
 export function PackagingInventory() {
   const {
     materials, setMaterialNote, setMaterialQuantity,
     caps, setCaps,
     labels, setLabels,
     sealFilledCaps, setSealFilledCaps,
+    boxes, setBoxes,
   } = useInventoryStore()
 
-  // Filter to non-flavor items only (caps/labels/seal-filled live in flavor grid)
+  // Filter to non-flavor items only (caps/labels/boxes/seal-filled live in flavor grid)
   const generalItems = materials
     .map((mat, idx) => ({ mat, idx }))
     .filter(({ mat }) =>
@@ -69,7 +72,7 @@ export function PackagingInventory() {
         </table>
       </div>
 
-      {/* Per-flavor grid: Caps / Labels / Seal-Filled Caps */}
+      {/* Per-flavor grid */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -91,6 +94,16 @@ export function PackagingInventory() {
             </tr>
             <tr className="border-t border-border/50">
               <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
+                Boxes <span className="text-[10px] text-muted-foreground/50 font-normal">6-pack</span>
+              </td>
+              {FLAVORS.map(f => (
+                <td key={f} className="py-1.5 px-1 text-center">
+                  <StepperInput value={boxes[f] || 0} step={1} onSave={v => setBoxes(f, v)} />
+                </td>
+              ))}
+            </tr>
+            <tr className="border-t border-border/50">
+              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
                 Labels <span className="text-[10px] text-muted-foreground/50 font-normal">rolls</span>
               </td>
               {FLAVORS.map(f => (
@@ -103,7 +116,15 @@ export function PackagingInventory() {
               <td className="py-1.5 pr-4 font-medium whitespace-nowrap">Seal-Filled Caps</td>
               {FLAVORS.map(f => (
                 <td key={f} className="py-1.5 px-1 text-center">
-                  <StepperInput value={sealFilledCaps[f] || 0} step={1} onSave={v => setSealFilledCaps(f, v)} />
+                  <select
+                    value={sealFilledCaps[f] || 'none'}
+                    onChange={e => setSealFilledCaps(f, e.target.value)}
+                    className="bg-card border border-border rounded-lg text-xs py-1 px-1.5 text-center appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-foreground/20 w-full"
+                  >
+                    {SEAL_OPTIONS.map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
                 </td>
               ))}
             </tr>

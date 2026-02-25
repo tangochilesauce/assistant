@@ -129,8 +129,8 @@ export interface MaterialItem {
 export const DEFAULT_MATERIALS: MaterialItem[] = [
   { item: 'Empty Bottles', status: 'Have', note: '' },
   { item: 'Seals', status: 'Have', note: '' },
-  { item: '6-Pack Boxes (XL)', status: 'Have', note: '' },
-  { item: '6-Pack Boxes (Logo)', status: 'Have', note: '' },
+  { item: '25-Pack Boxes', status: 'Have', note: '' },
+  { item: 'Kraft Tape', status: 'Have', note: 'rolls' },
 ]
 
 export const STATUS_COLORS: Record<MaterialStatus, string> = {
