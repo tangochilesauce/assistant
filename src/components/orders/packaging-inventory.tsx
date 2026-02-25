@@ -8,10 +8,7 @@ import { SaveInput } from './save-input'
 export function PackagingInventory() {
   const { materials, cycleMaterialStatus, setMaterialNote, setMaterialQuantity } = useInventoryStore()
 
-  // Filter out per-flavor caps and labels (legacy data may still have them)
-  const packagingItems = materials
-    .map((mat, idx) => ({ mat, idx }))
-    .filter(({ mat }) => !mat.item.startsWith('Caps') && !mat.item.startsWith('Labels'))
+  const packagingItems = materials.map((mat, idx) => ({ mat, idx }))
 
   return (
     <div className="border border-border rounded-lg p-4">
