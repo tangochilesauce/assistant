@@ -38,7 +38,7 @@ function buildTree(): TreeNode[] {
         emoji: sub.emoji,
         color: sub.color,
         summary: subBrain?.summary || sub.goal,
-        href: `/projects/${sub.slug}/brain`,
+        href: `/brains/${sub.slug}`,
         children: [],
       }
     })
@@ -49,7 +49,7 @@ function buildTree(): TreeNode[] {
       emoji: project.emoji,
       color: project.color,
       summary: brain?.summary || project.goal,
-      href: `/projects/${project.slug}/brain`,
+      href: `/brains/${project.slug}`,
       children,
     })
   }
@@ -73,7 +73,7 @@ function buildTree(): TreeNode[] {
         emoji: '📄',
         color: '#a78bfa',
         summary: b.summary || '',
-        href: '/brains',
+        href: `/brains/${b.slug}`,
         children: [],
       })),
     })
