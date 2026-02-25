@@ -36,13 +36,13 @@ export function PackDay() {
     packDayFlavors, setPackDayFlavors,
   } = useInventoryStore()
 
-  // Orders in pack stage
+  // Orders in cook or pack stage (cook = cooked and coming, pack = actively packing)
   const packOrders = useMemo(
-    () => orders.filter(o => o.stage === 'pack'),
+    () => orders.filter(o => o.stage === 'cook' || o.stage === 'pack'),
     [orders]
   )
 
-  // Bottles needed per flavor from pack-stage orders
+  // Bottles needed per flavor from cook + pack stage orders
   const bottlesNeeded = useMemo(() => {
     const need: Record<string, number> = {}
     for (const order of packOrders) {
@@ -143,7 +143,7 @@ export function PackDay() {
       <div className="border border-border rounded-lg p-4">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Pack Day</h3>
         <p className="text-sm text-muted-foreground/50 text-center py-4">
-          No orders in pack stage. Move orders from Cook &rarr; Pack when ready.
+          No orders in cook or pack stage.
         </p>
       </div>
     )
