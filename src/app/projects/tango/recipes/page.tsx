@@ -230,36 +230,35 @@ function RecipeSection({ recipe, notes, onAddNote, onDeleteNote }: RecipeSection
       </div>
 
       <div className="p-4 space-y-4">
-        {/* Ingredient table — all views in one */}
+        {/* Ingredient table */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
-                <th className="pb-2 pr-4">Ingredient</th>
-                <th className="pb-2 text-right px-2 w-[72px]">
+                <th className="pb-2 pr-6">Ingredient</th>
+                <th className="pb-2 text-right px-4" colSpan={2}>
                   <div>1 Batch</div>
                 </th>
-                <th className="pb-2 text-right px-2 w-[72px]">
+                <th className="pb-2 text-right px-4 border-l border-border/30" colSpan={2}>
                   <div>1 Olla</div>
                   <div className="text-muted-foreground/40 normal-case font-normal">×{batches}</div>
-                </th>
-                <th className="pb-2 text-right pl-2 w-[120px] border-l border-border/30">
-                  <div>Order Qty</div>
-                  <div className="text-muted-foreground/40 normal-case font-normal">per olla</div>
                 </th>
               </tr>
             </thead>
             <tbody>
               {recipe.ingredients.map(ing => (
                 <tr key={ing.name} className="border-t border-border/50">
-                  <td className="py-1.5 pr-4 font-medium">{ing.name}</td>
-                  <td className="py-1.5 text-right tabular-nums px-2 text-muted-foreground">
+                  <td className="py-1.5 pr-6 font-medium whitespace-nowrap">{ing.name}</td>
+                  <td className="py-1.5 text-right tabular-nums px-4 text-muted-foreground whitespace-nowrap">
                     {fmtImperial(ing, 1)}
                   </td>
-                  <td className="py-1.5 text-right tabular-nums px-2">
+                  <td className="py-1.5 text-right tabular-nums px-4 text-muted-foreground/50 whitespace-nowrap">
+                    {fmtCommodity(ing, 1)}
+                  </td>
+                  <td className="py-1.5 text-right tabular-nums px-4 border-l border-border/30 whitespace-nowrap">
                     {fmtImperial(ing, batches)}
                   </td>
-                  <td className="py-1.5 text-right tabular-nums pl-2 border-l border-border/30 text-orange-400 font-medium">
+                  <td className="py-1.5 text-right tabular-nums px-4 text-orange-400 font-medium whitespace-nowrap">
                     {fmtCommodity(ing, batches)}
                   </td>
                 </tr>
