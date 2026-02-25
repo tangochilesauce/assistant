@@ -7,6 +7,10 @@ import { SaveInput } from './save-input'
 
 const SEAL_OPTIONS = ['none', 'some', 'a lot'] as const
 
+const ITEM_HINTS: Record<string, string> = {
+  'Kraft Tape': 'rolls',
+}
+
 export function PackagingInventory() {
   const {
     materials, setMaterialNote, setMaterialQuantity,
@@ -49,7 +53,12 @@ export function PackagingInventory() {
           <tbody>
             {generalItems.map(({ mat, idx }) => (
               <tr key={`${mat.item}-${idx}`} className="border-t border-border/50">
-                <td className="py-1.5 pr-4 font-medium whitespace-nowrap">{mat.item}</td>
+                <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
+                  {mat.item}
+                  {ITEM_HINTS[mat.item] && (
+                    <span className="text-[10px] text-muted-foreground/50 font-normal ml-1">{ITEM_HINTS[mat.item]}</span>
+                  )}
+                </td>
                 <td className="py-1.5 px-4">
                   <StepperInput
                     value={mat.quantity ?? 0}
@@ -85,7 +94,9 @@ export function PackagingInventory() {
           </thead>
           <tbody>
             <tr className="border-t border-border/50">
-              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">Caps</td>
+              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
+                Caps <span className="text-[10px] text-muted-foreground/50 font-normal">boxes</span>
+              </td>
               {FLAVORS.map(f => (
                 <td key={f} className="py-1.5 px-1 text-center">
                   <StepperInput value={caps[f] || 0} step={1} onSave={v => setCaps(f, v)} />
