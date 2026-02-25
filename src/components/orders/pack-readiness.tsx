@@ -7,11 +7,11 @@ import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS } from '@/data/tango-constants'
 
 export function PackReadiness() {
   const orders = useOrderStore(s => s.orders)
-  const { packed, drums, materials } = useInventoryStore()
+  const { packed, packed25, drums, materials } = useInventoryStore()
 
-  // Orders in pack stage
+  // Orders in cook stage (what we're prepping to pack)
   const packOrders = useMemo(
-    () => orders.filter(o => o.stage === 'pack'),
+    () => orders.filter(o => o.stage === 'cook'),
     [orders]
   )
 
@@ -19,12 +19,12 @@ export function PackReadiness() {
   const sauceAvailable = useMemo(() => {
     const avail: Record<string, { packed: number; drumBottles: number; total: number }> = {}
     for (const f of FLAVORS) {
-      const p = packed[f] || 0
+      const p = (packed[f] || 0) + (packed25[f] || 0)
       const dw = (drums[f] || 0) * DRUM_BOTTLES
       avail[f] = { packed: p, drumBottles: dw, total: p + dw }
     }
     return avail
-  }, [packed, drums])
+  }, [packed, packed25, drums])
 
   // Total bottles needed for pack orders
   const bottlesNeeded = useMemo(() => {
@@ -56,7 +56,7 @@ export function PackReadiness() {
     return (
       <div className="border border-border rounded-lg p-4">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Pack Readiness</h3>
-        <p className="text-sm text-muted-foreground/50 text-center py-4">No orders in pack stage. Move orders from Cook &rarr; Pack when ready.</p>
+        <p className="text-sm text-muted-foreground/50 text-center py-4">No orders in cook stage.</p>
       </div>
     )
   }

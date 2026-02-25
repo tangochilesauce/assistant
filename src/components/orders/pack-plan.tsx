@@ -7,7 +7,7 @@ export function PackPlan() {
   const { orders, selectOrder } = useOrderStore()
 
   const packOrders = useMemo(
-    () => orders.filter(o => o.stage === 'pack'),
+    () => orders.filter(o => o.stage === 'cook'),
     [orders]
   )
 
@@ -15,7 +15,7 @@ export function PackPlan() {
     return (
       <div className="border border-border rounded-lg p-4">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">Pack Plan</h3>
-        <p className="text-sm text-muted-foreground/50 text-center py-4">No orders ready to pack.</p>
+        <p className="text-sm text-muted-foreground/50 text-center py-4">No orders in cook stage.</p>
       </div>
     )
   }

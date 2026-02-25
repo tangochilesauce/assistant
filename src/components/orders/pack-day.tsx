@@ -26,12 +26,33 @@ function sortPackOrder(flavors: string[], bottlesNeeded: Record<string, number>)
   })
 }
 
+// ── Verdict quips ────────────────────────────────────────────
+
+const ALL_GOOD_LINES = [
+  "You're good to go big chief",
+  "Nothing to cook, nothing to sweat",
+  "Bottles are covered. Go take a lap",
+  "Sauce math checks out. You're golden",
+  "All accounted for. Just pack and stack",
+  "Zero bottles short. That's a W",
+]
+
+function getVerdictLine(totalNet: number, flavorsShort: string[]) {
+  if (totalNet === 0) {
+    return ALL_GOOD_LINES[Math.floor(Math.random() * ALL_GOOD_LINES.length)]
+  }
+  if (flavorsShort.length === 1) {
+    return `Need to bottle ${totalNet} more ${flavorsShort[0]}. Everything else is covered`
+  }
+  return `Still ${totalNet.toLocaleString()} bottles short across ${flavorsShort.join(', ')}. Fire up the drums`
+}
+
 // ── Component ────────────────────────────────────────────────
 
 export function PackDay() {
   const orders = useOrderStore(s => s.orders)
   const {
-    packed, packed25, drums, sealFilledCaps, labels, materials,
+    packed, packed25, drums, sealFilledCaps, labels, boxes, materials,
     packDayFlavors, setPackDayFlavors,
   } = useInventoryStore()
 
@@ -104,12 +125,22 @@ export function PackDay() {
     setPackDayFlavors(next)
   }
 
+  // Cases needed per flavor (for box check)
+  const casesNeeded = useMemo(() => {
+    const need: Record<string, number> = {}
+    for (const f of Object.keys(bottlesDemand)) {
+      need[f] = Math.ceil((bottlesDemand[f] || 0) / 6)
+    }
+    return need
+  }, [bottlesDemand])
+
   // Readiness checks
   const getReadiness = (flavor: string) => {
     const hasSauce = (packed[flavor] || 0) > 0 || (packed25[flavor] || 0) > 0 || (drums[flavor] || 0) > 0
     const hasCaps = sealFilledCaps[flavor] !== 'none' && sealFilledCaps[flavor] !== undefined
     const hasLabels = (labels[flavor] || 0) > 0
-    return { hasSauce, hasCaps, hasLabels }
+    const hasBoxes = (boxes[flavor] || 0) >= (casesNeeded[flavor] || 0)
+    return { hasSauce, hasCaps, hasLabels, hasBoxes }
   }
 
   const emptyBottleMat = materials.find(m => m.item === 'Empty Bottles')
@@ -119,11 +150,15 @@ export function PackDay() {
   const prepIssues = useMemo(() => {
     const issues: { flavor: string; message: string }[] = []
     for (const flavor of selectedFlavors) {
-      const { hasSauce, hasCaps, hasLabels } = getReadiness(flavor)
-      // Rebox check: bottles exist in 25-packs that need to move to 6-packs
+      const { hasSauce, hasCaps, hasLabels, hasBoxes } = getReadiness(flavor)
       const in25 = packed25[flavor] || 0
       if (in25 > 0) {
         issues.push({ flavor, message: `Rebox ${in25} ${flavor} bottles from 25-packs to 6-packs` })
+      }
+      if (!hasBoxes) {
+        const need = casesNeeded[flavor] || 0
+        const have = boxes[flavor] || 0
+        issues.push({ flavor, message: `Make ${need - have} ${flavor} boxes (have ${have}, need ${need})` })
       }
       if (!hasCaps) issues.push({ flavor, message: `Stuff seals into ${flavor} caps` })
       if (!hasLabels) issues.push({ flavor, message: `Need ${flavor} labels` })
@@ -134,11 +169,19 @@ export function PackDay() {
     }
     return issues
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFlavors, packed, packed25, drums, sealFilledCaps, labels, materials])
+  }, [selectedFlavors, packed, packed25, drums, sealFilledCaps, labels, boxes, materials, casesNeeded])
 
   const totalDemand = selectedFlavors.reduce((s, f) => s + (bottlesDemand[f] || 0), 0)
   const totalNet = selectedFlavors.reduce((s, f) => s + (bottlesNet[f] || 0), 0)
+  const flavorsShort = selectedFlavors.filter(f => (bottlesNet[f] || 0) > 0)
   const allPrepped = prepIssues.length === 0 && selectedFlavors.length > 0
+
+  // Stable verdict (memoized so it doesn't re-roll on every render)
+  const verdict = useMemo(
+    () => selectedFlavors.length > 0 ? getVerdictLine(totalNet, flavorsShort) : '',
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [totalNet, flavorsShort.join(',')]
+  )
 
   // Helpers
   const flavorDot = (f: string) => (
@@ -180,6 +223,32 @@ export function PackDay() {
               )}
             </p>
           )}
+        </div>
+      </div>
+
+      {/* Order breakdown — why we're packing */}
+      <div className="mb-4">
+        <h4 className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
+          Orders Driving Demand
+        </h4>
+        <div className="space-y-1.5">
+          {cookOrders.map(order => {
+            const items = order.items.filter(i => (i.cases - i.packed) > 0)
+            if (items.length === 0) return null
+            const totalCases = items.reduce((s, i) => s + (i.cases - i.packed), 0)
+            return (
+              <div key={order.id} className="flex items-start gap-2 text-xs">
+                <span className="text-orange-400 font-medium shrink-0 mt-px">{order.channel}</span>
+                <span className="text-muted-foreground/70 shrink-0">{order.title}</span>
+                <span className="text-muted-foreground/40 flex-1 truncate">
+                  {items.map(i => `${i.cases - i.packed} ${i.flavor}`).join(', ')}
+                </span>
+                <span className="tabular-nums text-muted-foreground/50 shrink-0">
+                  {totalCases} cs
+                </span>
+              </div>
+            )
+          })}
         </div>
       </div>
 
@@ -236,8 +305,9 @@ export function PackDay() {
               Prep &middot; Night Before
             </h4>
             {allPrepped ? (
-              <div className="rounded-md bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-xs text-emerald-700 dark:text-emerald-400 font-medium">
-                All prepped &mdash; ready to pack
+              <div className="rounded-md bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 text-xs text-emerald-700 dark:text-emerald-400">
+                <span className="font-medium">All prepped &mdash; ready to pack</span>
+                <div className="mt-1 opacity-80 italic">{verdict}</div>
               </div>
             ) : (
               <div className="space-y-1">
@@ -247,6 +317,10 @@ export function PackDay() {
                     <span>{issue.message}</span>
                   </div>
                 ))}
+                {/* Verdict under the issues too */}
+                <div className="text-[11px] text-muted-foreground/50 italic pt-1 px-1">
+                  {verdict}
+                </div>
               </div>
             )}
           </div>
@@ -262,7 +336,7 @@ export function PackDay() {
                 const avail = bottlesAvailable[flavor] || 0
                 const net = bottlesNet[flavor] || 0
                 const in25 = packed25[flavor] || 0
-                const { hasSauce, hasCaps, hasLabels } = getReadiness(flavor)
+                const { hasSauce, hasCaps, hasLabels, hasBoxes } = getReadiness(flavor)
                 return (
                   <div
                     key={flavor}
@@ -293,6 +367,7 @@ export function PackDay() {
                       <span title="Sauce">{checkMark(hasSauce)} <span className="text-muted-foreground/50">sauce</span></span>
                       <span title="Caps">{checkMark(hasCaps)} <span className="text-muted-foreground/50">caps</span></span>
                       <span title="Labels">{checkMark(hasLabels)} <span className="text-muted-foreground/50">labels</span></span>
+                      <span title="Boxes">{checkMark(hasBoxes)} <span className="text-muted-foreground/50">boxes</span></span>
                     </span>
                   </div>
                 )
