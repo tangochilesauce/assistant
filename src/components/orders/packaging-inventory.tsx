@@ -2,6 +2,7 @@
 
 import { useInventoryStore } from '@/store/inventory-store'
 import { STATUS_COLORS, type MaterialStatus } from '@/data/tango-constants'
+import { SaveInput } from './save-input'
 
 export function PackagingInventory() {
   const { materials, cycleMaterialStatus, setMaterialNote, setMaterialQuantity } = useInventoryStore()
@@ -43,23 +44,24 @@ export function PackagingInventory() {
                   </button>
                 </td>
                 <td className="py-1.5 px-2">
-                  <input
+                  <SaveInput
                     type="number"
                     min={0}
+                    inputMode="numeric"
                     value={mat.quantity ?? ''}
-                    onChange={e => {
-                      const v = parseInt(e.target.value)
-                      setMaterialQuantity(idx, isNaN(v) ? null : v)
+                    onSave={v => {
+                      const n = parseInt(v)
+                      setMaterialQuantity(idx, isNaN(n) ? null : n)
                     }}
                     placeholder="—"
                     className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-foreground/20"
                   />
                 </td>
                 <td className="py-1.5 px-2">
-                  <input
+                  <SaveInput
                     type="text"
                     value={mat.note}
-                    onChange={e => setMaterialNote(idx, e.target.value)}
+                    onSave={v => setMaterialNote(idx, v)}
                     placeholder="—"
                     className="w-full bg-transparent text-sm border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/20"
                   />

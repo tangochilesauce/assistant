@@ -2,6 +2,7 @@
 
 import { useInventoryStore } from '@/store/inventory-store'
 import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS } from '@/data/tango-constants'
+import { SaveInput } from './save-input'
 
 export function SauceInventory() {
   const { packed, drums, setPacked, setDrums } = useInventoryStore()
@@ -41,11 +42,11 @@ export function SauceInventory() {
               <td className="py-1.5 pr-4 font-medium">Packed Bottles</td>
               {FLAVORS.map(f => (
                 <td key={f} className="py-1.5 text-right px-2">
-                  <input
+                  <SaveInput
                     type="number" min={0} step="1"
+                    inputMode="numeric"
                     value={packed[f] || 0}
-                    onChange={e => setPacked(f, parseInt(e.target.value) || 0)}
-                    onBlur={e => setPacked(f, parseInt(e.target.value) || 0)}
+                    onSave={v => setPacked(f, parseInt(v) || 0)}
                     className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
                   />
                 </td>
@@ -53,7 +54,7 @@ export function SauceInventory() {
             </tr>
             {/* Cases derived */}
             <tr className="border-t border-border/30 text-muted-foreground text-xs">
-              <td className="py-1 pr-4">&rarr; {Math.floor((packed[FLAVORS[0]] || 0) / 6) !== (packed[FLAVORS[0]] || 0) / 6 ? '' : ''}Cases</td>
+              <td className="py-1 pr-4">&rarr; Cases</td>
               {FLAVORS.map(f => {
                 const cases = (packed[f] || 0) / 6
                 return (
@@ -69,11 +70,11 @@ export function SauceInventory() {
               <td className="py-1.5 pr-4 font-medium">Botes (drums)</td>
               {FLAVORS.map(f => (
                 <td key={f} className="py-1.5 text-right px-2">
-                  <input
+                  <SaveInput
                     type="number" min={0} step="0.1"
+                    inputMode="decimal"
                     value={drums[f] || 0}
-                    onChange={e => setDrums(f, parseFloat(e.target.value) || 0)}
-                    onBlur={e => setDrums(f, parseFloat(e.target.value) || 0)}
+                    onSave={v => setDrums(f, parseFloat(v) || 0)}
                     className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
                   />
                 </td>

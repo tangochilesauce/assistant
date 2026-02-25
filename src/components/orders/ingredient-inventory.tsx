@@ -2,6 +2,7 @@
 
 import { useInventoryStore } from '@/store/inventory-store'
 import { INGREDIENT_KEYS, UNITS } from '@/data/tango-constants'
+import { SaveInput } from './save-input'
 
 export function IngredientInventory() {
   const { ingredients, setIngredient } = useInventoryStore()
@@ -38,13 +39,13 @@ export function IngredientInventory() {
                 <tr key={key} className="border-t border-border/50">
                   <td className="py-1.5 pr-4 font-medium capitalize">{u.name}</td>
                   <td className="py-1.5 px-2 text-center">
-                    <input
+                    <SaveInput
                       type="number"
                       min={0}
                       step="any"
+                      inputMode="decimal"
                       value={inv.onHand || ''}
-                      onChange={e => setIngredient(key, parseFloat(e.target.value) || 0)}
-                      onBlur={e => setIngredient(key, parseFloat(e.target.value) || 0)}
+                      onSave={v => setIngredient(key, parseFloat(v) || 0)}
                       placeholder="0"
                       className="w-16 text-center tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
                     />
@@ -54,10 +55,10 @@ export function IngredientInventory() {
                     {pkgsDisplay || <span className="text-muted-foreground/20">&mdash;</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    <input
+                    <SaveInput
                       type="text"
                       value={inv.note || ''}
-                      onChange={e => setIngredient(key, inv.onHand, e.target.value)}
+                      onSave={v => setIngredient(key, inv.onHand, v)}
                       placeholder="—"
                       className="w-full bg-transparent text-sm border-none focus:outline-none focus:ring-0 placeholder:text-muted-foreground/20"
                     />
