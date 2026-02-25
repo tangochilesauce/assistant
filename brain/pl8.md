@@ -84,6 +84,20 @@ The philosophy: no scoring math, no rigid ranked lists. Show Dan the state of ev
 | column-store | kanban_columns | Custom kanban columns per project |
 | dreamwatch-store | dreamwatch_pipeline | Video pipeline polling |
 | dreamwatch-calendar-store | dreamwatch_calendar | Streak tracking, upload calendar |
+| inventory-store | settings (7 keys) | Sauce (packed/drums), ingredients, packaging, caps/labels/seal-filled-caps |
+| order-store | tango_orders | Order pipeline (new/processing/shipped/paid) |
+| cook-plan-store | settings | Cook plan (ollas to cook per flavor) |
+| recipe-store | settings | Per-flavor recipe notes |
+
+### Key UI Components (Orders/Inventory)
+| Component | File | Purpose |
+|-----------|------|---------|
+| StepperInput | `orders/stepper-input.tsx` | `[-] value [+]` with decimal support, green flash on save |
+| SaveInput | `orders/save-input.tsx` | Text fields (notes) — saves on blur/Enter |
+| SauceInventory | `orders/sauce-inventory.tsx` | 6-flavor grid: packed bottles + drums |
+| IngredientInventory | `orders/ingredient-inventory.tsx` | Fridge inventory with per-ingredient steppers |
+| PackagingInventory | `orders/packaging-inventory.tsx` | General items table + per-flavor caps/labels/seal-filled grid |
+| DeepOrderGenerator | `orders/deep-order-generator.tsx` | Auto-calculated ingredient shopping list from cook plan |
 
 ## Pipeline
 

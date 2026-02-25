@@ -342,8 +342,50 @@ Foodies Urban Kitchen, 8922 Norris Ave, Sun Valley
 
 **Invoice timing:** Dan invoices AFTER pickup, not before.
 
-### Data Source
-All production data lives in Supabase settings table (keys: `tango_production_*`). **PL8 Orders page (`assistant-k5go.vercel.app/orders`) is the single source of truth** — editable directly (packed counts, drum counts, status pills, ingredient inventory, bill plans, material status). Standalone Tango Dashboard is retired. Notion "Tango Production" page is also retired.
+### Data Source & Inventory Architecture (Feb 24, 2026)
+
+All production data lives in Supabase settings table. **PL8 Orders page (`assistant-k5go.vercel.app/orders`) is the single source of truth.** Standalone Tango Dashboard and Notion are both retired.
+
+**Supabase Settings Keys:**
+| Key | What | Structure |
+|-----|------|-----------|
+| `tango_production_packed` | Packed bottles per flavor | `{ packed: [{ flavor, bottles }] }` |
+| `tango_production_drums` | Drums per flavor (decimal) | `{ drums: [{ flavor, drums, bottles_worth }] }` |
+| `tango_inventory_ingredients` | Fridge ingredient inventory | `{ [key]: { onHand, unit, lastUpdated, note } }` — onHand in RAW units (lb/gal) |
+| `tango_production_materials` | General packaging items | `{ materials: [{ item, quantity, note, status }] }` — bottles, seals, boxes |
+| `tango_inventory_caps` | Caps per flavor | `{ Hot: 0, Mild: 0, ... }` |
+| `tango_inventory_labels` | Labels per flavor (est. rolls) | `{ Hot: 0, Mild: 0, ... }` |
+| `tango_inventory_seal_filled_caps` | Pre-filled seal caps per flavor | `{ Hot: 0, Mild: 0, ... }` |
+| `tango_production_cook_plan` | Cook plan (ollas to cook) | See cook-plan-store |
+
+**Ingredient Inventory Math:**
+- `onHand` = stored in raw units (lb for solids, gal for liquids)
+- Display = `onHand / u.pkg` → packages (bags, gallons, boxes)
+- Save = `inputValue * u.pkg` → raw units
+- Gallon items (lime, ACV, white vinegar) use `pkg: 1` — so display IS the raw gallon value
+- Non-gallon items: carrots pkg=25 (25lb bag), garlic pkg=30, etc.
+
+**Deep Order (auto-calculated from cook plan):**
+- `netNeed = totalRecipeNeed - ingredientOnHand` (raw units)
+- `pkgs = ceil(netNeed / u.pkg)` = packages to order
+- `ordered = pkgs * u.pkg` = raw units actually ordered
+- `cost = pkgs * u.pLo` = per-package price × count
+- Gallon items: since pkg=1, pkgs = gallons needed (no case math)
+
+**UI Components:**
+- **StepperInput** (`[-] value [+]`) — used for ALL quantity fields. `type="text"` + `inputMode="decimal"` to avoid browser number input fighting. Configurable `step` prop. Green border flash on save.
+- **SaveInput** — text-only fields (notes). Saves on blur/Enter.
+- Ingredient inventory: step=1 for bags/boxes, step=0.5 for gallons
+- Sauce: packed bottles step=1, drums step=0.25
+- Packaging general items: step=1
+- Per-flavor caps/labels/seal-filled caps: 6-column flavor grid (like sauce), step=1
+
+**Packaging Section Structure:**
+1. **General items table** (Item | Qty | Note): Empty Bottles, Seals, 6-Pack Boxes (XL), 6-Pack Boxes (Logo)
+2. **Flavor grid** (6 columns: Hot/Mild/Mango/Truffle/Sriracha/Thai): Caps, Labels (rolls), Seal-Filled Caps
+
+**Recipe Page** (`/projects/tango/recipes`):
+5-column layout per flavor: Ingredient | 1 Batch (lb/gal) | 1 Batch (commodity) | 1 Olla (lb/gal) | 1 Olla (commodity). Commodity = how many purchasable units (e.g. "4.3× 25lb bag"). Batch columns match style, olla columns match style. Commodity in orange.
 
 ## Channel Revenue Targets
 
@@ -410,14 +452,14 @@ In a 45 gallon pot: ~36 gallons sauce, ~9 gallons vinegar = **1:4 ratio Vinegar:
 |-----------|------|------|----------|
 | Carrots | bag | 25 lb | Deep |
 | Garlic | box | 30 lb | Deep |
-| Lime juice | case | 4 gallons | Deep |
+| Lime juice | gallon | 1 gallon | Deep |
 | Culantro (sawtooth cilantro) | box | 14 lb | Deep |
 | Habanero | box | ~10 lb | Deep |
-| Apple cider vinegar | case | 4 gallons | Deep |
+| Apple cider vinegar | gallon | 1 gallon | Deep |
 | Salt | bag | 50 lb | Deep |
 | Red jalapeno (Sriracha) | case | ~25 lb | Deep |
 | Cane sugar (Sriracha) | bag | 50 lb | Deep |
-| White vinegar (Sriracha) | — | — | Deep |
+| White vinegar (Sriracha) | gallon | 1 gallon | Deep |
 | Thai chilies (Thai) | case | 30 lb | Deep |
 | Mango | case | 30 lb | Deep |
 | Agave nectar (Mango) | jug | ~10 lb | Deep |

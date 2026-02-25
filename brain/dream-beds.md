@@ -143,6 +143,7 @@ Seedance handles realistic motion that MidJourney Video COULDN'T:
 |------|--------|--------|----------|
 | Jan 27, 2026 | Integrated Topaz Labs API | topaz_slowmo.py working | API > web app for automation |
 | Jan 27, 2026 | Tested 8x slowmo + 1080p upscale | 5.8MB → 24.1MB, ~1.5min | 100 videos/month budget |
+| Feb 24, 2026 | Made dreampipe fully autonomous | Auto-metadata, calendar sync, filename normalization | No /dreamtime, no Claude session needed |
 | Jan 21, 2026 | Defined niche + brand | "Impossible Sanctuaries" | Clear positioning |
 | Jan 21, 2026 | Built automation workflow | Full pipeline working | Ready to scale |
 | Jan 21, 2026 | Designed metadata formula | Wellness-optimized titles | Should improve CTR |
@@ -160,55 +161,67 @@ VISUAL SEED → AI MOTION → 4K UPSCALE → AUDIO LAYER → MONETIZABLE LENGTH
 **The magic:** One MidJourney image → 4-12s of realistic AI motion → 4K upscale → 3 hours of beautiful video.
 **No slow-mo needed.** Seedance motion is realistic enough to loop directly.
 
-### Full Pipeline (NEW — Feb 2026)
+### Full Pipeline (v3 — Feb 24, 2026 — AUTONOMOUS)
 ```
-Dan (manual, in ElevenLabs UI):
+Dan (manual):
   MidJourney → Generate source image
        ↓
-  ElevenLabs Seedance 1.5 Pro → Image-to-video (4-12s, 720p, fixed camera)
-       ↓
-  ElevenLabs Astra → Upscale to 4K (3840x2160)
+  ElevenLabs Seedance / Topaz → Animate + upscale → MP4
        ↓
   Drop .mp4 + .jpg/.png into /_ queue/
+       ↓
+  DONE. Walk away.
 
-Claude (/dreamtime):
-  dream_beds_video_maker.sh → Loop to 3 hours + add audio
+dreampipe.py --watch (background daemon):
+  Detects new files → normalizes filenames
        ↓
-  compress_thumbnail.sh → Compress MidJourney image <2MB (no Bloom)
+  Reads thumbnail → generates title/description/tags via Anthropic API
        ↓
-  Claude → Generate title/description/tags from thumbnail
+  Reverse → loop → 3hr 4K encode → audio mux
        ↓
-  youtube_upload.py → Upload with metadata (PUBLIC)
+  Compress thumbnail → upload to YouTube (scheduled)
+       ↓
+  Syncs status → Supabase (Dreamwatch + calendar + streak)
+       ↓
+  Cleans up → waits for next pair
 ```
 
-### OLD Pipeline (v1 — Jan 2026, DEPRECATED)
-```
-MidJourney → MidJourney Video (30s) → Topaz Astra desktop (16x slow-mo + upscale) → loop
-Problems: Bad physics, needed heavy slow-mo to hide artifacts, expensive ($45/mo total)
-```
+**No /dreamtime. No Claude session. Fully autonomous.**
+- AI metadata via Anthropic API (Haiku) — reads thumbnail, generates creative titles
+- Falls back to template metadata if no API key
+- Syncs YouTube → calendar every 10 min (streak bubbles always accurate)
+- Schedules videos to next open day at 5 PM ET automatically
 
 ### System Architecture
 - **Queue path:** `/Users/danfrieber/⚡ claudio/dream-beds/_ queue/`
-- **Sync daemon:** `dreamwatch_sync.py`
+- **ONE script:** `dreampipe.py --watch` (daemon — does everything)
 - **Dreamwatch page in PL8:** `/dreamwatch` — real-time pipeline status (polls Supabase every 5s)
-- **Supabase table:** `dreamwatch_pipeline`
-- **Pipeline states:** STEP0_META → STEP1 → ... → PUBLISHED
+- **Supabase tables:** `dreamwatch_pipeline` (queue status) + `dreamwatch_calendar` (streak/calendar)
 - **Card statuses:** ACTIVE, QUEUED, PUBLISHED, FAILED, UNPAIRED_VIDEO, UNPAIRED_THUMB
 
 ### Active Scripts
-- `dream_beds_video_maker.sh` — video looping
-- `compress_thumbnail.sh` — thumbnail compression
-- `youtube_upload.py` — API upload with metadata + scheduling
+- `dreampipe.py` — THE pipeline (encode, upload, metadata, scheduling, Supabase sync, calendar sync — everything)
+- `youtube_upload.py` — standalone uploader (backup)
 - `youtube_metrics.py` — pull fresh channel stats
-- `dreamwatch_sync.py` — syncs pipeline state to Supabase every 5s
-- `dreamwatch_calendar_sync.py` — syncs YouTube publish history + auto-schedules queue pairs (every 10min)
+- `topaz_slowmo.py` — standalone slow-mo (if ever needed)
+- Everything else → `_archive/`
 
 ### Manual Commands
 ```bash
-./dream_beds_video_maker.sh source.mp4      # Just make the video
-./compress_thumbnail.sh thumbnail.png        # Just compress thumbnail
-./youtube_upload.py --video final.mp4 --metadata metadata.json --thumbnail thumb.jpg --privacy unlisted
-python3 dream-beds/scripts/youtube_metrics.py --all   # Pull metrics
+# Start the daemon (survives terminal close)
+nohup python3 dream-beds/scripts/dreampipe.py --watch > /tmp/dreampipe.log 2>&1 &
+
+# Check queue status
+python3 dream-beds/scripts/dreampipe.py --status
+
+# Process queue once and exit
+python3 dream-beds/scripts/dreampipe.py
+
+# Watch the log
+tail -f /tmp/dreampipe.log
+
+# Pull metrics
+python3 dream-beds/scripts/youtube_metrics.py --all
 ```
 
 ---
@@ -469,17 +482,22 @@ oversaturation, cartoon style, anime, sharp angles, harsh lighting, noise, blur,
 - [x] Auto-scheduling engine: pairs in queue auto-assigned to next empty day at 5 PM ET
 - [x] YouTube history sync: pulls all publish dates into calendar (dreamwatch_calendar_sync.py)
 - [x] Supabase table: dreamwatch_calendar (date-keyed, published/queued status)
+- [x] **AUTONOMOUS PIPELINE (Feb 24, 2026)**: dreampipe.py now fully autonomous — auto-generates metadata via Anthropic API, normalizes filenames, syncs YouTube→calendar for streak bubbles. No /dreamtime needed. No Claude session needed.
+- [x] Killed /dreamtime command, archived dreamwatch_server.py + dreamwatch_calendar_sync.py (folded into dreampipe.py)
 
 ---
 
 ## Files
 
 *Located at: /Users/danfrieber/⚡ claudio/dream-beds/*
-- scripts/ — automation scripts (dreamwatch_sync.py, youtube_upload.py, youtube_metrics.py)
-- _ queue/ — upload workflow queue
-- scripts/credentials/ — API keys
-- scripts/templates/ — metadata templates
-- audio/ — ambient_3hr.mp3
+- `scripts/dreampipe.py` — THE pipeline (autonomous: metadata, encode, upload, schedule, Supabase sync, calendar sync)
+- `scripts/youtube_upload.py` — standalone uploader (backup)
+- `scripts/youtube_metrics.py` — pull channel stats
+- `scripts/topaz_slowmo.py` — standalone slow-mo (if needed)
+- `scripts/credentials/` — API keys (.env, token.json, client_secrets.json)
+- `scripts/_archive/` — dead scripts (dreamwatch_server.py, dreamwatch_calendar_sync.py, old shell scripts)
+- `_ queue/` — drop video + thumbnail here
+- `audio/ombionce.wav` — ambient audio track
 
 ---
 

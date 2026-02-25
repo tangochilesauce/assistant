@@ -18,7 +18,7 @@ Madder is a music project. The primary goal isn't money — it's **performing at
 
 **Time allocation:** 2 hours/day dedicated to music. TOP 4 project alongside Amazon, UNFI, and Costco — not because of revenue, but because it feeds the soul.
 
-**Status:** Single dropping 2/22 (birthday). EP (3-4 tracks) dropping 3/3. Nine days between drops = two marketing events.
+**Status:** ✅ SINGLE DROPPED 2/22 on YouTube. EP (3-4 tracks) targeting 3/3. Nine days between drops = two marketing events.
 
 ---
 
@@ -26,7 +26,7 @@ Madder is a music project. The primary goal isn't money — it's **performing at
 
 | Timeframe | Goal |
 |-----------|------|
-| **This Month** | Drop debut single 2/22. Drop EP 3/3. |
+| **This Month** | ✅ Debut single dropped 2/22. Drop EP 3/3. |
 | **12 Months** | Play Coachella. |
 
 ---
@@ -44,7 +44,7 @@ Madder is a music project. The primary goal isn't money — it's **performing at
 
 ## Release Strategy: 2/22 → 3/3 Rollout
 
-- **2/22 (birthday)** — Drop ONE single. The statement piece. "This is what this project sounds like."
+- **2/22** — ✅ DONE. Dropped ONE single on YouTube. The statement piece. "This is what this project sounds like."
 - **3/3** — Drop short EP (3-4 tracks). People who found the single now have a project to dig into.
 - Two Spotify release events > one album dump from an unknown artist
 - Single builds anticipation for EP. 9 days of momentum between drops.

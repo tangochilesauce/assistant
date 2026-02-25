@@ -9,7 +9,7 @@
 
 Amazon is Tango's biggest revenue driver. Truffle dominates (63% of revenue, 38.7% conversion). Traffic is the bottleneck, not conversion.
 
-**Status (Feb 18):** PPC running since Dec 14 with 2 check-ins/dialings since. Feb 18 campaign report: 6 active campaigns, $137 spent, $446 sales, 3.24x ROAS overall. SRIRACHA AUTO upgraded to 33x ROAS. TT-PT-DEFENSE-TRUFFLE = 60x ROAS (new star). SD-REMARKETING correctly paused. Coupons expired Feb 15, NOT renewed — need profitability review. Variation family still needs Seller Support call (HOTT2 won't attach).
+**Status (Feb 20):** PPC running since Dec 14. Feb 20 campaign report (cumulative): 8 active campaigns, $159 spent, $497 sales, 3.12x ROAS overall. SD-REMARKETING paused (was 45% of spend, 0 sales). SRIRACHA AUTO budget raised to $25/day (29x ROAS). TT-PT-COMP-TRUFFLE budget raised to $20/day (4.6x ROAS). Both S&S coupons renewed Feb 20: Truffle S&S (proven $226 winner) + new Sriracha S&S test. 3 new test campaigns launching: TT-CATEGORY, TT-HOT-HONEY, Pepper Plant PT. Variation family still needs Seller Support call (HOTT2 won't attach).
 
 ---
 
@@ -33,15 +33,18 @@ Amazon is Tango's biggest revenue driver. Truffle dominates (63% of revenue, 38.
 
 ---
 
-## What's Working (Updated Feb 18 Campaign Report)
+## What's Working (Updated Feb 20 Campaign Report)
 
-- **SRIRACHA AUTO** — 33x ROAS ($66.93 sales / $2.06 spend). Still #1 most efficient.
-- **TT-PT-DEFENSE-TRUFFLE** — 60x ROAS ($60.26 sales / $1.01 spend). NEW STAR. Product targeting defense.
-- **TT-PHRASE-TRUFFLE** — 3.8x ROAS ($277.69 sales / $73.32 spend). Biggest spender AND earner.
-- **TT-PT-COMP-TRUFFLE** — 4.4x ROAS ($40.85 sales / $9.25 spend). Competitor targeting still works.
+- **SRIRACHA AUTO** — 29x ROAS ($92.93 sales / $3.16 spend). Budget raised to $25/day. #1 efficient.
+- **TT-PT-DEFENSE-TRUFFLE** — 54x ROAS ($17.99 sales / $0.33 spend). Sniper. 18% top-of-search share — only campaign winning top placement.
+- **TT-PHRASE-TRUFFLE** — 3.9x ROAS ($248.86 sales / $63.87 spend). Biggest spender AND earner. 14 purchases. Still needs search term audit.
+- **TT-PT-COMP-TRUFFLE** — 4.6x ROAS ($100.94 sales / $22.18 spend). Budget raised to $20/day. 6 purchases.
+- **TT-AUTO-CLOSE** — 13.4x ROAS ($17.99 / $1.34). Cheap wins.
+- **TT-AUTO-SUBS** — 3.8x ROAS ($17.99 / $4.75). Solid.
 - **Truffle dominates** — 63% of revenue, 38.7% conversion
 - **Auto campaigns > Manual** — lower CPCs, better ROAS across the board
-- **PPC overall 3.24x ROAS** — $137 spent, $446 sales across 65 days (Dec 14 - Feb 18)
+- **PPC overall 3.12x ROAS** — $159 spent, $497 sales across 68 days (Dec 14 - Feb 20)
+- **Coupons renewed Feb 20:** Truffle S&S (10% off, $100 budget, thru May 23) + Sriracha S&S (new test)
 
 ---
 
@@ -68,16 +71,21 @@ Amazon is Tango's biggest revenue driver. Truffle dominates (63% of revenue, 38.
 
 ## Next Actions (Post-Audit Feb 12)
 
+**DONE (Feb 20):**
+- [x] PAUSE SD-REMARKETING — Done. Was $42.68/0 sales.
+- [x] INCREASE SRIRACHA AUTO budget — $10 → $25/day. Done.
+- [x] INCREASE TT-AUTO-SUBS + TT-AUTO-CLOSE — $2.50 → $5/day. Done.
+- [x] INCREASE TT-PT-COMP-TRUFFLE — $10 → $20/day. Done.
+- [x] RENEW Truffle S&S coupon — Done Feb 20. 10% off, $100 budget, thru May 23.
+- [x] CREATE Sriracha S&S coupon — New test. Feb 20, 10% off, $100 budget, thru May 23.
+
 **IMMEDIATE:**
-- [ ] PAUSE SD-REMARKETING — $42.68 spent, 156 clicks, ZERO sales. 45% of all ad spend wasted.
-- [ ] INCREASE SRIRACHA AUTO budget — $10 → $25/day. At 4.69% ACOS / 21x ROAS, every dollar returns $21.
-- [ ] INCREASE TT-AUTO-SUBS + TT-AUTO-CLOSE — $2.50 → $5/day each. Both converted.
-- [ ] RENEW Truffle + Hot S&S coupons before Feb 15. Kill the other 4 (Mild, Mango, Thai, Sriracha S&S = $0 sales).
-- [ ] Audit TT-PHRASE-TRUFFLE search terms — 80.99% ACOS. Find which keywords are wasting spend.
-- [ ] Pause or consolidate 14 dead $3/day TT- campaigns — zero impressions.
+- [ ] Audit TT-PHRASE-TRUFFLE search terms — 25.7% ACOS, 14 purchases. Find waste keywords.
+- [ ] Decide SR-PHRASE-TEST — 4K impressions, $3.63, 0 sales. Check search terms → raise bid or kill.
+- [ ] Decide TT-AUTO-LOOSE — 2.5K impressions, $2.29, 0 sales. Check search terms.
+- [ ] Launch 3 new test campaigns ($11/day total): TT-CATEGORY, TT-HOT-HONEY, Pepper Plant PT.
 
 **NEXT:**
-- [ ] INCREASE TT-PT-COMP-TRUFFLE — $10 → $15-20/day. 33% ACOS, competitor targeting working.
 - [ ] Start on Organic To-Do list (Premium A+, images, Vine)
 
 **ORGANIC (HIGH PRIORITY):**
@@ -141,6 +149,8 @@ Amazon is Tango's biggest revenue driver. Truffle dominates (63% of revenue, 38.
 
 | Date | Action | Result | Learning |
 |------|--------|--------|----------|
+| Feb 20, 2026 | Coupon audit + renewal | All 7 coupons expired Feb 15-17. Truffle S&S was $226.66/34 clips/14 redeemed (25% budget). Renewed Truffle S&S + created new Sriracha S&S test. | Truffle S&S proven 9:1 return. 5 of 7 coupons were dead weight ($0 sales). Only renew winners. |
+| Feb 20, 2026 | Full campaign CSV (cumulative Dec 14 - Feb 20) | 8 active, $159 spent, $497 sales, 3.12x ROAS. SD-REMARKETING paused. Budget increases live on SRIRACHA AUTO ($25), TT-PT-COMP ($20), TT-AUTO-SUBS ($5), TT-AUTO-CLOSE ($5). TT-EXACT-TRUFFLE = 86% ACOS (paused). | Budget increases are serving. Defense targeting = sniper (18% ToS share). 3 new test campaigns planned. |
 | Feb 18, 2026 | Full campaign CSV report analyzed | 6 active, $137 spent, $446 sales, 3.24x ROAS. SRIRACHA AUTO 33x, TT-PT-DEFENSE 60x, TT-PHRASE-TRUFFLE 3.8x (biggest earner). SR-PHRASE-TEST and TT-AUTO-LOOSE are losers (pause). | Bids still possibly too low — barely spending daily budgets. Defense targeting is a sleeper hit. |
 | Feb 12, 2026 | Full PPC + Coupon + Variation audit | SRIRACHA AUTO = star (21x ROAS). SD-REMARKETING = waste ($42.68/0 sales). Truffle S&S = 9:1 return. | Auto > manual. SD remarketing doesn't work. S&S coupons compound. |
 | Feb 11, 2026 | Uploaded v8 variation flat file | Deleted 2 dupes. HOTT2 still won't attach. | Need Seller Support for stubborn catalog issues. |
@@ -224,8 +234,8 @@ Jimmy from The Truffleist owns the UPC on current Truffle label. Collab since 20
 
 | Date | Finding | Source | Expires |
 |------|---------|--------|---------|
-| Feb 12, 2026 | PPC AUDIT: 7 purchases, $108.92 sales, $77.07 spent. SRIRACHA AUTO = star (21x). SD-REMARKETING = waste ($42.68/0 sales). | CSV + Ad Console | Ongoing |
-| Feb 12, 2026 | COUPON AUDIT: Truffle S&S = 9:1 return. 4 dead coupons. ALL 6 EXPIRE FEB 15 — renew Truffle + Hot only. | Seller Central | Feb 15 |
+| Feb 20, 2026 | PPC CUMULATIVE: 30 purchases, $497 sales, $159 spent, 3.12x ROAS. SD-REMARKETING killed. Budget increases live. 3 new tests launching (TT-CATEGORY, TT-HOT-HONEY, Pepper Plant PT). | CSV | Ongoing |
+| Feb 20, 2026 | COUPONS RENEWED: Truffle S&S + Sriracha S&S (both 10% off, $100, thru May 23). All 7 old coupons had expired Feb 15-17. | Seller Central | May 23 |
 | Feb 12, 2026 | VARIATION: v8 flat file partially worked. HOTT2 won't attach. Need Seller Support. | Flat file | ASAP |
 | Jan 22, 2026 | Premium A+ Content pre-approved — need Brand Story + 5 pages | Dan | Ongoing |
 | Jan 22, 2026 | Hot honey = 2025's biggest trend. Keto condiments = loyal buyers. Umami sauces trending. | Research | Ongoing |

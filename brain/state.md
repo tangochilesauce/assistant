@@ -1,22 +1,40 @@
-# JEFF State — Last Updated Feb 20, 2026 (Session 8)
+# PL8 State — Last Updated Feb 24, 2026 (Session 9)
 
 This is the boot-up file. Read this first every session.
 
-## What Happened This Session (Session 8)
+## What Happened This Session (Session 9)
 
-### Full Production Planning Dashboard BUILT in PL8
-- **Complete production planning workflow automated** — The entire 2-hour manual process Dan does with Claude (inventory → demand → gap → cook plan → ingredients → materials) is now a reactive dashboard in PL8's Orders page
-- **New production-store.ts** — Zustand + Supabase settings store for all production state (packed bottles, drums, ollas, materials). Uses same Supabase keys as the old Tango Dashboard for compatibility.
-- **6 connected sections built:**
-  1. 🔥 Flavor Snapshot — editable packed bottles + drums per flavor, auto-calculates cases and total inventory
-  2. 📊 Gap Analysis — demand vs inventory with color-coded gaps
-  3. 🍳 Cook Planner — editable ollas → bottles produced → post-cook total → surplus after orders
-  4. 🥕 Deep Order — auto-calculated ingredient shopping list from cook plan, with "tight spot" warnings, copy button
-  5. 📦 Materials — caps, labels, packaging with tappable status cycling (Have/Low/Order/OTW)
-- **All sections reactive** — changing inventory recalculates gaps, changing ollas recalculates ingredients
-- **Tight spot warnings** — flags when ordered quantities barely cover what's needed (learned from session 7 mistake)
-- **Previously built as standalone Tango Dashboard** (vanilla JS) in session 7, now fully ported to PL8 React
-- **Standalone Tango Dashboard is RETIRED** — everything lives in PL8 Orders page now
+### Inventory Inputs Overhauled
+- **StepperInput component built** — Flowbite-style `[-] value [+]` with `type="text"` + `inputMode="decimal"`. No more browser number input fighting. Configurable step, green flash on save. Used across ALL inventory quantity fields.
+- **Fixed gallon ingredients** — lime, ACV, white vinegar changed from `pkg: 4` (per-case-of-4-gal) to `pkg: 1` (per-gallon). Prices divided by 4 to match. Dan enters gallons directly now. Deep Order math still works since unit is already 'gal'.
+- **Killed broken pkgsRounded math** — old code mangled decimals (0.75 became 8). Clean division now, no rounding artifacts.
+- **Deep Order copy text fixed** — gallon items no longer say "cases", just "X gallons [ingredient]"
+
+### Packaging Section Rebuilt
+- **Status column deleted** — old status values ("~14,750", "Have 300") migrated to quantities in Supabase
+- **Per-flavor caps/labels/seal-filled caps** — new 6-column flavor grid (like sauce inventory). Each stored in its own Supabase settings key (`tango_inventory_caps`, `tango_inventory_labels`, `tango_inventory_seal_filled_caps`)
+- **Labels tracked as estimated rolls** (hard to count precisely)
+- **Seal-Filled Caps added** as new item type (pre-filled seals in bags, estimated count)
+- **General items** (Empty Bottles, Seals, 6-Pack Boxes XL/Logo) stay in regular table with qty + note
+
+### Recipe Page — 5-Column Layout
+- Now shows: Ingredient | 1 Batch (lb) | 1 Batch (commodity) | 1 Olla (lb) | 1 Olla (commodity)
+- Both lb columns match style, both commodity columns match style (orange)
+- Fixed Mild subtitle — was saying "add truffle oil" (backwards)
+
+### Columns Breathe
+- All inventory tables widened from `px-2` to `px-4` padding
+- `whitespace-nowrap` on value columns to prevent wrapping
+- Format column for ingredients no longer crams "25lb bag (112.5lb)" into a tiny space
+
+### Database Cleanup
+- Removed stale "Labels (Hot/Truffle/Mango/Thai/Sriracha)" and "Labels (Mild)" split rows from Supabase materials
+- Removed generic "Caps" row (replaced by per-flavor grid)
+- Migrated all status-as-text values to proper quantity fields
+
+### Previous Session (Session 8)
+- Full production planning dashboard built in PL8 (6 connected sections)
+- Standalone Tango Dashboard retired — everything in PL8 Orders page
 
 ### Previous Session (Session 7)
 - Production planning for Monday Feb 24 — 3 ollas (1 Hot, 1 Mild, 1 Sriracha)
