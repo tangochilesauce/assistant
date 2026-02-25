@@ -19,9 +19,9 @@ export function IngredientInventory() {
           <thead>
             <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
               <th className="pb-2 pr-4">Ingredient</th>
-              <th className="pb-2 px-2 w-28 text-center">On Hand</th>
-              <th className="pb-2 px-2 w-24">Format</th>
-              <th className="pb-2 px-2">Note</th>
+              <th className="pb-2 px-4 text-center">On Hand</th>
+              <th className="pb-2 px-4 whitespace-nowrap">Format</th>
+              <th className="pb-2 px-4">Note</th>
             </tr>
           </thead>
           <tbody>
@@ -37,7 +37,7 @@ export function IngredientInventory() {
               return (
                 <tr key={key} className="border-t border-border/50">
                   <td className="py-1.5 pr-4 font-medium capitalize">{u.name}</td>
-                  <td className="py-1.5 px-2 text-center">
+                  <td className="py-1.5 px-4 text-center">
                     <StepperInput
                       value={pkgs}
                       step={step}
@@ -46,13 +46,13 @@ export function IngredientInventory() {
                       }}
                     />
                   </td>
-                  <td className="py-1.5 px-2 text-xs text-muted-foreground">
+                  <td className="py-1.5 px-4 text-xs text-muted-foreground whitespace-nowrap">
                     {u.label}
                     {inv.onHand > 0 && u.pkg > 1 && (
                       <span className="text-muted-foreground/40 ml-1">({inv.onHand}{u.unit})</span>
                     )}
                   </td>
-                  <td className="py-1.5 px-2">
+                  <td className="py-1.5 px-4">
                     <SaveInput
                       type="text"
                       value={inv.note || ''}
