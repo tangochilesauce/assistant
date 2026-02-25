@@ -19,6 +19,7 @@ import { PackPlan } from '@/components/orders/pack-plan'
 import { ShipTracker } from '@/components/orders/ship-tracker'
 import { PaymentTracker } from '@/components/orders/payment-tracker'
 import { OrderAlerts } from '@/components/orders/order-alerts'
+import { FulfillmentMatrix } from '@/components/orders/fulfillment-matrix'
 import { useOrderStore } from '@/store/order-store'
 import { useInventoryStore } from '@/store/inventory-store'
 import { useCookPlanStore } from '@/store/cook-plan-store'
@@ -82,6 +83,7 @@ export default function OrdersPage() {
                 <OrderDropZone />
                 <OrderPipeline />
                 <OrderAlerts />
+                <FulfillmentMatrix />
               </div>
             </TabsContent>
 
