@@ -325,50 +325,98 @@ export function PackDay() {
             )}
           </div>
 
-          {/* Section B — Pack Order (Morning-of) */}
+          {/* Section B — Pack Order (Morning-of) with full math */}
           <div>
             <h4 className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
               Pack Order &middot; Morning Of
             </h4>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {selectedFlavors.map((flavor, idx) => {
                 const demand = bottlesDemand[flavor] || 0
-                const avail = bottlesAvailable[flavor] || 0
-                const net = bottlesNet[flavor] || 0
+                const demandCases = casesNeeded[flavor] || 0
+                const in6 = packed[flavor] || 0
+                const in6cases = Math.floor(in6 / 6)
                 const in25 = packed25[flavor] || 0
+                const drumCount = drums[flavor] || 0
+                const drumBtls = Math.round(drumCount * DRUM_BOTTLES)
+                const net = bottlesNet[flavor] || 0
+                const netCases = Math.ceil(net / 6)
+                const boxHave = boxes[flavor] || 0
+                const boxNeed = demandCases
+                const boxMake = Math.max(0, boxNeed - boxHave)
                 const { hasSauce, hasCaps, hasLabels, hasBoxes } = getReadiness(flavor)
+
                 return (
                   <div
                     key={flavor}
-                    className="flex items-center gap-3 rounded-md border border-border/50 px-3 py-2"
+                    className="rounded-md border border-border/50 px-3 py-2.5"
                   >
-                    <span className="text-xs font-bold tabular-nums text-muted-foreground/40 w-4 text-right">
-                      {idx + 1}.
-                    </span>
-                    {flavorDot(flavor)}
-                    <div className="flex-1 min-w-0">
+                    {/* Row 1: step + flavor + demand */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-bold tabular-nums text-muted-foreground/40 w-4 text-right">
+                        {idx + 1}.
+                      </span>
+                      {flavorDot(flavor)}
                       <span className="text-sm font-medium">{flavor}</span>
-                      {demand > 0 && avail > 0 && (
-                        <span className="text-[10px] text-muted-foreground/50 ml-1.5">
-                          {demand} needed &minus; {Math.min(avail, demand)} have
-                          {in25 > 0 && <> ({in25} in 25s)</>}
-                        </span>
-                      )}
+                      <span className="text-xs tabular-nums text-muted-foreground ml-auto">
+                        {demand > 0 ? `${demand} btls \u00b7 ${demandCases} cases needed` : 'stock run'}
+                      </span>
                     </div>
-                    <span className="text-xs tabular-nums text-muted-foreground font-medium mr-2 whitespace-nowrap">
-                      {demand > 0
-                        ? net > 0
-                          ? `${net} to fill`
-                          : '\u2713 have all'
-                        : 'stock'
-                      }
-                    </span>
-                    <span className="flex items-center gap-2 text-xs tabular-nums">
-                      <span title="Sauce">{checkMark(hasSauce)} <span className="text-muted-foreground/50">sauce</span></span>
-                      <span title="Caps">{checkMark(hasCaps)} <span className="text-muted-foreground/50">caps</span></span>
-                      <span title="Labels">{checkMark(hasLabels)} <span className="text-muted-foreground/50">labels</span></span>
-                      <span title="Boxes">{checkMark(hasBoxes)} <span className="text-muted-foreground/50">boxes</span></span>
-                    </span>
+
+                    {/* Row 2: inventory math */}
+                    {demand > 0 && (
+                      <div className="ml-7 space-y-0.5 text-[11px] tabular-nums text-muted-foreground/70 mb-2">
+                        <div className="flex gap-4 flex-wrap">
+                          <span>
+                            <span className="text-muted-foreground/40">6-pk:</span>{' '}
+                            <span className={in6 > 0 ? 'text-emerald-500' : ''}>
+                              {in6} btls ({in6cases} cs)
+                            </span>
+                          </span>
+                          <span>
+                            <span className="text-muted-foreground/40">25-pk:</span>{' '}
+                            <span className={in25 > 0 ? 'text-amber-400' : ''}>
+                              {in25} btls
+                            </span>
+                            {in25 > 0 && <span className="text-amber-400/60"> &rarr; rebox</span>}
+                          </span>
+                          <span>
+                            <span className="text-muted-foreground/40">drums:</span>{' '}
+                            {drumCount > 0
+                              ? <>{drumCount} ({drumBtls} btls)</>
+                              : <span className="text-muted-foreground/30">0</span>
+                            }
+                          </span>
+                        </div>
+                        <div className="pt-0.5">
+                          {net > 0 ? (
+                            <span className="text-foreground font-medium">
+                              &rarr; bottle {net} from drums &rarr; box into {netCases} cases
+                            </span>
+                          ) : (
+                            <span className="text-emerald-500 font-medium">
+                              &rarr; covered &mdash; {in6 + in25} btls ready
+                              {in25 > 0 && ` (${in25} need reboxing)`}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Row 3: readiness checks */}
+                    <div className="ml-7 flex items-center gap-3 text-xs tabular-nums flex-wrap">
+                      <span>{checkMark(hasSauce)} <span className="text-muted-foreground/50">sauce</span></span>
+                      <span>{checkMark(hasCaps)} <span className="text-muted-foreground/50">caps</span></span>
+                      <span>{checkMark(hasLabels)} <span className="text-muted-foreground/50">labels</span></span>
+                      <span>
+                        {checkMark(hasBoxes)} <span className="text-muted-foreground/50">boxes</span>
+                        {demand > 0 && (
+                          <span className="text-muted-foreground/40 ml-1">
+                            ({boxHave}/{boxNeed}{boxMake > 0 && <>, make {boxMake}</>})
+                          </span>
+                        )}
+                      </span>
+                    </div>
                   </div>
                 )
               })}
