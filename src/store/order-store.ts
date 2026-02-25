@@ -258,7 +258,24 @@ export const useOrderStore = create<OrderState>((set, get) => ({
         .order('created_at', { ascending: false })
 
       if (!error && data) {
-        set({ orders: data.map(rowToOrder), loading: false, initialized: true })
+        const orders = data.map(rowToOrder)
+        // One-time migration: fill empty Moreno Valley order
+        for (const o of orders) {
+          if (o.id === 'unfi-044849783' && o.items.length === 0) {
+            o.items = [
+              { sku: '224137', flavor: 'Mild', cases: 82, price: 29, packed: 82 },
+              { sku: '224132', flavor: 'Hot', cases: 36, price: 29, packed: 36 },
+            ]
+            o.shipTo = o.shipTo || 'Moreno Valley DC, 24501 Elder Ave, Moreno Valley, CA 92553'
+            // Persist the fix
+            supabase.from('tango_orders').update({
+              items: o.items,
+              ship_to: o.shipTo,
+              updated_at: new Date().toISOString(),
+            }).eq('id', o.id)
+          }
+        }
+        set({ orders, loading: false, initialized: true })
         return
       }
     }
