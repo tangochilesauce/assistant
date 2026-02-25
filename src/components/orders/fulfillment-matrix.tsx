@@ -31,6 +31,7 @@ interface Row {
   isGroupHeader?: boolean
   isShared?: boolean
   muted?: boolean         // for items that are fine (don't need highlighting)
+  qualitative?: boolean   // non-numeric status (sealed caps)
 }
 
 // ── Component ────────────────────────────────────────────────
@@ -118,6 +119,51 @@ export function FulfillmentMatrix() {
         remainingOk: sauceBalance >= 0,
       })
 
+      // Caps (per flavor)
+      const capStock = caps[f] || 0
+      // Only bottles filled from drums need new caps
+      let capPoolLeft = capStock
+      // Track how many bottles come from drums per order (waterfall)
+      let packedPool = (packed[f] || 0) + (packed25[f] || 0)
+      const capCells: Cell[] = orderColumns.map(col => {
+        const orderBottles = orderDemand[col.id]?.[f]?.bottles || 0
+        // How many of these bottles come from drums (not packed stock)?
+        const fromPacked = Math.min(packedPool, orderBottles)
+        packedPool -= fromPacked
+        const fromDrums = orderBottles - fromPacked
+        capPoolLeft -= fromDrums
+        return { need: fromDrums, after: capPoolLeft, ok: capPoolLeft >= 0 }
+      })
+
+      result.push({
+        label: `${f} — Caps`,
+        flavor: f,
+        stock: capStock,
+        cells: capCells,
+        remaining: capPoolLeft,
+        remainingOk: capPoolLeft >= 0,
+        muted: capStock > 0 && capPoolLeft >= 0,
+      })
+
+      // Sealed Caps (per flavor — qualitative: none/some/a lot)
+      const sealStatus = sealFilledCaps[f] || 'none'
+      const sealOk = sealStatus !== 'none'
+      const sealCells: Cell[] = orderColumns.map(col => {
+        const need = orderDemand[col.id]?.[f]?.bottles || 0
+        return { need, after: 0, ok: need === 0 || sealOk }
+      })
+
+      result.push({
+        label: `${f} — Sealed Caps`,
+        flavor: f,
+        stock: sealStatus,
+        cells: sealCells,
+        remaining: 0,
+        remainingOk: sealOk,
+        qualitative: true,
+        muted: sealOk,
+      })
+
       // Labels (per flavor — rolls × 1500 labels/roll)
       const labelRolls = labels[f] || 0
       const labelStock = labelRolls * LABELS_PER_ROLL
@@ -180,6 +226,36 @@ export function FulfillmentMatrix() {
       isShared: true,
     })
 
+    // Seals (shared material)
+    const sealMat = materials.find(m => m.item === 'Seals')
+    const sealStock = sealMat?.quantity ?? 0
+    // Total bottles to fill from drums across all flavors
+    let totalDrumFill = 0
+    for (const f of activeFlavors) {
+      const totalDemand = orderColumns.reduce((s, col) => s + (orderDemand[col.id]?.[f]?.bottles || 0), 0)
+      const packedAvail = (packed[f] || 0) + (packed25[f] || 0)
+      totalDrumFill += Math.max(0, totalDemand - packedAvail)
+    }
+    let sealBalance = sealStock
+    const sealCells: Cell[] = orderColumns.map(col => {
+      let need = 0
+      for (const f of activeFlavors) {
+        need += orderDemand[col.id]?.[f]?.bottles || 0
+      }
+      sealBalance -= need
+      return { need, after: sealBalance, ok: sealBalance >= 0 }
+    })
+
+    result.push({
+      label: 'Seals',
+      stock: sealStock,
+      cells: sealCells,
+      remaining: sealBalance,
+      remainingOk: sealBalance >= 0,
+      isShared: true,
+      muted: sealStock > 0 && sealBalance >= 0,
+    })
+
     // Empty Bottles — only count what needs to be filled from drums (not already packed)
     const emptyMat = materials.find(m => m.item === 'Empty Bottles')
     const emptyStock = emptyMat?.quantity ?? 0
@@ -211,7 +287,7 @@ export function FulfillmentMatrix() {
     })
 
     return result
-  }, [activeFlavors, orderColumns, orderDemand, packed, packed25, drums, labels, caseLabels, materials])
+  }, [activeFlavors, orderColumns, orderDemand, packed, packed25, drums, caps, sealFilledCaps, labels, caseLabels, materials])
 
   // Count problems
   const problemCount = rows.filter(r => !r.remainingOk || r.cells.some(c => !c.ok)).length
@@ -313,7 +389,15 @@ export function FulfillmentMatrix() {
                   {/* Order columns */}
                   {row.cells.map((cell, ci) => (
                     <td key={ci} className="py-1.5 px-2 text-right tabular-nums">
-                      {cell.need === 0 ? (
+                      {row.qualitative ? (
+                        cell.need === 0 ? (
+                          <span className="text-muted-foreground/20">&mdash;</span>
+                        ) : (
+                          <span className={cell.ok ? 'text-emerald-500' : 'text-red-500 font-medium'}>
+                            {cell.ok ? '\u2713' : '\u2717'}
+                          </span>
+                        )
+                      ) : cell.need === 0 ? (
                         <span className="text-muted-foreground/20">&mdash;</span>
                       ) : (
                         <div>
@@ -331,7 +415,11 @@ export function FulfillmentMatrix() {
                   <td className={`py-1.5 px-2 text-right tabular-nums font-medium ${
                     row.remainingOk ? 'text-emerald-500' : 'text-red-500'
                   }`}>
-                    {row.remaining.toLocaleString()}
+                    {row.qualitative ? (
+                      <span>{row.remainingOk ? '\u2713' : '\u2717'}</span>
+                    ) : (
+                      row.remaining.toLocaleString()
+                    )}
                   </td>
                 </tr>
               )
