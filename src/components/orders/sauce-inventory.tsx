@@ -2,7 +2,7 @@
 
 import { useInventoryStore } from '@/store/inventory-store'
 import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS } from '@/data/tango-constants'
-import { SaveInput } from './save-input'
+import { StepperInput } from './stepper-input'
 
 export function SauceInventory() {
   const { packed, drums, setPacked, setDrums } = useInventoryStore()
@@ -41,13 +41,11 @@ export function SauceInventory() {
             <tr className="border-t border-border/50">
               <td className="py-1.5 pr-4 font-medium">Packed Bottles</td>
               {FLAVORS.map(f => (
-                <td key={f} className="py-1.5 text-right px-2">
-                  <SaveInput
-                    type="number" min={0} step="1"
-                    inputMode="numeric"
+                <td key={f} className="py-1.5 text-right px-1">
+                  <StepperInput
                     value={packed[f] || 0}
-                    onSave={v => setPacked(f, parseInt(v) || 0)}
-                    className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                    step={1}
+                    onSave={v => setPacked(f, Math.round(v))}
                   />
                 </td>
               ))}
@@ -69,13 +67,11 @@ export function SauceInventory() {
             <tr className="border-t border-border/50">
               <td className="py-1.5 pr-4 font-medium">Botes (drums)</td>
               {FLAVORS.map(f => (
-                <td key={f} className="py-1.5 text-right px-2">
-                  <SaveInput
-                    type="number" min={0} step="0.1"
-                    inputMode="decimal"
+                <td key={f} className="py-1.5 text-right px-1">
+                  <StepperInput
                     value={drums[f] || 0}
-                    onSave={v => setDrums(f, parseFloat(v) || 0)}
-                    className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                    step={0.25}
+                    onSave={v => setDrums(f, v)}
                   />
                 </td>
               ))}

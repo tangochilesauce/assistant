@@ -2,15 +2,16 @@
 
 import { useInventoryStore } from '@/store/inventory-store'
 import { STATUS_COLORS, type MaterialStatus } from '@/data/tango-constants'
+import { StepperInput } from './stepper-input'
 import { SaveInput } from './save-input'
 
 export function PackagingInventory() {
   const { materials, cycleMaterialStatus, setMaterialNote, setMaterialQuantity } = useInventoryStore()
 
-  // Filter out per-flavor caps and labels — just show the actual packaging items
+  // Filter out per-flavor caps and labels (legacy data may still have them)
   const packagingItems = materials
     .map((mat, idx) => ({ mat, idx }))
-    .filter(({ mat }) => !mat.item.startsWith('Caps —') && !mat.item.startsWith('Labels —'))
+    .filter(({ mat }) => !mat.item.startsWith('Caps') && !mat.item.startsWith('Labels'))
 
   return (
     <div className="border border-border rounded-lg p-4">
@@ -25,7 +26,7 @@ export function PackagingInventory() {
             <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
               <th className="pb-2 pr-4">Item</th>
               <th className="pb-2 px-2 w-20">Status</th>
-              <th className="pb-2 px-2 w-16">Qty</th>
+              <th className="pb-2 px-2 w-28">Qty</th>
               <th className="pb-2 px-2">Note</th>
             </tr>
           </thead>
@@ -44,17 +45,10 @@ export function PackagingInventory() {
                   </button>
                 </td>
                 <td className="py-1.5 px-2">
-                  <SaveInput
-                    type="number"
-                    min={0}
-                    inputMode="numeric"
-                    value={mat.quantity ?? ''}
-                    onSave={v => {
-                      const n = parseInt(v)
-                      setMaterialQuantity(idx, isNaN(n) ? null : n)
-                    }}
-                    placeholder="—"
-                    className="w-14 text-right tabular-nums bg-transparent border border-border/50 rounded px-1 py-0.5 text-xs focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                  <StepperInput
+                    value={mat.quantity ?? 0}
+                    step={1}
+                    onSave={v => setMaterialQuantity(idx, v === 0 ? null : v)}
                   />
                 </td>
                 <td className="py-1.5 px-2">

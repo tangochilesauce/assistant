@@ -2,6 +2,7 @@
 
 import { useInventoryStore } from '@/store/inventory-store'
 import { INGREDIENT_KEYS, UNITS } from '@/data/tango-constants'
+import { StepperInput } from './stepper-input'
 import { SaveInput } from './save-input'
 
 export function IngredientInventory() {
@@ -18,8 +19,8 @@ export function IngredientInventory() {
           <thead>
             <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
               <th className="pb-2 pr-4">Ingredient</th>
-              <th className="pb-2 px-2 w-20 text-center">On Hand</th>
-              <th className="pb-2 px-2 w-32">Format</th>
+              <th className="pb-2 px-2 w-28 text-center">On Hand</th>
+              <th className="pb-2 px-2 w-24">Format</th>
               <th className="pb-2 px-2">Note</th>
             </tr>
           </thead>
@@ -29,31 +30,25 @@ export function IngredientInventory() {
               if (!u) return null
               const inv = ingredients[key] || { onHand: 0, unit: u.unit, lastUpdated: '', note: '' }
 
-              // Convert raw units → packages for display/input
+              // Display in purchase units (bags, gallons, boxes)
               const pkgs = inv.onHand > 0 ? inv.onHand / u.pkg : 0
-              const pkgsRounded = pkgs % 1 === 0 ? pkgs : Math.round(pkgs * 10) / 10
+              const step = u.unit === 'gal' ? 0.5 : 1
 
               return (
                 <tr key={key} className="border-t border-border/50">
                   <td className="py-1.5 pr-4 font-medium capitalize">{u.name}</td>
                   <td className="py-1.5 px-2 text-center">
-                    <SaveInput
-                      type="number"
-                      min={0}
-                      step="0.5"
-                      inputMode="decimal"
-                      value={pkgsRounded || ''}
+                    <StepperInput
+                      value={pkgs}
+                      step={step}
                       onSave={v => {
-                        const numPkgs = parseFloat(v) || 0
-                        setIngredient(key, numPkgs * u.pkg)
+                        setIngredient(key, v * u.pkg)
                       }}
-                      placeholder="0"
-                      className="w-14 text-center tabular-nums bg-transparent border border-border/50 rounded px-1.5 py-0.5 text-sm focus:outline-none focus:ring-1 focus:ring-foreground/20"
                     />
                   </td>
                   <td className="py-1.5 px-2 text-xs text-muted-foreground">
                     {u.label}
-                    {inv.onHand > 0 && (
+                    {inv.onHand > 0 && u.pkg > 1 && (
                       <span className="text-muted-foreground/40 ml-1">({inv.onHand}{u.unit})</span>
                     )}
                   </td>

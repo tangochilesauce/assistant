@@ -11,7 +11,7 @@ export function DeepOrderGenerator() {
   const copyText = useMemo(() => {
     return ingredientRows.rows.map(r => {
       if (r.unit === 'gal') {
-        return `${r.ordered} gallons ${r.u.name} (${r.pkgs} cases)`
+        return `${r.ordered} gallons ${r.u.name}`
       }
       return `${r.ordered}lb ${r.u.name} (${r.pkgs} ${r.u.label}${r.pkgs > 1 ? 's' : ''})`
     }).join('\n')
