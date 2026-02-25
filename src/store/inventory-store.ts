@@ -4,11 +4,9 @@ import {
   FLAVORS,
   DRUM_BOTTLES,
   DEFAULT_MATERIALS,
-  MATERIAL_STATUSES,
   INGREDIENT_KEYS,
   UNITS,
   type MaterialItem,
-  type MaterialStatus,
   type IngredientInventory,
 } from '@/data/tango-constants'
 
@@ -25,8 +23,13 @@ interface InventoryState {
   // Ingredient inventory (fridge)
   ingredients: Record<string, IngredientInventory>
 
-  // Packaging / materials
+  // Packaging / materials (non-flavor items)
   materials: MaterialItem[]
+
+  // Per-flavor packaging
+  caps: Record<string, number>
+  labels: Record<string, number>
+  sealFilledCaps: Record<string, number>
 
   // Actions
   fetchInventory: () => Promise<void>
@@ -34,9 +37,11 @@ interface InventoryState {
   setPacked: (flavor: string, value: number) => void
   setDrums: (flavor: string, value: number) => void
   setIngredient: (key: string, onHand: number, note?: string) => void
-  cycleMaterialStatus: (index: number) => void
   setMaterialNote: (index: number, note: string) => void
   setMaterialQuantity: (index: number, quantity: number | null) => void
+  setCaps: (flavor: string, value: number) => void
+  setLabels: (flavor: string, value: number) => void
+  setSealFilledCaps: (flavor: string, value: number) => void
 
   // Computed
   getTotalInventory: (flavor: string) => number
@@ -51,6 +56,9 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   drums: {},
   ingredients: {},
   materials: DEFAULT_MATERIALS,
+  caps: {},
+  labels: {},
+  sealFilledCaps: {},
 
   refetchInventory: async () => {
     set({ initialized: false })
@@ -61,11 +69,14 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     if (get().initialized) return
     set({ loading: true })
 
-    const [packedData, drumsData, ingredientsData, materialsData] = await Promise.all([
+    const [packedData, drumsData, ingredientsData, materialsData, capsData, labelsData, sealFilledCapsData] = await Promise.all([
       loadSetting<{ packed?: { flavor: string; bottles: number }[] }>(SETTINGS_KEYS.packed),
       loadSetting<{ drums?: { flavor: string; drums: number }[] }>(SETTINGS_KEYS.drums),
       loadSetting<Record<string, IngredientInventory>>(SETTINGS_KEYS.ingredients),
       loadSetting<{ materials?: MaterialItem[] }>(SETTINGS_KEYS.materials),
+      loadSetting<Record<string, number>>(SETTINGS_KEYS.caps),
+      loadSetting<Record<string, number>>(SETTINGS_KEYS.labels),
+      loadSetting<Record<string, number>>(SETTINGS_KEYS.sealFilledCaps),
     ])
 
     const packed: Record<string, number> = {}
@@ -96,7 +107,16 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       materials = materialsData.materials
     }
 
-    set({ packed, drums, ingredients, materials, initialized: true, loading: false })
+    const caps: Record<string, number> = {}
+    const labels: Record<string, number> = {}
+    const sealFilledCaps: Record<string, number> = {}
+    for (const f of FLAVORS) {
+      caps[f] = capsData?.[f] || 0
+      labels[f] = labelsData?.[f] || 0
+      sealFilledCaps[f] = sealFilledCapsData?.[f] || 0
+    }
+
+    set({ packed, drums, ingredients, materials, caps, labels, sealFilledCaps, initialized: true, loading: false })
   },
 
   setPacked: (flavor: string, value: number) => {
@@ -139,18 +159,6 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     })
   },
 
-  cycleMaterialStatus: (index: number) => {
-    set(s => {
-      const materials = [...s.materials]
-      const mat = { ...materials[index] }
-      const ci = MATERIAL_STATUSES.indexOf(mat.status as MaterialStatus)
-      mat.status = MATERIAL_STATUSES[(ci + 1) % MATERIAL_STATUSES.length]
-      materials[index] = mat
-      saveSetting(SETTINGS_KEYS.materials, { materials })
-      return { materials }
-    })
-  },
-
   setMaterialNote: (index: number, note: string) => {
     set(s => {
       const materials = [...s.materials]
@@ -167,6 +175,24 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       saveSetting(SETTINGS_KEYS.materials, { materials })
       return { materials }
     })
+  },
+
+  setCaps: (flavor: string, value: number) => {
+    const v = Math.max(0, Math.round(value))
+    set(s => ({ caps: { ...s.caps, [flavor]: v } }))
+    saveSetting(SETTINGS_KEYS.caps, get().caps)
+  },
+
+  setLabels: (flavor: string, value: number) => {
+    const v = Math.max(0, Math.round(value))
+    set(s => ({ labels: { ...s.labels, [flavor]: v } }))
+    saveSetting(SETTINGS_KEYS.labels, get().labels)
+  },
+
+  setSealFilledCaps: (flavor: string, value: number) => {
+    const v = Math.max(0, Math.round(value))
+    set(s => ({ sealFilledCaps: { ...s.sealFilledCaps, [flavor]: v } }))
+    saveSetting(SETTINGS_KEYS.sealFilledCaps, get().sealFilledCaps)
   },
 
   getTotalInventory: (flavor: string) => {

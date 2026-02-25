@@ -26,10 +26,13 @@ export async function saveSetting(key: string, value: unknown): Promise<void> {
 // ── Settings Keys ────────────────────────────────────────────
 
 export const SETTINGS_KEYS = {
-  packed:       'tango_production_packed',
-  drums:        'tango_production_drums',
-  cookPlan:     'tango_production_cook_plan',
-  materials:    'tango_production_materials',
-  ingredients:  'tango_inventory_ingredients',
-  packaging:    'tango_production_packaging',
+  packed:          'tango_production_packed',
+  drums:           'tango_production_drums',
+  cookPlan:        'tango_production_cook_plan',
+  materials:       'tango_production_materials',
+  ingredients:     'tango_inventory_ingredients',
+  packaging:       'tango_production_packaging',
+  caps:            'tango_inventory_caps',
+  labels:          'tango_inventory_labels',
+  sealFilledCaps:  'tango_inventory_seal_filled_caps',
 } as const

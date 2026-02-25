@@ -1,20 +1,39 @@
 'use client'
 
 import { useInventoryStore } from '@/store/inventory-store'
+import { FLAVORS, FLAVOR_COLORS } from '@/data/tango-constants'
 import { StepperInput } from './stepper-input'
 import { SaveInput } from './save-input'
 
 export function PackagingInventory() {
-  const { materials, setMaterialNote, setMaterialQuantity } = useInventoryStore()
+  const {
+    materials, setMaterialNote, setMaterialQuantity,
+    caps, setCaps,
+    labels, setLabels,
+    sealFilledCaps, setSealFilledCaps,
+  } = useInventoryStore()
 
-  const packagingItems = materials.map((mat, idx) => ({ mat, idx }))
+  // Filter to non-flavor items only (caps/labels/seal-filled live in flavor grid)
+  const generalItems = materials
+    .map((mat, idx) => ({ mat, idx }))
+    .filter(({ mat }) =>
+      !mat.item.startsWith('Caps') &&
+      !mat.item.startsWith('Labels') &&
+      !mat.item.startsWith('Seal-Filled') &&
+      !mat.item.startsWith('Seal Filled')
+    )
+
+  const flavorDot = (f: string) => (
+    <span className="inline-block w-2 h-2 rounded-full mr-1.5 relative top-[-1px]" style={{ background: FLAVOR_COLORS[f] || '#999' }} />
+  )
 
   return (
-    <div className="border border-border rounded-lg p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div className="border border-border rounded-lg p-4 space-y-6">
+      <div className="flex items-center justify-between">
         <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Packaging</h3>
       </div>
 
+      {/* General items */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -25,7 +44,7 @@ export function PackagingInventory() {
             </tr>
           </thead>
           <tbody>
-            {packagingItems.map(({ mat, idx }) => (
+            {generalItems.map(({ mat, idx }) => (
               <tr key={`${mat.item}-${idx}`} className="border-t border-border/50">
                 <td className="py-1.5 pr-4 font-medium whitespace-nowrap">{mat.item}</td>
                 <td className="py-1.5 px-4">
@@ -46,6 +65,48 @@ export function PackagingInventory() {
                 </td>
               </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Per-flavor grid: Caps / Labels / Seal-Filled Caps */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+              <th className="pb-2 pr-4"></th>
+              {FLAVORS.map(f => (
+                <th key={f} className="pb-2 text-center px-1 min-w-[52px]">{flavorDot(f)}{f}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-t border-border/50">
+              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">Caps</td>
+              {FLAVORS.map(f => (
+                <td key={f} className="py-1.5 px-1 text-center">
+                  <StepperInput value={caps[f] || 0} step={1} onSave={v => setCaps(f, v)} />
+                </td>
+              ))}
+            </tr>
+            <tr className="border-t border-border/50">
+              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
+                Labels <span className="text-[10px] text-muted-foreground/50 font-normal">rolls</span>
+              </td>
+              {FLAVORS.map(f => (
+                <td key={f} className="py-1.5 px-1 text-center">
+                  <StepperInput value={labels[f] || 0} step={1} onSave={v => setLabels(f, v)} />
+                </td>
+              ))}
+            </tr>
+            <tr className="border-t border-border/50">
+              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">Seal-Filled Caps</td>
+              {FLAVORS.map(f => (
+                <td key={f} className="py-1.5 px-1 text-center">
+                  <StepperInput value={sealFilledCaps[f] || 0} step={1} onSave={v => setSealFilledCaps(f, v)} />
+                </td>
+              ))}
+            </tr>
           </tbody>
         </table>
       </div>
