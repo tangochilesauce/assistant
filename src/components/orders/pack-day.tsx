@@ -286,6 +286,10 @@ export function PackDay() {
                     : undefined
               }
             >
+              <span
+                className="inline-block w-2 h-2 rounded-full shrink-0"
+                style={{ background: FLAVOR_COLORS[f] || '#999' }}
+              />
               {f}
               {demand > 0 && (
                 <span className={`tabular-nums text-[10px] ${isSelected && isSuggested ? 'opacity-80' : 'opacity-50'}`}>
@@ -323,8 +327,8 @@ export function PackDay() {
                     <span>{issue.message}</span>
                   </div>
                 ))}
-                {/* Verdict under the issues too */}
-                <div className="text-[11px] text-muted-foreground/50 italic pt-1 px-1">
+                {/* Verdict */}
+                <div className="text-xs text-muted-foreground italic pt-2 px-1">
                   {verdict}
                 </div>
               </div>
