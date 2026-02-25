@@ -12,6 +12,7 @@ import { DemandSummary } from '@/components/orders/demand-summary'
 import { GapAnalysis } from '@/components/orders/gap-analysis'
 import { OllaPlanner } from '@/components/orders/olla-planner'
 import { DeepOrderGenerator } from '@/components/orders/deep-order-generator'
+import { CookVerdict } from '@/components/orders/cook-verdict'
 import { PackDay } from '@/components/orders/pack-day'
 import { PackReadiness } from '@/components/orders/pack-readiness'
 import { PackPlan } from '@/components/orders/pack-plan'
@@ -94,6 +95,7 @@ export default function OrdersPage() {
                 <GapAnalysis />
                 <OllaPlanner />
                 <DeepOrderGenerator />
+                <CookVerdict />
               </div>
             </TabsContent>
 

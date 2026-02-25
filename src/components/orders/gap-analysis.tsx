@@ -1,33 +1,10 @@
 'use client'
 
-import { useMemo } from 'react'
 import { useCookCalculations } from '@/hooks/use-cook-calculations'
 import { FLAVORS, FLAVOR_COLORS } from '@/data/tango-constants'
 
-const GOOD_LINES = [
-  "You're good to go big chief",
-  "Nothing to cook, nothing to sweat",
-  "Sauce math checks out. You're golden",
-  "All accounted for. Just pack and stack",
-  "Zero bottles short. That's a W",
-]
-
-const SHORT_LINE = (n: number, flavors: string[]) =>
-  flavors.length === 1
-    ? `${n.toLocaleString()} bottles short on ${flavors[0]}. Fire up the olla`
-    : `${n.toLocaleString()} bottles short across ${flavors.join(', ')}. Time to cook`
-
 export function GapAnalysis() {
   const { demandTotals, inventory, gaps, totalGap } = useCookCalculations()
-
-  const verdict = useMemo(() => {
-    if (totalGap > 0) {
-      const shortFlavors = FLAVORS.filter(f => (gaps[f] || 0) > 0)
-      return SHORT_LINE(totalGap, shortFlavors)
-    }
-    return GOOD_LINES[Math.floor(Math.random() * GOOD_LINES.length)]
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalGap])
 
   const numCell = (val: number, opts?: { color?: 'green' | 'red' | 'auto'; bold?: boolean; dash?: boolean }) => {
     if (opts?.dash && val === 0) return <span className="text-muted-foreground/20">&mdash;</span>
@@ -98,10 +75,6 @@ export function GapAnalysis() {
             </tr>
           </tbody>
         </table>
-      </div>
-      {/* Verdict */}
-      <div className="text-sm text-muted-foreground italic pt-3 border-t border-border/30 mt-3">
-        {verdict}
       </div>
     </div>
   )
