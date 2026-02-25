@@ -5,13 +5,19 @@ import { supabase } from '@/lib/supabase'
 
 const SETTINGS_KEY = 'tango_recipe_notes'
 
-export type RecipeNotes = Record<string, string>
+export interface RecipeNote {
+  id: string
+  text: string
+}
+
+export type RecipeNotes = Record<string, RecipeNote[]>
 
 interface RecipeState {
   initialized: boolean
   notes: RecipeNotes
   fetchNotes: () => Promise<void>
-  setNote: (flavor: string, value: string) => void
+  addNote: (flavor: string, text: string) => void
+  deleteNote: (flavor: string, noteId: string) => void
 }
 
 // ── Supabase helpers ────────────────────────────────────────────
@@ -50,16 +56,37 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
       const saved = (data as { notes?: RecipeNotes }).notes
       if (saved) {
         for (const [k, v] of Object.entries(saved)) {
-          notes[k] = v
+          // Handle migration from old string format
+          if (typeof v === 'string') {
+            notes[k] = v ? [{ id: crypto.randomUUID(), text: v }] : []
+          } else if (Array.isArray(v)) {
+            notes[k] = v
+          }
         }
       }
     }
     set({ notes, initialized: true })
   },
 
-  setNote: (flavor: string, value: string) => {
+  addNote: (flavor: string, text: string) => {
     set(s => {
-      const notes = { ...s.notes, [flavor]: value }
+      const existing = s.notes[flavor] || []
+      const notes = {
+        ...s.notes,
+        [flavor]: [...existing, { id: crypto.randomUUID(), text }],
+      }
+      saveSetting(SETTINGS_KEY, { notes })
+      return { notes }
+    })
+  },
+
+  deleteNote: (flavor: string, noteId: string) => {
+    set(s => {
+      const existing = s.notes[flavor] || []
+      const notes = {
+        ...s.notes,
+        [flavor]: existing.filter(n => n.id !== noteId),
+      }
       saveSetting(SETTINGS_KEY, { notes })
       return { notes }
     })

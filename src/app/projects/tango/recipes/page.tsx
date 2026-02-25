@@ -1,29 +1,20 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { X, Plus } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { useRecipeStore } from '@/store/recipe-store'
 import { BATCHES_PER_OLLA, OLLA_YIELDS, UNITS } from '@/store/production-store'
 
-// ── Flavor colors ───────────────────────────────────────────────
+// ── Flavor colors (brand) ───────────────────────────────────────
 
 const FLAVOR_COLORS: Record<string, string> = {
-  Hot: '#CC0000',
-  Mild: '#3BA226',
-  Mango: '#F5D623',
-  Truffle: '#1A1A1A',
-  Sriracha: '#2B6EC2',
-  Thai: '#F5D623',
-}
-
-// ── View modes ──────────────────────────────────────────────────
-
-type ViewMode = 'batch' | 'olla' | 'commodity'
-
-const VIEW_LABELS: Record<ViewMode, string> = {
-  batch: '1 Batch',
-  olla: '1 Olla',
-  commodity: 'Commodity',
+  Hot: '#b93b35',
+  Mild: '#3ca44f',
+  Mango: '#d98095',
+  Truffle: '#000000',
+  Sriracha: '#3568B2',
+  Thai: '#774684',
 }
 
 // ── Conversion constants ────────────────────────────────────────
@@ -35,9 +26,9 @@ const GRAMS_PER_GAL = 3785
 
 interface Ingredient {
   name: string
-  grams: number | null      // null = non-standard unit (truffle oil, etc.)
-  unit: 'weight' | 'volume' // weight = lb, volume = gal
-  unitKey?: string           // key in UNITS for commodity mapping
+  grams: number | null
+  unit: 'weight' | 'volume'
+  unitKey?: string
 }
 
 interface RecipeCard {
@@ -128,44 +119,37 @@ const RECIPES: RecipeCard[] = [
 
 // ── Helpers ─────────────────────────────────────────────────────
 
-function formatWeight(grams: number): string {
+function fmtWeight(grams: number): string {
   const lbs = grams / GRAMS_PER_LB
   if (lbs >= 1) return `${lbs.toFixed(1)} lb`
   return `${(lbs * 16).toFixed(1)} oz`
 }
 
-function formatVolume(grams: number): string {
+function fmtVolume(grams: number): string {
   return `${(grams / GRAMS_PER_GAL).toFixed(2)} gal`
 }
 
-function formatImperial(ing: Ingredient, multiplier: number): string {
+function fmtImperial(ing: Ingredient, mult: number): string {
   if (ing.grams === null) return 'dropper'
-  const g = ing.grams * multiplier
-  return ing.unit === 'volume' ? formatVolume(g) : formatWeight(g)
+  const g = ing.grams * mult
+  return ing.unit === 'volume' ? fmtVolume(g) : fmtWeight(g)
 }
 
-function formatCommodity(ing: Ingredient, multiplier: number): string {
-  if (ing.grams === null) return 'dropper'
+function fmtCommodity(ing: Ingredient, mult: number): string {
+  if (ing.grams === null) return '—'
   if (!ing.unitKey) return '—'
   const u = UNITS[ing.unitKey]
   if (!u) return '—'
-
-  const g = ing.grams * multiplier
+  const g = ing.grams * mult
   const imperial = ing.unit === 'volume' ? g / GRAMS_PER_GAL : g / GRAMS_PER_LB
-  const pkgsExact = imperial / u.pkg
-  const pkgsRounded = Math.ceil(pkgsExact * 10) / 10 // round up to 0.1
-
-  if (pkgsRounded < 1) {
-    return `${pkgsRounded.toFixed(1)} × ${u.label}`
-  }
-  return `${pkgsRounded.toFixed(1)} × ${u.label}`
+  const pkgs = Math.ceil(imperial / u.pkg * 10) / 10
+  return `${pkgs.toFixed(1)}× ${u.label}`
 }
 
 // ── Component ───────────────────────────────────────────────────
 
 export default function RecipesPage() {
-  const { initialized, notes, fetchNotes, setNote } = useRecipeStore()
-  const [view, setView] = useState<ViewMode>('batch')
+  const { initialized, notes, fetchNotes, addNote, deleteNote } = useRecipeStore()
 
   useEffect(() => {
     fetchNotes()
@@ -176,23 +160,6 @@ export default function RecipesPage() {
       <PageHeader title="Recipes" count={RECIPES.length} />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
-        {/* View toggle */}
-        <div className="flex gap-1 mb-6 bg-muted/50 rounded-lg p-1 w-fit">
-          {(['batch', 'olla', 'commodity'] as ViewMode[]).map(mode => (
-            <button
-              key={mode}
-              onClick={() => setView(mode)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                view === mode
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {VIEW_LABELS[mode]}
-            </button>
-          ))}
-        </div>
-
         {!initialized ? (
           <div className="text-sm text-muted-foreground text-center py-8">Loading...</div>
         ) : (
@@ -201,9 +168,9 @@ export default function RecipesPage() {
               <RecipeSection
                 key={recipe.flavor}
                 recipe={recipe}
-                view={view}
-                note={notes[recipe.flavor] || ''}
-                onNoteChange={(val) => setNote(recipe.flavor, val)}
+                notes={notes[recipe.flavor] || []}
+                onAddNote={(text) => addNote(recipe.flavor, text)}
+                onDeleteNote={(id) => deleteNote(recipe.flavor, id)}
               />
             ))}
           </div>
@@ -217,18 +184,25 @@ export default function RecipesPage() {
 
 interface RecipeSectionProps {
   recipe: RecipeCard
-  view: ViewMode
-  note: string
-  onNoteChange: (value: string) => void
+  notes: { id: string; text: string }[]
+  onAddNote: (text: string) => void
+  onDeleteNote: (id: string) => void
 }
 
-function RecipeSection({ recipe, view, note, onNoteChange }: RecipeSectionProps) {
+function RecipeSection({ recipe, notes, onAddNote, onDeleteNote }: RecipeSectionProps) {
+  const [newNote, setNewNote] = useState('')
   const color = FLAVOR_COLORS[recipe.flavor] || '#999'
   const batches = BATCHES_PER_OLLA[recipe.flavor] || 4
   const bottles = OLLA_YIELDS[recipe.flavor] || 400
   const isDark = recipe.flavor === 'Truffle'
 
-  const multiplier = view === 'batch' ? 1 : batches
+  const handleAddNote = () => {
+    const trimmed = newNote.trim()
+    if (trimmed) {
+      onAddNote(trimmed)
+      setNewNote('')
+    }
+  }
 
   return (
     <div className="border border-border rounded-lg overflow-hidden">
@@ -251,69 +225,77 @@ function RecipeSection({ recipe, view, note, onNoteChange }: RecipeSectionProps)
           )}
         </div>
         <span className="text-[10px] text-muted-foreground tabular-nums">
-          {batches} batches/olla &middot; ~{bottles} bottles/olla
+          {batches} batches/olla &middot; ~{bottles} btl/olla
         </span>
       </div>
 
       <div className="p-4 space-y-4">
-        {/* Ingredient table */}
+        {/* Ingredient table — all views in one */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-[10px] uppercase tracking-wider text-muted-foreground">
                 <th className="pb-2 pr-4">Ingredient</th>
-                <th className="pb-2 text-right px-2 w-24">Grams</th>
-                <th className="pb-2 text-right px-2 w-24">Imperial</th>
-                {view === 'commodity' && (
-                  <th className="pb-2 text-right pl-2 w-36">Order Qty</th>
-                )}
+                <th className="pb-2 text-right px-2 w-[72px]">
+                  <div>1 Batch</div>
+                </th>
+                <th className="pb-2 text-right px-2 w-[72px]">
+                  <div>1 Olla</div>
+                  <div className="text-muted-foreground/40 normal-case font-normal">×{batches}</div>
+                </th>
+                <th className="pb-2 text-right pl-2 w-[120px] border-l border-border/30">
+                  <div>Order Qty</div>
+                  <div className="text-muted-foreground/40 normal-case font-normal">per olla</div>
+                </th>
               </tr>
             </thead>
             <tbody>
               {recipe.ingredients.map(ing => (
                 <tr key={ing.name} className="border-t border-border/50">
                   <td className="py-1.5 pr-4 font-medium">{ing.name}</td>
-                  <td className="py-1.5 text-right tabular-nums px-2">
-                    {ing.grams !== null ? `${(ing.grams * multiplier).toLocaleString()}g` : '—'}
+                  <td className="py-1.5 text-right tabular-nums px-2 text-muted-foreground">
+                    {fmtImperial(ing, 1)}
                   </td>
                   <td className="py-1.5 text-right tabular-nums px-2">
-                    {formatImperial(ing, multiplier)}
+                    {fmtImperial(ing, batches)}
                   </td>
-                  {view === 'commodity' && (
-                    <td className="py-1.5 text-right tabular-nums pl-2 text-orange-400 font-medium">
-                      {formatCommodity(ing, multiplier)}
-                    </td>
-                  )}
+                  <td className="py-1.5 text-right tabular-nums pl-2 border-l border-border/30 text-orange-400 font-medium">
+                    {fmtCommodity(ing, batches)}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* View mode label */}
-        <div className="text-[10px] text-muted-foreground">
-          {view === 'batch' && `Showing per-batch quantities (×${batches} for full olla)`}
-          {view === 'olla' && `Showing full olla quantities (${batches} batches × 1 olla)`}
-          {view === 'commodity' && `Showing full olla quantities mapped to purchasable units from Deep`}
-        </div>
-
-        {/* Notes */}
+        {/* Notes — todo list style */}
         <div>
-          <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1">
+          <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium block mb-1.5">
             Notes
           </label>
-          <textarea
-            value={note}
-            onChange={e => onNoteChange(e.target.value)}
-            placeholder="Add recipe notes..."
-            rows={2}
-            className="w-full bg-transparent text-sm border border-border/50 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-foreground/20 placeholder:text-muted-foreground/30 resize-y"
-          />
-        </div>
-
-        {/* Image placeholder */}
-        <div className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center">
-          <p className="text-xs text-muted-foreground/50">Drop recipe card image here</p>
+          <div className="space-y-1">
+            {notes.map(note => (
+              <div key={note.id} className="flex items-start gap-2 group text-sm">
+                <span className="flex-1 text-muted-foreground">{note.text}</span>
+                <button
+                  onClick={() => onDeleteNote(note.id)}
+                  className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground/40 hover:text-red-400"
+                >
+                  <X className="size-3" />
+                </button>
+              </div>
+            ))}
+            <div className="flex items-center gap-2">
+              <Plus className="size-3 text-muted-foreground/30 shrink-0" />
+              <input
+                value={newNote}
+                onChange={e => setNewNote(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') handleAddNote() }}
+                placeholder="Add a note..."
+                className="flex-1 text-sm bg-transparent outline-none placeholder:text-muted-foreground/30"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

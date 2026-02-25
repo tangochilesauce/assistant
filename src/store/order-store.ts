@@ -47,7 +47,10 @@ function getDefaultOrders(): Order[] {
       stage: 'processing',
       shipTo: 'Hudson Valley Warehouse, 525 Neelytown Rd, Montgomery, NY 12549',
       notes: 'Palletized and ready. Pays ~Mar 11 (Net 14).',
-      items: [],
+      items: [
+        { sku: '224137', flavor: 'Mild', cases: 82, price: 29, packed: 82 },
+        { sku: '224132', flavor: 'Hot', cases: 36, price: 29, packed: 36 },
+      ],
       checklist: [
         { id: 'ck-hva-1', text: 'Palletized', done: true },
         { id: 'ck-hva-2', text: 'Confirm pickup with carrier', done: false },

@@ -85,8 +85,8 @@ export const PROJECTS: Project[] = [
       { id: 'done', label: 'Done' },
     ],
     tools: [
-      { href: '/orders', label: 'Orders', icon: 'Package' },
-      { href: '/recipes', label: 'Recipes', icon: 'CookingPot' },
+      { href: '/projects/tango/orders', label: 'Orders', icon: 'Package' },
+      { href: '/projects/tango/recipes', label: 'Recipes', icon: 'CookingPot' },
     ],
   },
   {
@@ -177,6 +177,15 @@ export const PROJECTS: Project[] = [
     weight: 10,
     goal: 'Build PL8 into the operating system for everything',
     defaultActions: ['Be able to order/edit to-do list items', 'README for each project', 'Add Tango dashboard'],
+  },
+  {
+    slug: 'frieber',
+    name: 'Frieber.com',
+    emoji: '🌐',
+    color: '#14b8a6',
+    weight: 5,
+    goal: 'Cancel Cargo, migrate to Vercel, build personal site',
+    defaultActions: ['Cancel Cargo hosting', 'Set up Vercel project + DNS', 'Deploy placeholder page', 'Design & build real site'],
   },
   {
     slug: 'life-admin',

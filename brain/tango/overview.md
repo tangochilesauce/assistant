@@ -165,6 +165,8 @@ Carrot-Based, Vegan, No Preservatives, No Sugar, No Gums, Plant-Based, Organic I
 | Mango (Yellow) | Yellow | #fff06c |
 | Mango (Blue) | Teal | #60a891 |
 | Thai | Purple | #774684 |
+| Sriracha | Blue | #3568B2 |
+| Truffle | Black | #000000 |
 
 ### Box Dimensions
 - 3-pack: 7.5" x 7.5" x 3.5"

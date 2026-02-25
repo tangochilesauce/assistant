@@ -230,9 +230,23 @@ export function OrderDetail() {
                   <Icon className={`size-4 ${order.docs[key] ? 'text-emerald-400' : 'text-muted-foreground/30'}`} />
                   <span className="flex-1">{label}</span>
                   {order.docs[key] ? (
-                    <span className="text-xs text-emerald-400 truncate max-w-[150px]">
-                      {typeof order.docs[key] === 'string' ? order.docs[key]!.split('/').pop() : 'Uploaded'}
-                    </span>
+                    <button
+                      onClick={async () => {
+                        const path = order.docs[key]
+                        if (!path) return
+                        if (supabase) {
+                          const { data } = await supabase.storage
+                            .from('tango-docs')
+                            .createSignedUrl(path, 3600)
+                          if (data?.signedUrl) {
+                            window.open(data.signedUrl, '_blank')
+                          }
+                        }
+                      }}
+                      className="text-xs text-emerald-400 hover:text-emerald-300 truncate max-w-[150px] underline underline-offset-2"
+                    >
+                      {typeof order.docs[key] === 'string' ? order.docs[key]!.split('/').pop() : 'Download'}
+                    </button>
                   ) : (
                     <Button
                       variant="ghost"

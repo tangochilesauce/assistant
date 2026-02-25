@@ -19,12 +19,12 @@ import type { MaterialStatus } from '@/store/production-store'
 // ── Flavor colors ──────────────────────────────────────────────
 
 const FLAVOR_COLORS: Record<string, string> = {
-  Hot: '#CC0000',
-  Mild: '#3BA226',
-  Mango: '#F5D623',
-  Truffle: '#1A1A1A',
-  Sriracha: '#2B6EC2',
-  Thai: '#F5D623',
+  Hot: '#b93b35',
+  Mild: '#3ca44f',
+  Mango: '#d98095',
+  Truffle: '#000000',
+  Sriracha: '#3568B2',
+  Thai: '#774684',
 }
 
 const STATUS_COLORS: Record<MaterialStatus, string> = {

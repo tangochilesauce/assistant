@@ -115,8 +115,9 @@ export const SORT_ORDER = ['carrots', 'garlic', 'lime', 'culantro', 'habanero', 
 // Material items (default set)
 const DEFAULT_MATERIALS: MaterialItem[] = [
   { item: 'Empty Bottles', status: 'Have', note: '' },
-  { item: 'Foil Seals', status: 'Have', note: '' },
+  { item: 'Foil Seals', status: 'Order', note: '' },
   { item: '6-Pack Boxes', status: 'Have', note: '' },
+  { item: '25-Pack Boxes', status: 'Order', note: '' },
   { item: 'Caps — Hot', status: 'Have', note: '' },
   { item: 'Caps — Mild', status: 'Have', note: '' },
   { item: 'Caps — Mango', status: 'Have', note: '' },
