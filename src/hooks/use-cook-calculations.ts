@@ -16,6 +16,7 @@ import {
 export function useCookCalculations() {
   const orders = useOrderStore(s => s.orders)
   const packed = useInventoryStore(s => s.packed)
+  const packed25 = useInventoryStore(s => s.packed25)
   const drums = useInventoryStore(s => s.drums)
   const ingredientInventory = useInventoryStore(s => s.ingredients)
   const ollas = useCookPlanStore(s => s.ollas)
@@ -36,12 +37,12 @@ export function useCookCalculations() {
   const inventory = useMemo(() => {
     const inv: Record<string, { packed: number; drumBottles: number; total: number }> = {}
     for (const f of FLAVORS) {
-      const p = packed[f] || 0
+      const p = (packed[f] || 0) + (packed25[f] || 0)
       const dw = (drums[f] || 0) * DRUM_BOTTLES
       inv[f] = { packed: p, drumBottles: dw, total: p + dw }
     }
     return inv
-  }, [packed, drums])
+  }, [packed, packed25, drums])
 
   // Gap analysis
   const gaps = useMemo(() => {
