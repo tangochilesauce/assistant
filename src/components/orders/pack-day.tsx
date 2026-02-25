@@ -134,10 +134,19 @@ export function PackDay() {
     return need
   }, [bottlesDemand])
 
-  // Per-order case breakdown per flavor
+  // Per-order case breakdown per flavor (SORTED by pickup date — earliest first)
   const orderBreakdown = useMemo(() => {
-    const breakdown: Record<string, { title: string; channel: string; cases: number }[]> = {}
-    for (const order of cookOrders) {
+    const breakdown: Record<string, { title: string; channel: string; cases: number; pickupDate: string | null }[]> = {}
+    // Sort cook orders by pickup date (earliest first, null = last)
+    const sorted = [...cookOrders].sort((a, b) => {
+      const da = a.pickupDate || a.dateStr || ''
+      const db = b.pickupDate || b.dateStr || ''
+      if (!da && !db) return 0
+      if (!da) return 1
+      if (!db) return -1
+      return da.localeCompare(db)
+    })
+    for (const order of sorted) {
       for (const item of order.items) {
         const remaining = item.cases - item.packed
         if (remaining > 0) {
@@ -146,12 +155,78 @@ export function PackDay() {
             title: order.title,
             channel: order.channel,
             cases: remaining,
+            pickupDate: order.pickupDate || order.dateStr || null,
           })
         }
       }
     }
     return breakdown
   }, [cookOrders])
+
+  // Waterfall allocation: for each flavor, allocate stock across orders in priority order
+  const flavorWaterfall = useMemo(() => {
+    const result: Record<string, {
+      steps: {
+        title: string
+        channel: string
+        cases: number
+        bottles: number
+        from6pk: number
+        from25pk: number
+        fromDrums: number
+        fulfilled: boolean
+      }[]
+      remaining6pk: number
+      remaining25pk: number
+      remainingDrumBtls: number
+    }> = {}
+
+    for (const f of FLAVORS) {
+      const orders = orderBreakdown[f] || []
+      let avail6 = packed[f] || 0
+      let avail25 = packed25[f] || 0
+      let availDrumBtls = Math.round((drums[f] || 0) * DRUM_BOTTLES)
+
+      const steps = orders.map(ob => {
+        const bottles = ob.cases * 6
+        let remaining = bottles
+
+        // Draw from 6-packs first (already boxed)
+        const from6pk = Math.min(avail6, remaining)
+        avail6 -= from6pk
+        remaining -= from6pk
+
+        // Then 25-packs (need reboxing)
+        const from25pk = Math.min(avail25, remaining)
+        avail25 -= from25pk
+        remaining -= from25pk
+
+        // Then fill from drums
+        const fromDrums = Math.min(availDrumBtls, remaining)
+        availDrumBtls -= fromDrums
+        remaining -= fromDrums
+
+        return {
+          title: ob.title,
+          channel: ob.channel,
+          cases: ob.cases,
+          bottles,
+          from6pk,
+          from25pk,
+          fromDrums,
+          fulfilled: remaining === 0,
+        }
+      })
+
+      result[f] = {
+        steps,
+        remaining6pk: avail6,
+        remaining25pk: avail25,
+        remainingDrumBtls: availDrumBtls,
+      }
+    }
+    return result
+  }, [orderBreakdown, packed, packed25, drums])
 
   // Total box pool (shared across all flavors)
   const totalBoxesAvailable = useMemo(() => {
@@ -354,12 +429,10 @@ export function PackDay() {
                 const demand = bottlesDemand[flavor] || 0
                 const demandCases = casesNeeded[flavor] || 0
                 const in6 = packed[flavor] || 0
-                const in6cases = Math.floor(in6 / 6)
                 const in25 = packed25[flavor] || 0
                 const drumCount = drums[flavor] || 0
                 const drumBtls = Math.round(drumCount * DRUM_BOTTLES)
-                const net = bottlesNet[flavor] || 0
-                const netCases = Math.ceil(net / 6)
+                const wf = flavorWaterfall[flavor]
                 const { hasSauce, hasCaps, hasLabels, hasCaseLabels } = getReadiness(flavor)
 
                 return (
@@ -379,59 +452,70 @@ export function PackDay() {
                       </span>
                     </div>
 
-                    {/* Order split */}
-                    {orderBreakdown[flavor] && (
-                      <div className="ml-7 text-[10px] tabular-nums text-muted-foreground/40 mb-2">
-                        {orderBreakdown[flavor].map((ob, i) => (
-                          <span key={i}>
-                            {i > 0 && <span className="mx-1">&middot;</span>}
-                            {ob.channel} {ob.title}: {ob.cases} cs
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Row 2: inventory math */}
+                    {/* Stock snapshot */}
                     {demand > 0 && (
-                      <div className="ml-7 space-y-0.5 text-[11px] tabular-nums text-muted-foreground/70 mb-2">
-                        <div className="flex gap-4 flex-wrap">
-                          <span>
-                            <span className="text-muted-foreground/40">6-pk:</span>{' '}
-                            <span className={in6 > 0 ? 'text-emerald-500' : ''}>
-                              {in6} btls ({in6cases} cs)
-                            </span>
-                          </span>
-                          <span>
-                            <span className="text-muted-foreground/40">25-pk:</span>{' '}
-                            <span className={in25 > 0 ? 'text-amber-400' : ''}>
-                              {in25} btls
-                            </span>
-                            {in25 > 0 && <span className="text-amber-400/60"> &rarr; rebox</span>}
-                          </span>
-                          <span>
-                            <span className="text-muted-foreground/40">drums:</span>{' '}
-                            {drumCount > 0
-                              ? <>{drumCount} ({drumBtls} btls)</>
-                              : <span className="text-muted-foreground/30">0</span>
-                            }
-                          </span>
-                        </div>
-                        <div className="pt-0.5">
-                          {net > 0 ? (
-                            <span className="text-foreground font-medium">
-                              &rarr; bottle {net} from drums &rarr; box into {netCases} cases
-                            </span>
-                          ) : (
-                            <span className="text-emerald-500 font-medium">
-                              &rarr; covered &mdash; {in6 + in25} btls ready
-                              {in25 > 0 && ` (${in25} need reboxing)`}
-                            </span>
-                          )}
-                        </div>
+                      <div className="ml-7 flex gap-4 flex-wrap text-[11px] tabular-nums text-muted-foreground/50 mb-2">
+                        <span>6-pk: <span className={in6 > 0 ? 'text-emerald-500' : ''}>{in6}</span></span>
+                        <span>25-pk: <span className={in25 > 0 ? 'text-amber-400' : ''}>{in25}</span></span>
+                        <span>drums: {drumCount > 0 ? <>{drumCount} ({drumBtls} btls)</> : <span className="text-muted-foreground/30">0</span>}</span>
                       </div>
                     )}
 
-                    {/* Row 3: readiness checks */}
+                    {/* Waterfall: per-order allocation */}
+                    {wf && wf.steps.length > 0 && (
+                      <div className="ml-7 space-y-2 mb-2">
+                        {wf.steps.map((step, si) => {
+                          const sources: string[] = []
+                          if (step.from6pk > 0) sources.push(`${step.from6pk} from 6-pk stock`)
+                          if (step.from25pk > 0) sources.push(`${step.from25pk} from 25-pk \u2192 rebox`)
+                          if (step.fromDrums > 0) sources.push(`${step.fromDrums} from drums`)
+                          const filled = step.from6pk + step.from25pk + step.fromDrums
+                          const short = step.bottles - filled
+
+                          return (
+                            <div key={si} className="border-l-2 pl-2.5 py-0.5" style={{ borderColor: step.fulfilled ? '#22c55e' : '#ef4444' }}>
+                              <div className="flex items-center gap-1.5 text-[11px]">
+                                <span className="font-medium text-orange-400">{step.channel}</span>
+                                <span className="text-muted-foreground/60">{step.title}</span>
+                                <span className="text-muted-foreground/40 tabular-nums ml-auto">
+                                  {step.cases} cs &middot; {step.bottles} btls
+                                </span>
+                              </div>
+                              <div className="text-[11px] tabular-nums text-muted-foreground/70 mt-0.5">
+                                {sources.length > 0 ? (
+                                  <span>&rarr; {sources.join(', ')}</span>
+                                ) : (
+                                  <span className="text-red-400">&rarr; no stock available</span>
+                                )}
+                              </div>
+                              {step.fulfilled ? (
+                                <div className="text-[11px] text-emerald-500 font-medium mt-0.5">
+                                  &#10003; covered
+                                </div>
+                              ) : (
+                                <div className="text-[11px] text-red-400 font-medium mt-0.5">
+                                  &rarr; {short} bottles short — need more drums
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+
+                        {/* Post-orders leftover */}
+                        {(wf.remaining6pk > 0 || wf.remaining25pk > 0 || wf.remainingDrumBtls > 0) && (
+                          <div className="text-[11px] tabular-nums text-muted-foreground/50 pt-1 border-t border-border/30">
+                            <span className="text-muted-foreground/40">leftover after orders:</span>{' '}
+                            {[
+                              wf.remaining6pk > 0 && `${wf.remaining6pk} in 6-pks`,
+                              wf.remaining25pk > 0 && `${wf.remaining25pk} in 25-pks`,
+                              wf.remainingDrumBtls > 0 && `${wf.remainingDrumBtls} in drums`,
+                            ].filter(Boolean).join(', ')}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Readiness checks */}
                     <div className="ml-7 flex items-center gap-3 text-xs tabular-nums flex-wrap">
                       <span>{checkMark(hasSauce)} <span className="text-muted-foreground/50">sauce</span></span>
                       <span>{checkMark(hasCaps)} <span className="text-muted-foreground/50">caps</span></span>
