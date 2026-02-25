@@ -3,8 +3,9 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, FileText, Truck, Receipt } from 'lucide-react'
-import type { Order } from '@/lib/types/order'
+import type { Order, OrderDocs } from '@/lib/types/order'
 import { useOrderStore } from '@/store/order-store'
+import { supabase } from '@/lib/supabase'
 
 interface OrderCardProps {
   order: Order
@@ -12,21 +13,50 @@ interface OrderCardProps {
 }
 
 const STAGE_BADGE: Record<string, { label: string; cls: string }> = {
-  order: { label: 'ORDER', cls: 'bg-blue-500/15 text-blue-400' },
-  cook: { label: 'COOK', cls: 'bg-orange-500/15 text-orange-400' },
-  pack: { label: 'PACK', cls: 'bg-purple-500/15 text-purple-400' },
-  ship: { label: 'SHIP', cls: 'bg-cyan-500/15 text-cyan-400' },
+  order: { label: 'ORDERED', cls: 'bg-blue-500/15 text-blue-400' },
+  cook: { label: 'COOKED', cls: 'bg-orange-500/15 text-orange-400' },
+  pack: { label: 'PACKED', cls: 'bg-purple-500/15 text-purple-400' },
+  ship: { label: 'SHIPPED', cls: 'bg-cyan-500/15 text-cyan-400' },
   paid: { label: 'PAID', cls: 'bg-green-500/15 text-green-400' },
 }
 
-function DocDot({ present, icon: Icon, label }: { present: boolean; icon: typeof FileText; label: string }) {
+async function openDoc(path: string) {
+  if (supabase) {
+    const { data } = await supabase.storage
+      .from('tango-docs')
+      .createSignedUrl(path, 3600)
+    if (data?.signedUrl) {
+      window.open(data.signedUrl, '_blank')
+      return
+    }
+  }
+  // Fallback: if it looks like a URL, open it directly
+  if (path.startsWith('http')) {
+    window.open(path, '_blank')
+  }
+}
+
+function DocLink({ path, icon: Icon, label }: { path: string | null; icon: typeof FileText; label: string }) {
+  if (!path) {
+    return (
+      <span className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground/30" title={`${label}: missing`}>
+        <Icon className="size-2.5" />
+      </span>
+    )
+  }
+
   return (
-    <span
-      className={`inline-flex items-center gap-0.5 text-[10px] ${present ? 'text-emerald-400' : 'text-muted-foreground/30'}`}
-      title={`${label}: ${present ? 'uploaded' : 'missing'}`}
+    <button
+      onClick={async (e) => {
+        e.stopPropagation()
+        await openDoc(path)
+      }}
+      className="inline-flex items-center gap-0.5 text-[10px] text-emerald-400 hover:text-emerald-300 active:scale-95 transition-all"
+      title={`${label}: ${path.split('/').pop()}`}
     >
       <Icon className="size-2.5" />
-    </span>
+      <span className="text-[9px] font-medium hidden sm:inline">{label}</span>
+    </button>
   )
 }
 
@@ -104,15 +134,15 @@ export function OrderCard({ order, overlay }: OrderCardProps) {
             </div>
           )}
 
-          {/* Date + doc indicators */}
+          {/* Date + doc links */}
           <div className="flex items-center justify-between mt-1.5">
             <span className="text-[10px] text-muted-foreground">
               {order.dateStr}
             </span>
-            <div className="flex items-center gap-1.5">
-              <DocDot present={!!order.docs.po} icon={FileText} label="PO" />
-              <DocDot present={!!order.docs.bol} icon={Truck} label="BOL" />
-              <DocDot present={!!order.docs.inv} icon={Receipt} label="Invoice" />
+            <div className="flex items-center gap-2">
+              <DocLink path={order.docs.po} icon={FileText} label="PO" />
+              <DocLink path={order.docs.bol} icon={Truck} label="BOL" />
+              <DocLink path={order.docs.inv} icon={Receipt} label="INV" />
             </div>
           </div>
         </div>

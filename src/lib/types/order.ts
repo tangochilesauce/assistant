@@ -4,8 +4,8 @@ export type OrderStage = 'order' | 'cook' | 'pack' | 'ship' | 'paid'
 
 export const ORDER_STAGES: { id: OrderStage; label: string; color?: string }[] = [
   { id: 'order', label: 'Ordered' },
-  { id: 'cook', label: 'Cooking' },
-  { id: 'pack', label: 'Packing' },
+  { id: 'cook', label: 'Cooked' },
+  { id: 'pack', label: 'Packed' },
   { id: 'ship', label: 'Shipped' },
   { id: 'paid', label: 'Paid', color: '#22c55e' },
 ]
