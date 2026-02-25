@@ -17,8 +17,8 @@ export interface AboutPage {
 }
 
 export const ABOUT_PAGES: Record<string, AboutPage> = {
-  jeff: {
-    slug: 'jeff',
+  pl8: {
+    slug: 'pl8',
     tagline: "Dan's personal operating system",
     description: "PL8 is the command center for everything Dan builds, ships, and manages. It started as a simple to-do app and is evolving into a full business intelligence dashboard — project management, cash flow, contacts, learnings, and strategy all in one place.",
     sections: [
@@ -61,7 +61,7 @@ About pages — rich project READMEs (you're looking at one)`,
 Rich About/README pages for every project
 Tango business dashboard (revenue, COGS, margins, channel performance)
 Supabase tables for contacts, learnings, intel
-The /jeff slash command — conversational daily planning that feeds into the app
+The /pl8 slash command — conversational daily planning that feeds into the app
 Project pipeline visualization across all channels
 Pattern detection — noticing what gets pushed, what gets done, what falls through`,
       },
@@ -79,9 +79,9 @@ Priority isn't a formula. It's a story. And the story changes every day. A palle
       {
         title: 'The Conversation Layer',
         style: 'prose',
-        content: `PL8 isn't just a website. It's also a Claude Code slash command (/jeff) that acts as the conversational interface.
+        content: `PL8 isn't just a website. It's also a Claude Code slash command (/pl8) that acts as the conversational interface.
 
-Every morning, Dan runs /jeff. Instead of a scoring algorithm, it just asks: "What's going on?" Dan talks — stream of consciousness, whatever's on his mind. Claude listens, organizes it into the board, asks a few clarifying questions, and presents the current state. Dan picks what to do first.
+Every morning, Dan runs /pl8. Instead of a scoring algorithm, it just asks: "What's going on?" Dan talks — stream of consciousness, whatever's on his mind. Claude listens, organizes it into the board, asks a few clarifying questions, and presents the current state. Dan picks what to do first.
 
 Over time, Claude notices patterns: what kinds of tasks always get picked first, what always gets pushed, what falls through the cracks. Those observations get mentioned casually, not formalized into rules until Dan says to.
 
@@ -100,7 +100,7 @@ Life Admin — #666666 (gray)`,
       {
         title: 'Architecture',
         style: 'prose',
-        content: `The app lives at /Users/danfrieber/⚡ claudio/jeff/ and deploys to Vercel (assistant-k5go.vercel.app).
+        content: `The app lives at /Users/danfrieber/⚡ claudio/pl8/ and deploys to Vercel (assistant-k5go.vercel.app).
 
 Data flows two ways: Supabase provides persistent storage that the web app reads from and writes to. Claude Code can also read and write the source files directly — updating project data, adding content, pushing to GitHub — which triggers a rebuild and deploy.
 
@@ -115,7 +115,7 @@ Static export means no server costs, instant loads, and works offline once cache
 
 When Dan says "show me Tango Amazon," he gets a page with revenue charts, COGS breakdown, key contacts, active campaigns, and recent learnings. When he says "what's the status of Madder," he sees the release timeline, studio schedule, and distribution status.
 
-The daily /jeff conversation feeds new information into these pages. Learnings get locked in. Contacts get updated. Strategy narratives evolve. Nothing disappears when the chat session ends.
+The daily /pl8 conversation feeds new information into these pages. Learnings get locked in. Contacts get updated. Strategy narratives evolve. Nothing disappears when the chat session ends.
 
 $50,000/month by Q2 2026. PL8 is how we get there.`,
       },

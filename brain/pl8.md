@@ -116,10 +116,10 @@ The philosophy: no scoring math, no rigid ranked lists. Show Dan the state of ev
 ## Architecture
 
 ```
-/Users/danfrieber/⚡ claudio/jeff/
+/Users/danfrieber/⚡ claudio/pl8/
 ├── brain/                ← Brain files (Claude reads/writes, app renders)
 │   ├── state.md          ← Boot-up file, read first
-│   ├── jeff.md           ← This file
+│   ├── pl8.md            ← This file
 │   ├── ffeedd.md
 │   ├── madder.md
 │   ├── dream-beds.md

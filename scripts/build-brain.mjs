@@ -17,7 +17,7 @@ const OUTPUT = join(import.meta.dirname, '..', 'src', 'data', 'brain.ts')
 // Map brain file paths to project slugs
 const SLUG_MAP = {
   'state.md': '_state',
-  'pl8.md': 'jeff',
+  'pl8.md': 'pl8',
   'dan.md': 'dan',
   'ffeedd.md': 'ffeedd',
   'madder.md': 'madder',

@@ -329,7 +329,7 @@ export function BrainClient({ slug }: Props) {
             <Brain className="size-8 opacity-30" />
             <p className="text-sm">No brain file for this project yet.</p>
             <p className="text-xs text-muted-foreground/60">
-              Brain files live at jeff/brain/ and get baked into the app on deploy.
+              Brain files live at pl8/brain/ and get baked into the app on deploy.
             </p>
           </div>
         ) : (

@@ -54,7 +54,7 @@ export function ProjectAbout({ slug }: ProjectAboutProps) {
       <div className="px-4 py-12 text-center">
         <p className="text-sm text-muted-foreground/60">No about page yet.</p>
         <p className="text-xs text-muted-foreground/40 mt-1">
-          Run /jeff and talk about this project to start building it.
+          Run /pl8 and talk about this project to start building it.
         </p>
       </div>
     )

@@ -170,10 +170,10 @@ Dan wants to rebuild the entire Dream Beds pipeline on Sunday. Two PL8 todos cre
 
 ## System Architecture
 
-- **JEFF app:** /Users/danfrieber/⚡ claudio/jeff/ (Next.js 16, Vercel)
-- **JEFF live:** assistant-k5go.vercel.app (auto-deploys from GitHub main)
+- **PL8 app:** /Users/danfrieber/⚡ claudio/pl8/ (Next.js 16, Vercel)
+- **PL8 live:** assistant-k5go.vercel.app (auto-deploys from GitHub main)
 - **Tango Dashboard:** RETIRED — absorbed into PL8 Orders page (assistant-k5go.vercel.app/orders)
-- **Brain files:** /Users/danfrieber/⚡ claudio/jeff/brain/ → built to src/data/brain.ts on deploy
+- **Brain files:** /Users/danfrieber/⚡ claudio/pl8/brain/ → built to src/data/brain.ts on deploy
 - **Financial data:** /Users/danfrieber/⚡ claudio/_/financial/ (scripts, parsed, analysis)
 - **Supabase:** muowpjabnjkqgwgzfmoj.supabase.co
 - **GitHub repos:** tangochilesauce/assistant (PL8)
