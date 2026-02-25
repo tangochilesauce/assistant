@@ -272,18 +272,14 @@ export function PackDay() {
                 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
                 transition-all cursor-pointer select-none
                 ${isSelected
-                  ? isSuggested
-                    ? 'text-white shadow-sm'
-                    : 'border-2 text-foreground shadow-sm'
+                  ? 'text-white shadow-sm'
                   : 'border border-border text-muted-foreground/50 hover:text-muted-foreground hover:border-border/80'
                 }
               `}
               style={
-                isSelected && isSuggested
+                isSelected
                   ? { background: FLAVOR_COLORS[f] || '#999' }
-                  : isSelected
-                    ? { borderColor: FLAVOR_COLORS[f] || '#999' }
-                    : undefined
+                  : undefined
               }
             >
               <span
