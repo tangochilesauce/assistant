@@ -7,6 +7,7 @@ export type Flavor = typeof FLAVORS[number]
 export const FLAVOR_LC = FLAVORS.map(f => f.toLowerCase())
 
 export const DRUM_BOTTLES = 625
+export const LABELS_PER_ROLL = 1500
 
 export const OLLA_YIELDS: Record<string, number> = {
   Hot: 400, Mild: 400, Truffle: 400, Thai: 400, Sriracha: 400,

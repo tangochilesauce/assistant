@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { useOrderStore } from '@/store/order-store'
 import { useInventoryStore } from '@/store/inventory-store'
-import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS } from '@/data/tango-constants'
+import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS, LABELS_PER_ROLL } from '@/data/tango-constants'
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -118,8 +118,9 @@ export function FulfillmentMatrix() {
         remainingOk: sauceBalance >= 0,
       })
 
-      // Labels (per flavor)
-      const labelStock = labels[f] || 0
+      // Labels (per flavor — rolls × 1500 labels/roll)
+      const labelRolls = labels[f] || 0
+      const labelStock = labelRolls * LABELS_PER_ROLL
       let labelBalance = labelStock
       const labelCells: Cell[] = orderColumns.map(col => {
         const need = orderDemand[col.id]?.[f]?.bottles || 0
