@@ -259,41 +259,70 @@ export function OrderDetail() {
               Documents
             </label>
             <div className="mt-1.5 space-y-2">
-              {DOC_TYPES.map(({ key, label, icon: Icon }) => (
-                <div key={key} className="flex items-center gap-2 text-sm">
-                  <Icon className={`size-4 ${order.docs[key] ? 'text-emerald-400' : 'text-muted-foreground/30'}`} />
-                  <span className="flex-1">{label}</span>
-                  {order.docs[key] ? (
-                    <button
-                      onClick={async () => {
-                        const path = order.docs[key]
-                        if (!path) return
-                        if (supabase) {
-                          const { data } = await supabase.storage
-                            .from('tango-docs')
-                            .createSignedUrl(path, 3600)
-                          if (data?.signedUrl) {
-                            window.open(data.signedUrl, '_blank')
-                          }
-                        }
-                      }}
-                      className="text-xs text-emerald-400 hover:text-emerald-300 truncate max-w-[150px] underline underline-offset-2"
-                    >
-                      {typeof order.docs[key] === 'string' ? order.docs[key]!.split('/').pop() : 'Download'}
-                    </button>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 px-2 text-xs"
-                      onClick={() => handleFileUpload(key)}
-                    >
-                      <Upload className="size-3 mr-1" />
-                      Upload
-                    </Button>
-                  )}
-                </div>
-              ))}
+              {DOC_TYPES.map(({ key, label, icon: Icon }) => {
+                const path = order.docs[key]
+                const isUrl = path?.startsWith('http')
+                const isStoragePath = path?.includes('/')
+                const canDownload = path && (isUrl || (isStoragePath && supabase))
+                const displayName = path ? path.split('/').pop() : null
+
+                return (
+                  <div key={key} className="flex items-center gap-2 text-sm">
+                    <Icon className={`size-4 ${path ? 'text-emerald-400' : 'text-muted-foreground/30'}`} />
+                    <span className="flex-1">{label}</span>
+                    {path ? (
+                      <div className="flex items-center gap-1.5">
+                        {canDownload ? (
+                          <button
+                            onClick={async () => {
+                              if (isUrl) {
+                                window.open(path, '_blank')
+                                return
+                              }
+                              if (supabase && isStoragePath) {
+                                const { data, error } = await supabase.storage
+                                  .from('tango-docs')
+                                  .createSignedUrl(path, 3600)
+                                if (error || !data?.signedUrl) {
+                                  alert(`Could not download: ${error?.message || 'file not found in storage'}`)
+                                  return
+                                }
+                                window.open(data.signedUrl, '_blank')
+                              }
+                            }}
+                            className="text-xs text-emerald-400 hover:text-emerald-300 truncate max-w-[150px] underline underline-offset-2"
+                          >
+                            {displayName || 'Download'}
+                          </button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground/50 truncate max-w-[150px]" title="Not uploaded — re-upload to enable download">
+                            {displayName}
+                          </span>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-5 w-5 p-0 text-muted-foreground/40 hover:text-red-400"
+                          onClick={() => uploadDoc(order.id, key, null as unknown as string)}
+                          title="Remove"
+                        >
+                          <Trash2 className="size-3" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-xs"
+                        onClick={() => handleFileUpload(key)}
+                      >
+                        <Upload className="size-3 mr-1" />
+                        Upload
+                      </Button>
+                    )}
+                  </div>
+                )
+              })}
             </div>
             <input
               ref={fileInputRef}
