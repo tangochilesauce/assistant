@@ -94,16 +94,6 @@ export function PackagingInventory() {
             </tr>
             <tr className="border-t border-border/50">
               <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
-                Boxes <span className="text-[10px] text-muted-foreground/50 font-normal">6-pack</span>
-              </td>
-              {FLAVORS.map(f => (
-                <td key={f} className="py-1.5 px-1 text-center">
-                  <StepperInput value={boxes[f] || 0} step={1} onSave={v => setBoxes(f, v)} />
-                </td>
-              ))}
-            </tr>
-            <tr className="border-t border-border/50">
-              <td className="py-1.5 pr-4 font-medium whitespace-nowrap">
                 Labels <span className="text-[10px] text-muted-foreground/50 font-normal">rolls</span>
               </td>
               {FLAVORS.map(f => (
