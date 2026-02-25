@@ -261,18 +261,28 @@ export const useOrderStore = create<OrderState>((set, get) => ({
         const orders = data.map(rowToOrder)
         // One-time migration: fill empty Moreno Valley order
         for (const o of orders) {
-          if (o.id === 'unfi-044849783' && o.items.length === 0) {
+          if (o.id === 'unfi-044849783' && (!o.items || o.items.length === 0)) {
             o.items = [
               { sku: '224137', flavor: 'Mild', cases: 82, price: 29, packed: 82 },
               { sku: '224132', flavor: 'Hot', cases: 36, price: 29, packed: 36 },
             ]
             o.shipTo = o.shipTo || 'Moreno Valley DC, 24501 Elder Ave, Moreno Valley, CA 92553'
-            // Persist the fix
-            supabase.from('tango_orders').update({
-              items: o.items,
+            await supabase.from('tango_orders').upsert({
+              id: o.id,
+              channel: o.channel,
+              title: o.title,
+              value: o.value,
+              date_str: o.dateStr,
+              stage: o.stage,
               ship_to: o.shipTo,
+              notes: o.notes,
+              items: o.items,
+              checklist: o.checklist,
+              docs: o.docs,
+              carrier: o.carrier,
               updated_at: new Date().toISOString(),
-            }).eq('id', o.id)
+              created_at: o.createdAt,
+            })
           }
         }
         set({ orders, loading: false, initialized: true })
