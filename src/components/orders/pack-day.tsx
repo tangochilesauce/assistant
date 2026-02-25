@@ -5,6 +5,20 @@ import { useOrderStore } from '@/store/order-store'
 import { useInventoryStore } from '@/store/inventory-store'
 import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS } from '@/data/tango-constants'
 
+// ── Pack rate (bottles per hour) ─────────────────────────────
+// Based on real data: 2600 btl/8hr at peak, 1200 btl/8hr at slowest.
+const PACK_RATE_FAST = 325   // bottles/hr (peak)
+const PACK_RATE_SLOW = 150   // bottles/hr (sloppy day)
+
+function formatTimeRange(bottles: number): string {
+  if (bottles <= 0) return ''
+  const fastMin = Math.round((bottles / PACK_RATE_FAST) * 60)
+  const slowMin = Math.round((bottles / PACK_RATE_SLOW) * 60)
+  const fmt = (m: number) => m >= 60 ? `${Math.floor(m / 60)}h${m % 60 ? ` ${m % 60}m` : ''}` : `${m}m`
+  if (fastMin === slowMin) return fmt(fastMin)
+  return `${fmt(fastMin)}–${fmt(slowMin)}`
+}
+
 // ── Pack order priority ──────────────────────────────────────
 // Sriracha always first, Truffle always last, middle sorted by demand.
 
@@ -334,6 +348,9 @@ export function PackDay() {
               {totalNet < totalDemand && (
                 <> &middot; {totalNet.toLocaleString()} to fill</>
               )}
+              {totalDemand > 0 && (
+                <> &middot; ~{formatTimeRange(totalDemand)}</>
+              )}
             </p>
           )}
         </div>
@@ -448,7 +465,12 @@ export function PackDay() {
                       {flavorDot(flavor)}
                       <span className="text-sm font-medium">{flavor}</span>
                       <span className="text-xs tabular-nums text-muted-foreground ml-auto">
-                        {demand > 0 ? `${demand} btls \u00b7 ${demandCases} cases needed` : 'stock run'}
+                        {demand > 0 ? (
+                          <>
+                            {demand} btls &middot; {demandCases} cs
+                            <span className="text-muted-foreground/40 ml-1">~{formatTimeRange(demand)}</span>
+                          </>
+                        ) : 'stock run'}
                       </span>
                     </div>
 
@@ -478,7 +500,7 @@ export function PackDay() {
                                 <span className="font-medium text-orange-400">{step.channel}</span>
                                 <span className="text-muted-foreground/60">{step.title}</span>
                                 <span className="text-muted-foreground/40 tabular-nums ml-auto">
-                                  {step.cases} cs &middot; {step.bottles} btls
+                                  {step.cases} cs &middot; {step.bottles} btls &middot; ~{formatTimeRange(step.bottles)}
                                 </span>
                               </div>
                               <div className="text-[11px] tabular-nums text-muted-foreground/70 mt-0.5">
