@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 // ── Types ────────────────────────────────────────────────────────
 
 export interface CalendarDay {
-  date: string                                    // YYYY-MM-DD (PT — Dan's local timezone)
+  date: string                                    // YYYY-MM-DD (ET — matches publish schedule)
   status: 'published' | 'queued' | 'empty'
   videoTitle: string | null
   youtubeUrl: string | null
@@ -14,11 +14,11 @@ export interface CalendarDay {
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-/** Get today's date string in Pacific Time (Dan's local timezone) */
-function getTodayPT(): string {
+/** Get today's date string in Eastern Time (matches publish schedule) */
+function getTodayET(): string {
   const now = new Date()
   const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Los_Angeles',
+    timeZone: 'America/New_York',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -35,10 +35,10 @@ function addDays(dateStr: string, days: number): string {
 
 /**
  * Calculate upload streak: consecutive days with published or queued
- * content, walking backwards from today (PT).
+ * content, walking backwards from today (ET).
  */
 function calculateStreak(days: CalendarDay[]): number {
-  const today = getTodayPT()
+  const today = getTodayET()
   const dateSet = new Set(
     days
       .filter(d => d.status === 'published' || d.status === 'queued')
@@ -91,7 +91,7 @@ export const useDreamwatchCalendarStore = create<DreamwatchCalendarState>((set, 
   fetchCalendar: async () => {
     if (!supabase) return
 
-    const today = getTodayPT()
+    const today = getTodayET()
     const start = addDays(today, -90)
     const end = addDays(today, 90)
 

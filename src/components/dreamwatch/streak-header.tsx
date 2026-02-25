@@ -8,10 +8,10 @@ import {
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-/** Get today's date string in Pacific Time (Dan's local timezone) */
-function getTodayPT(): string {
+/** Get today's date string in Eastern Time (matches publish schedule) */
+function getTodayET(): string {
   return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Los_Angeles',
+    timeZone: 'America/New_York',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -108,7 +108,7 @@ function CalendarCell({
     : ''
 
   // Future dates are slightly dimmer if empty
-  const today = getTodayPT()
+  const today = getTodayET()
   const isFuture = date > today
   const cellOpacity = isFuture && status === 'empty' ? 'opacity-40' : ''
 
@@ -160,7 +160,7 @@ function buildCalendarWindow(
   pastDays: number,
   futureDays: number
 ): CalendarEntry[] {
-  const today = getTodayPT()
+  const today = getTodayET()
   const start = addDays(today, -pastDays)
   const end = addDays(today, futureDays)
   const dayMap = new Map(days.map(d => [d.date, d]))
@@ -217,7 +217,7 @@ export function StreakHeader() {
 
   if (!initialized) return null
 
-  const today = getTodayPT()
+  const today = getTodayET()
   const motivation = getMotivation(streak)
   const calendarEntries = buildCalendarWindow(days, 30, 30)
 
