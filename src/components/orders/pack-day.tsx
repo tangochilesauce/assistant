@@ -294,7 +294,6 @@ export function PackDay() {
       <div className="flex flex-wrap gap-1.5 mb-5">
         {FLAVORS.map(f => {
           const isSelected = selectedFlavors.includes(f)
-          const isSuggested = suggestedFlavors.includes(f)
           const demand = bottlesDemand[f] || 0
           return (
             <button
@@ -302,28 +301,15 @@ export function PackDay() {
               onClick={() => toggleFlavor(f)}
               className={`
                 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
-                transition-all cursor-pointer select-none
-                ${isSelected
-                  ? 'text-white shadow-sm'
-                  : 'hover:opacity-80'
-                }
+                transition-all cursor-pointer select-none text-white
+                ${isSelected ? 'shadow-sm' : 'opacity-40 hover:opacity-60'}
               `}
-              style={
-                isSelected
-                  ? { background: FLAVOR_COLORS[f] || '#999' }
-                  : { background: `${FLAVOR_COLORS[f] || '#999'}18`, border: `1px solid ${FLAVOR_COLORS[f] || '#999'}40`, color: FLAVOR_COLORS[f] || '#999' }
-              }
+              style={{ background: FLAVOR_COLORS[f] || '#999' }}
             >
-              <span
-                className="inline-block w-2 h-2 rounded-full shrink-0"
-                style={{ background: FLAVOR_COLORS[f] || '#999' }}
-              />
               {f}
-              {demand > 0 && (
-                <span className={`tabular-nums text-[10px] ${isSelected && isSuggested ? 'opacity-80' : 'opacity-50'}`}>
-                  {demand}
-                </span>
-              )}
+              <span className="tabular-nums text-[10px] opacity-80">
+                {demand || 0}
+              </span>
             </button>
           )
         })}
