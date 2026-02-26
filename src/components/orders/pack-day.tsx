@@ -118,10 +118,8 @@ export function PackDay() {
   const selectedFlavors = useMemo(() => {
     if (packDayFlavors.length === 0) return suggestedFlavors
     const valid = new Set(FLAVORS as readonly string[])
-    return sortPackOrder(
-      packDayFlavors.filter(f => valid.has(f)),
-      bottlesDemand
-    )
+    const withDemand = packDayFlavors.filter(f => valid.has(f) && (bottlesDemand[f] || 0) > 0)
+    return withDemand.length > 0 ? sortPackOrder(withDemand, bottlesDemand) : suggestedFlavors
   }, [packDayFlavors, suggestedFlavors, bottlesDemand])
 
   // Auto-sync: no-op for now (don't auto-clear manual overrides)
