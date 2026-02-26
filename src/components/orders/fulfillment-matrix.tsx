@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { useOrderStore } from '@/store/order-store'
 import { useInventoryStore } from '@/store/inventory-store'
-import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS, LABELS_PER_ROLL } from '@/data/tango-constants'
+import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS, LABELS_PER_ROLL, CAPS_PER_BOX } from '@/data/tango-constants'
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -120,7 +120,7 @@ export function FulfillmentMatrix() {
       })
 
       // Caps (per flavor)
-      const capStock = caps[f] || 0
+      const capStock = (caps[f] || 0) * CAPS_PER_BOX
       // Only bottles filled from drums need new caps
       let capPoolLeft = capStock
       // Track how many bottles come from drums per order (waterfall)

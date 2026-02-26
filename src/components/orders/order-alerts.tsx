@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { useOrderStore } from '@/store/order-store'
 import { useInventoryStore } from '@/store/inventory-store'
-import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS, LABELS_PER_ROLL } from '@/data/tango-constants'
+import { FLAVORS, DRUM_BOTTLES, FLAVOR_COLORS, LABELS_PER_ROLL, CAPS_PER_BOX } from '@/data/tango-constants'
 
 interface Alert {
   severity: 'critical' | 'warning'
@@ -96,7 +96,7 @@ export function OrderAlerts() {
       }
 
       // Caps
-      const capCount = caps[f] || 0
+      const capCount = (caps[f] || 0) * CAPS_PER_BOX
       if (toFillFromDrums > 0 && capCount < toFillFromDrums) {
         const short = toFillFromDrums - capCount
         result.push({
