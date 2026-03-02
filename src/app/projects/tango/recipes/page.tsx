@@ -194,8 +194,6 @@ function RecipeSection({ recipe, notes, onAddNote, onDeleteNote }: RecipeSection
   const color = FLAVOR_COLORS[recipe.flavor] || '#999'
   const batches = BATCHES_PER_OLLA[recipe.flavor] || 4
   const bottles = OLLA_YIELDS[recipe.flavor] || 400
-  const isDark = recipe.flavor === 'Truffle'
-
   const handleAddNote = () => {
     const trimmed = newNote.trim()
     if (trimmed) {
@@ -217,7 +215,7 @@ function RecipeSection({ recipe, notes, onAddNote, onDeleteNote }: RecipeSection
         <div className="flex items-center gap-2">
           <span
             className="inline-block w-3 h-3 rounded-full"
-            style={{ background: color, border: isDark ? '1px solid #444' : undefined }}
+            style={{ background: color }}
           />
           <h3 className="text-sm font-semibold">{recipe.flavor}</h3>
           {recipe.subtitle && (

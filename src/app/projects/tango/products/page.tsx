@@ -1,77 +1,167 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Search, Copy, Check } from 'lucide-react'
+import { Search, Copy, Check, ExternalLink } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { FLAVOR_COLORS } from '@/data/tango-constants'
 
 // ── Data ──────────────────────────────────────────────────────────
 
-interface PackData {
-  upc?: string
-  amzSku?: string
-  asin?: string
-  fnsku?: string
-  amzPrice?: string
-}
+const FLAVORS = ['Hot', 'Mild', 'Truffle', 'Mango', 'Thai', 'Sriracha'] as const
 
 interface FlavorProduct {
   flavor: string
+  tagline: string
+  description: string
+  heat: string
+  ingredients: string
+  claims: string[]
+  cogs: string
+
+  // links
+  amazonSingle?: string
+  amazon2Pack?: string
+  shopify?: string
+  faire?: string
+
+  // UNFI
   unfiItem?: string
   unfiSku?: string
-  single: PackData
-  twoPack: PackData
-  threePack: PackData
-  casePack: PackData   // 6-pack case
+
+  // Single
+  singleUpc: string
+  singleAmzSku?: string
+  singleAsin?: string
+  singleFnsku?: string
+  singlePrice?: string
+
+  // 2-Pack
+  twoPackUpc: string
+  twoPackAmzSku?: string
+  twoPackAsin?: string
+  twoPackFnsku?: string
+  twoPackPrice?: string
+
+  // 3-Pack
+  threePackUpc: string
+
+  // 6-Pack (Case)
+  caseUpc?: string
+
+  // Recipe (per batch)
+  recipe: string
 }
 
 const PRODUCTS: FlavorProduct[] = [
   {
     flavor: 'Hot',
+    tagline: 'Smooth & Spicy',
+    description: 'The crowd favorite. Signature delicious Tango flavor with the perfect amount of heat. If you love hot sauce, start with Hot Tango.',
+    heat: 'Hot',
+    ingredients: 'Carrots, Garlic, Limes, Habanero, Sawtooth Cilantro, Apple Cider Vinegar, Sea Salt',
+    claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
+    cogs: '$3.49',
+    amazonSingle: 'https://amazon.com/dp/B07VXY26C6',
+    amazon2Pack: 'https://amazon.com/dp/B0CM877VR6',
+    shopify: 'https://tangochilesauce.com/products/hot-tango',
+    faire: 'https://www.faire.com/brand/b_4ruezpily0',
     unfiItem: '224132', unfiSku: 'HOTT',
-    single:    { upc: '196852546671', amzSku: 'HOT-TANGO',  asin: 'B07VXY26C6', fnsku: 'X002QOIWJF', amzPrice: '$10.99' },
-    twoPack:   { upc: '198168271391', amzSku: 'HOTT2',      asin: 'B0CM877VR6', fnsku: 'X0041G8Y5N', amzPrice: '$19.99' },
-    threePack: { upc: '199284582309' },
-    casePack:  { upc: '195893456864' },
+    singleUpc: '196852546671', singleAmzSku: 'HOT-TANGO', singleAsin: 'B07VXY26C6', singleFnsku: 'X002QOIWJF', singlePrice: '$10.99',
+    twoPackUpc: '198168271391', twoPackAmzSku: 'HOTT2', twoPackAsin: 'B0CM877VR6', twoPackFnsku: 'X0041G8Y5N', twoPackPrice: '$19.99',
+    threePackUpc: '199284582309',
+    caseUpc: '195893456864',
+    recipe: '26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 3.75 lb culantro, 2.2 lb habanero, 3 gal ACV, 4.85 lb salt',
   },
   {
     flavor: 'Mild',
+    tagline: 'Flavor-First, Low Heat',
+    description: 'The perfect hot sauce for beginners. Subtle sweetness of carrots and gentle spiciness of scotch bonnet. Kids love it. Great on salads.',
+    heat: 'Mild',
+    ingredients: 'Carrots, Garlic, Limes, Habanero, Sawtooth Cilantro, Apple Cider Vinegar, Sea Salt',
+    claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
+    cogs: '$3.37',
+    amazonSingle: 'https://amazon.com/dp/B07WW1NFH9',
+    amazon2Pack: 'https://amazon.com/dp/B0CM89191S',
+    shopify: 'https://tangochilesauce.com/products/mild-tango',
+    faire: 'https://www.faire.com/brand/b_4ruezpily0',
     unfiItem: '224137', unfiSku: 'MILD',
-    single:    { upc: '196852812899', amzSku: 'MILD-TANGO', asin: 'B07WW1NFH9', fnsku: 'X002QOSLCN', amzPrice: '$10.99' },
-    twoPack:   { upc: '198168148358', amzSku: 'MILD2',      asin: 'B0CM89191S', fnsku: 'X0041GFNQV', amzPrice: '$19.99' },
-    threePack: { upc: '199284808225' },
-    casePack:  { upc: '195893300969' },
+    singleUpc: '196852812899', singleAmzSku: 'MILD-TANGO', singleAsin: 'B07WW1NFH9', singleFnsku: 'X002QOSLCN', singlePrice: '$10.99',
+    twoPackUpc: '198168148358', twoPackAmzSku: 'MILD2', twoPackAsin: 'B0CM89191S', twoPackFnsku: 'X0041GFNQV', twoPackPrice: '$19.99',
+    threePackUpc: '199284808225',
+    caseUpc: '195893300969',
+    recipe: '26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 3.1 lb culantro, 1.1 lb habanero, 3 gal ACV, 4.4 lb salt',
   },
   {
     flavor: 'Truffle',
+    tagline: 'Award-Winning Gourmet',
+    description: 'The original award-winning collaboration with The Truffleist. Exceptional spicy truffle flavor in a healthful hot sauce guaranteed to take all your meals to the next level.',
+    heat: 'Medium',
+    ingredients: 'Carrots, Garlic, Limes, Chile Peppers, Sawtooth Cilantro, Truffle Flavoring, Apple Cider Vinegar, Sea Salt',
+    claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
+    cogs: '$3.34',
+    amazonSingle: 'https://amazon.com/dp/B07WWYQ44K',
+    amazon2Pack: 'https://amazon.com/dp/B0CM87YWJR',
+    shopify: 'https://tangochilesauce.com/products/truffle-tango',
+    faire: 'https://www.faire.com/brand/b_4ruezpily0',
     unfiSku: 'TRUF',
-    single:    { upc: '871661003842', amzSku: 'TRUFFLETANGO', asin: 'B07WWYQ44K', fnsku: 'X002UJ4RDL', amzPrice: '$17.99' },
-    twoPack:   { upc: '198168989760', amzSku: 'TRUF2',        asin: 'B0CM87YWJR', fnsku: 'X0041G8ZGV', amzPrice: '$29.99' },
-    threePack: { upc: '199284317352' },
-    casePack:  { upc: '195893555284' },
+    singleUpc: '871661003842', singleAmzSku: 'TRUFFLETANGO', singleAsin: 'B07WWYQ44K', singleFnsku: 'X002UJ4RDL', singlePrice: '$17.99',
+    twoPackUpc: '198168989760', twoPackAmzSku: 'TRUF2', twoPackAsin: 'B0CM87YWJR', twoPackFnsku: 'X0041G8ZGV', twoPackPrice: '$29.99',
+    threePackUpc: '199284317352',
+    caseUpc: '195893555284',
+    recipe: 'Mild recipe + truffle oil added right after cooking',
   },
   {
     flavor: 'Mango',
+    tagline: 'Sweet & Spicy Tropical',
+    description: 'After years in the making. Indulge in an exotic new world of sweet spicy Mango Tango flavor. Fragrant ripe mangoes, limes, hot peppers, and a touch of agave in this Caribbean-inspired Tango.',
+    heat: 'Mild',
+    ingredients: 'Mangos, Carrots, Garlic, Limes, Habanero, Sawtooth Cilantro, Agave Nectar, Apple Cider Vinegar, Sea Salt',
+    claims: ['Plant-Based', 'Gluten-Free', 'Paleo', 'No Preservatives', 'Cold-Fill Certified'],
+    cogs: '$3.31',
+    amazonSingle: 'https://amazon.com/dp/B09NQHPCS3',
+    amazon2Pack: 'https://amazon.com/dp/B0CM81YRTQ',
+    shopify: 'https://tangochilesauce.com/products/mango-tango',
+    faire: 'https://www.faire.com/brand/b_4ruezpily0',
     unfiSku: 'MANG',
-    single:    { upc: '195893424436', amzSku: 'MANGO-TANGO', asin: 'B09NQHPCS3', amzPrice: '$10.99' },
-    twoPack:   { upc: '198168818275', amzSku: 'MANG2',       asin: 'B0CM81YRTQ', fnsku: 'X0041G8ZGL', amzPrice: '$19.99' },
-    threePack: { upc: '199284781962' },
-    casePack:  { upc: '196852060641' },
+    singleUpc: '195893424436', singleAmzSku: 'MANGO-TANGO', singleAsin: 'B09NQHPCS3', singlePrice: '$10.99',
+    twoPackUpc: '198168818275', twoPackAmzSku: 'MANG2', twoPackAsin: 'B0CM81YRTQ', twoPackFnsku: 'X0041G8ZGL', twoPackPrice: '$19.99',
+    threePackUpc: '199284781962',
+    caseUpc: '196852060641',
+    recipe: '50 lb mango, 26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 4.4 lb culantro, 1.1 lb habanero, 2.2 lb agave, 3 gal ACV, 4.85 lb salt',
   },
   {
     flavor: 'Thai',
+    tagline: 'Clean Heat, No Linger',
+    description: 'The hottest sauce we\'ve made yet. Fresh, spicy, sweet Tango with the heat turned all the way up. Thai chilies deliver a beautiful spicy flavor that doesn\'t linger on the tongue.',
+    heat: 'Hot',
+    ingredients: 'Carrots, Garlic, Limes, Habanero, Thai Chilies, Sawtooth Cilantro, Apple Cider Vinegar, Sea Salt',
+    claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
+    cogs: '$3.42',
+    amazonSingle: 'https://amazon.com/dp/B09NQHHWVR',
+    amazon2Pack: 'https://amazon.com/dp/B0CM7PLRPG',
+    shopify: 'https://tangochilesauce.com/products/thai-tango',
+    faire: 'https://www.faire.com/brand/b_4ruezpily0',
     unfiSku: 'THAI',
-    single:    { upc: '195893449477', amzSku: 'THAI-TANGO', asin: 'B09NQHHWVR', amzPrice: '$10.99' },
-    twoPack:   { upc: '198168289372', amzSku: 'THAI2',      asin: 'B0CM7PLRPG', fnsku: 'X0041GAWMB', amzPrice: '$19.99' },
-    threePack: { upc: '199284887008' },
-    casePack:  { upc: '196852257539' },
+    singleUpc: '195893449477', singleAmzSku: 'THAI-TANGO', singleAsin: 'B09NQHHWVR', singlePrice: '$10.99',
+    twoPackUpc: '198168289372', twoPackAmzSku: 'THAI2', twoPackAsin: 'B0CM7PLRPG', twoPackFnsku: 'X0041GAWMB', twoPackPrice: '$19.99',
+    threePackUpc: '199284887008',
+    caseUpc: '196852257539',
+    recipe: '26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 4.4 lb culantro, 4.4 lb habanero, 6.6 lb thai chili, 3 gal ACV, 4.85 lb salt',
   },
   {
     flavor: 'Sriracha',
-    single:    { upc: '198168929643', amzPrice: '$10.99' },
-    twoPack:   { upc: '199284382176' },
-    threePack: { upc: '199284005822' },
-    casePack:  {},
+    tagline: 'Clean & Simple',
+    description: 'As close as we could get to the perfect Sriracha flavor we all love, while using only clean, simple ingredients.',
+    heat: 'Hot',
+    ingredients: 'Red Jalapeno, Garlic, White Vinegar, Cane Sugar, Sea Salt',
+    claims: ['Plant-Based', 'Gluten-Free', 'No Preservatives', 'Cold-Fill Certified'],
+    cogs: '$2.74',
+    shopify: 'https://tangochilesauce.com/products/sriracha-tango',
+    faire: 'https://www.faire.com/brand/b_4ruezpily0',
+    singleUpc: '198168929643', singlePrice: '$10.99',
+    twoPackUpc: '199284382176',
+    threePackUpc: '199284005822',
+    recipe: '25 lb red jalapeno, 13 lb garlic, 11 lb white vinegar, 4 lb sugar, 3 lb salt',
   },
 ]
 
@@ -95,124 +185,91 @@ const LEGACY_UPCS = [
 
 // ── Search ────────────────────────────────────────────────────────
 
-function flavorMatchesSearch(product: FlavorProduct, q: string): boolean {
+function matchesSearch(p: FlavorProduct, q: string): boolean {
   const s = q.toLowerCase()
-  if (product.flavor.toLowerCase().includes(s)) return true
-  const allVals = [
-    product.unfiItem, product.unfiSku,
-    ...Object.values(product.single),
-    ...Object.values(product.twoPack),
-    ...Object.values(product.threePack),
-    ...Object.values(product.casePack),
+  const all = [
+    p.flavor, p.tagline, p.description, p.ingredients, p.heat,
+    p.unfiItem, p.unfiSku,
+    p.singleUpc, p.singleAmzSku, p.singleAsin, p.singleFnsku,
+    p.twoPackUpc, p.twoPackAmzSku, p.twoPackAsin, p.twoPackFnsku,
+    p.threePackUpc, p.caseUpc,
   ]
-  return allVals.some(v => typeof v === 'string' && v.toLowerCase().includes(s))
+  return all.some(v => v && v.toLowerCase().includes(s))
 }
 
 // ── Copy Cell ─────────────────────────────────────────────────────
 
-function CopyCell({ value, label }: { value?: string; label?: string }) {
+function CC({ v, mono }: { v?: string; mono?: boolean }) {
   const [copied, setCopied] = useState(false)
-
   const handleCopy = useCallback(() => {
-    if (!value) return
-    navigator.clipboard.writeText(value)
+    if (!v) return
+    navigator.clipboard.writeText(v)
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
-  }, [value])
+  }, [v])
 
-  if (!value) return <span className="text-muted-foreground/15 text-[10px]">—</span>
+  if (!v) return <span className="text-muted-foreground/15 text-[10px]">—</span>
 
   return (
     <button
       onClick={handleCopy}
-      className="group/copy flex items-center gap-1.5 font-mono text-xs hover:text-orange-400 transition-colors text-left w-full"
+      className={`group/c inline-flex items-center gap-1 hover:text-orange-400 transition-colors text-left ${mono ? 'font-mono' : ''}`}
       title="Click to copy"
     >
-      {label && <span className="text-[10px] text-muted-foreground/40 uppercase w-14 shrink-0 font-sans">{label}</span>}
-      <span className="truncate">{value}</span>
+      <span className="truncate">{v}</span>
       {copied ? (
-        <Check className="size-3 text-green-400 shrink-0" />
+        <Check className="size-2.5 text-green-400 shrink-0" />
       ) : (
-        <Copy className="size-3 opacity-0 group-hover/copy:opacity-40 shrink-0 transition-opacity" />
+        <Copy className="size-2.5 opacity-0 group-hover/c:opacity-40 shrink-0 transition-opacity" />
       )}
     </button>
   )
 }
 
-// ── Row helper ────────────────────────────────────────────────────
-
-function DataRow({ label, value }: { label: string; value?: string }) {
-  if (!value) return null
+function ExtLink({ href, label }: { href?: string; label: string }) {
+  if (!href) return <span className="text-muted-foreground/15 text-[10px]">—</span>
   return (
-    <div className="py-1">
-      <CopyCell value={value} label={label} />
-    </div>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 text-orange-400/80 hover:text-orange-400 transition-colors"
+    >
+      <span className="truncate">{label}</span>
+      <ExternalLink className="size-2.5 shrink-0 opacity-60" />
+    </a>
   )
 }
 
-function PackBlock({ title, data }: { title: string; data: PackData }) {
-  const hasData = Object.values(data).some(Boolean)
-  if (!hasData) return null
+// ── Section Row ───────────────────────────────────────────────────
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground/50 font-medium mb-0.5">{title}</div>
-      <div className="space-y-0">
-        <DataRow label="UPC" value={data.upc} />
-        <DataRow label="SKU" value={data.amzSku} />
-        <DataRow label="ASIN" value={data.asin} />
-        <DataRow label="FNSKU" value={data.fnsku} />
-        {data.amzPrice && (
-          <div className="py-1 flex items-center gap-1.5">
-            <span className="text-[10px] text-muted-foreground/40 uppercase w-14 shrink-0">Price</span>
-            <span className="text-xs text-muted-foreground">{data.amzPrice}</span>
-          </div>
-        )}
-      </div>
-    </div>
+    <td
+      colSpan={7}
+      className="px-3 py-2 text-[10px] uppercase tracking-widest text-orange-400/60 font-bold bg-orange-500/5 border-t border-border/40"
+    >
+      {children}
+    </td>
   )
 }
 
-// ── Flavor Card ───────────────────────────────────────────────────
-
-function FlavorCard({ product }: { product: FlavorProduct }) {
-  const color = FLAVOR_COLORS[product.flavor] || '#999'
-  const isDark = product.flavor === 'Truffle'
-
+function Row({ label, children, wrap }: { label: string; children: React.ReactNode; wrap?: boolean }) {
   return (
-    <div className="border border-border rounded-lg overflow-hidden flex flex-col">
-      {/* Flavor header */}
-      <div
-        className="px-4 py-3 flex items-center gap-2"
-        style={{
-          background: `${color}15`,
-          borderBottom: `2px solid ${color}40`,
-        }}
-      >
-        <span
-          className="inline-block w-3 h-3 rounded-full shrink-0"
-          style={{ background: color, border: isDark ? '1px solid #444' : undefined }}
-        />
-        <h3 className="text-sm font-semibold">{product.flavor}</h3>
-      </div>
+    <tr className="border-t border-border/15 hover:bg-muted/10 transition-colors">
+      <td className="px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground/60 font-medium whitespace-nowrap sticky left-0 bg-background z-10 border-r border-border/10">
+        {label}
+      </td>
+      {children}
+    </tr>
+  )
+}
 
-      <div className="p-4 space-y-4 flex-1">
-        {/* UNFI IDs (flavor-level) */}
-        {(product.unfiItem || product.unfiSku) && (
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground/50 font-medium mb-0.5">UNFI</div>
-            <DataRow label="Item #" value={product.unfiItem} />
-            <DataRow label="SKU" value={product.unfiSku} />
-          </div>
-        )}
-
-        {/* Pack sections */}
-        <PackBlock title="Single (8 oz)" data={product.single} />
-        <PackBlock title="2-Pack" data={product.twoPack} />
-        <PackBlock title="3-Pack" data={product.threePack} />
-        <PackBlock title="6-Pack (Case)" data={product.casePack} />
-      </div>
-    </div>
+function Cell({ children, wrap }: { children: React.ReactNode; wrap?: boolean }) {
+  return (
+    <td className={`px-3 py-2 ${wrap ? '' : 'whitespace-nowrap'} text-xs`}>
+      {children}
+    </td>
   )
 }
 
@@ -222,7 +279,7 @@ export default function ProductsPage() {
   const [search, setSearch] = useState('')
 
   const filtered = search.trim()
-    ? PRODUCTS.filter(p => flavorMatchesSearch(p, search.trim()))
+    ? PRODUCTS.filter(p => matchesSearch(p, search.trim()))
     : PRODUCTS
 
   return (
@@ -230,101 +287,245 @@ export default function ProductsPage() {
       <PageHeader title="Products" count={6} />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
-        {/* Search bar */}
-        <div className="relative mb-6">
+        {/* Search */}
+        <div className="relative mb-5">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/40" />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search UPC, SKU, ASIN, flavor..."
+            placeholder="Search UPC, SKU, ASIN, flavor, ingredient..."
             className="w-full pl-10 pr-4 py-2.5 text-sm bg-muted/30 border border-border rounded-lg outline-none focus:border-orange-500/50 focus:bg-muted/50 transition-colors placeholder:text-muted-foreground/30"
             autoFocus
           />
         </div>
 
-        {/* 6 flavor columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(product => (
-            <FlavorCard key={product.flavor} product={product} />
-          ))}
+        {/* Master table — 6 flavor columns, one row */}
+        <div className="border border-border rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs min-w-[1100px]">
+              {/* Flavor headers */}
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="px-3 py-3 text-left w-24 sticky left-0 bg-background z-10 border-r border-border/10" />
+                  {filtered.map(p => {
+                    const color = FLAVOR_COLORS[p.flavor] || '#999'
+                    return (
+                      <th key={p.flavor} className="px-3 py-3 text-left" style={{ minWidth: 170 }}>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="inline-block w-3 h-3 rounded-full shrink-0"
+                            style={{ background: color }}
+                          />
+                          <span className="text-sm font-bold" style={{ color }}>{p.flavor}</span>
+                        </div>
+                        <div className="text-[10px] text-muted-foreground/50 mt-0.5 font-normal">{p.tagline}</div>
+                      </th>
+                    )
+                  })}
+                </tr>
+              </thead>
+
+              <tbody>
+                {/* ── OVERVIEW ── */}
+                <tr><SectionLabel>Overview</SectionLabel></tr>
+
+                <Row label="Description">
+                  {filtered.map(p => (
+                    <Cell key={p.flavor} wrap>
+                      <span className="text-muted-foreground leading-relaxed">{p.description}</span>
+                    </Cell>
+                  ))}
+                </Row>
+
+                <Row label="Heat">
+                  {filtered.map(p => (
+                    <Cell key={p.flavor}>
+                      <span className={
+                        p.heat === 'Hot' ? 'text-red-400 font-medium' :
+                        p.heat === 'Medium' ? 'text-yellow-400 font-medium' :
+                        'text-green-400 font-medium'
+                      }>{p.heat}</span>
+                    </Cell>
+                  ))}
+                </Row>
+
+                <Row label="COGS">
+                  {filtered.map(p => <Cell key={p.flavor}><span className="text-muted-foreground tabular-nums">{p.cogs}</span></Cell>)}
+                </Row>
+
+                <Row label="Claims">
+                  {filtered.map(p => (
+                    <Cell key={p.flavor} wrap>
+                      <div className="flex flex-wrap gap-1">
+                        {p.claims.map(c => (
+                          <span key={c} className="text-[9px] px-1.5 py-0.5 rounded bg-muted/30 text-muted-foreground/60">{c}</span>
+                        ))}
+                      </div>
+                    </Cell>
+                  ))}
+                </Row>
+
+                {/* ── LINKS ── */}
+                <tr><SectionLabel>Links</SectionLabel></tr>
+
+                <Row label="Amazon">
+                  {filtered.map(p => (
+                    <Cell key={p.flavor}>
+                      <div className="space-y-0.5">
+                        <ExtLink href={p.amazonSingle} label="Single" />
+                        {p.amazon2Pack && <div><ExtLink href={p.amazon2Pack} label="2-Pack" /></div>}
+                      </div>
+                    </Cell>
+                  ))}
+                </Row>
+
+                <Row label="Website">
+                  {filtered.map(p => <Cell key={p.flavor}><ExtLink href={p.shopify} label="Shop" /></Cell>)}
+                </Row>
+
+                <Row label="Faire">
+                  {filtered.map(p => <Cell key={p.flavor}><ExtLink href={p.faire} label="Wholesale" /></Cell>)}
+                </Row>
+
+                {/* ── SINGLE ── */}
+                <tr><SectionLabel>Single (8 oz)</SectionLabel></tr>
+
+                <Row label="UPC">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.singleUpc} mono /></Cell>)}
+                </Row>
+                <Row label="AMZ SKU">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.singleAmzSku} mono /></Cell>)}
+                </Row>
+                <Row label="ASIN">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.singleAsin} mono /></Cell>)}
+                </Row>
+                <Row label="FNSKU">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.singleFnsku} mono /></Cell>)}
+                </Row>
+                <Row label="Price">
+                  {filtered.map(p => <Cell key={p.flavor}><span className="text-muted-foreground tabular-nums">{p.singlePrice || '—'}</span></Cell>)}
+                </Row>
+
+                {/* ── 2-PACK ── */}
+                <tr><SectionLabel>2-Pack</SectionLabel></tr>
+
+                <Row label="UPC">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.twoPackUpc} mono /></Cell>)}
+                </Row>
+                <Row label="AMZ SKU">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.twoPackAmzSku} mono /></Cell>)}
+                </Row>
+                <Row label="ASIN">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.twoPackAsin} mono /></Cell>)}
+                </Row>
+                <Row label="FNSKU">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.twoPackFnsku} mono /></Cell>)}
+                </Row>
+                <Row label="Price">
+                  {filtered.map(p => <Cell key={p.flavor}><span className="text-muted-foreground tabular-nums">{p.twoPackPrice || '—'}</span></Cell>)}
+                </Row>
+
+                {/* ── 3-PACK ── */}
+                <tr><SectionLabel>3-Pack</SectionLabel></tr>
+
+                <Row label="UPC">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.threePackUpc} mono /></Cell>)}
+                </Row>
+
+                {/* ── CASE ── */}
+                <tr><SectionLabel>6-Pack (Case)</SectionLabel></tr>
+
+                <Row label="UPC">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.caseUpc} mono /></Cell>)}
+                </Row>
+
+                {/* ── UNFI ── */}
+                <tr><SectionLabel>UNFI / Distribution</SectionLabel></tr>
+
+                <Row label="UNFI Item #">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.unfiItem} mono /></Cell>)}
+                </Row>
+                <Row label="UNFI SKU">
+                  {filtered.map(p => <Cell key={p.flavor}><CC v={p.unfiSku} mono /></Cell>)}
+                </Row>
+
+                {/* ── INGREDIENTS ── */}
+                <tr><SectionLabel>Ingredients & Recipe</SectionLabel></tr>
+
+                <Row label="Ingredients">
+                  {filtered.map(p => (
+                    <Cell key={p.flavor} wrap>
+                      <span className="text-muted-foreground leading-relaxed">{p.ingredients}</span>
+                    </Cell>
+                  ))}
+                </Row>
+
+                <Row label="Recipe / Batch">
+                  {filtered.map(p => (
+                    <Cell key={p.flavor} wrap>
+                      <span className="text-muted-foreground/60 leading-relaxed">{p.recipe}</span>
+                    </Cell>
+                  ))}
+                </Row>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* Business IDs */}
-        <div className="mt-8 border border-border rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-muted/10 border-b border-border">
-            <h3 className="text-sm font-semibold">Business IDs</h3>
+        {/* Business IDs + Legacy + Specs in a row below */}
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Business IDs */}
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="px-4 py-2.5 bg-muted/10 border-b border-border">
+              <h3 className="text-xs font-semibold">Business IDs</h3>
+            </div>
+            <div className="divide-y divide-border/20">
+              {BUSINESS_IDS.map(item => (
+                <div key={item.label} className="px-3 py-2 flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground/60">{item.label}</span>
+                  <CC v={item.value} mono />
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-0">
-            {BUSINESS_IDS.map((item, i) => (
-              <div
-                key={item.label}
-                className={`px-4 py-2.5 flex items-center justify-between text-sm ${
-                  i < BUSINESS_IDS.length - (BUSINESS_IDS.length % 2 === 0 ? 2 : 1)
-                    ? 'border-b border-border/30'
-                    : ''
-                }`}
-              >
-                <span className="text-muted-foreground">{item.label}</span>
-                <CopyCell value={item.value} />
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Legacy UPCs */}
-        <div className="mt-4 border border-border rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-muted/10 border-b border-border">
-            <h3 className="text-sm font-semibold text-muted-foreground">Legacy UPCs</h3>
-            <p className="text-[10px] text-muted-foreground/50 mt-0.5">Old barcodes — no longer on labels but may still appear in some systems</p>
+          {/* Packaging Specs */}
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="px-4 py-2.5 bg-muted/10 border-b border-border">
+              <h3 className="text-xs font-semibold">Packaging Specs</h3>
+            </div>
+            <div className="divide-y divide-border/20">
+              {[
+                ['Bottle', '2.25" x 2.25" x 6.25"'],
+                ['Filled weight', '~10 oz (308g)'],
+                ['1-bottle box', '14.4 oz'],
+                ['2-bottle box', '1 lb 12 oz'],
+                ['3-bottle box', '2 lb 7 oz'],
+                ['6-pack case', '4 lb 5 oz'],
+                ['Case dims', '12.25" x 12.25" x 6.25"'],
+                ['Pallet', '288 cases (1,728 btl)'],
+              ].map(([label, val]) => (
+                <div key={label} className="px-3 py-2 flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground/60">{label}</span>
+                  <span className="tabular-nums">{val}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="divide-y divide-border/30">
-            {LEGACY_UPCS.map(item => (
-              <div key={item.upc} className="px-4 py-2.5 flex items-center gap-4 text-sm">
-                <span className="text-muted-foreground w-16">{item.flavor}</span>
-                <CopyCell value={item.upc} />
-                <span className="text-[10px] text-muted-foreground/40 ml-auto">{item.note}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Packaging specs */}
-        <div className="mt-4 border border-border rounded-lg overflow-hidden">
-          <div className="px-4 py-3 bg-muted/10 border-b border-border">
-            <h3 className="text-sm font-semibold text-muted-foreground">Packaging Specs</h3>
-          </div>
-          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1 text-sm">
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Bottle size</span>
-              <span className="tabular-nums">2.25&quot; x 2.25&quot; x 6.25&quot;</span>
+          {/* Legacy UPCs */}
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="px-4 py-2.5 bg-muted/10 border-b border-border">
+              <h3 className="text-xs font-semibold">Legacy UPCs</h3>
+              <p className="text-[9px] text-muted-foreground/40 mt-0.5">Old barcodes that may still appear in some systems</p>
             </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Filled weight</span>
-              <span className="tabular-nums">~10 oz (308g)</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">1-bottle box</span>
-              <span className="tabular-nums">14.4 oz</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">2-bottle box</span>
-              <span className="tabular-nums">1 lb 12 oz</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">3-bottle box</span>
-              <span className="tabular-nums">2 lb 7 oz</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">6-pack case</span>
-              <span className="tabular-nums">4 lb 5 oz</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Case dims</span>
-              <span className="tabular-nums">12.25&quot; x 12.25&quot; x 6.25&quot;</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Pallet</span>
-              <span className="tabular-nums">288 cases (1,728 btl)</span>
+            <div className="divide-y divide-border/20">
+              {LEGACY_UPCS.map(item => (
+                <div key={item.upc} className="px-3 py-2 flex items-center gap-3 text-xs">
+                  <span className="text-muted-foreground/60 w-12">{item.flavor}</span>
+                  <CC v={item.upc} mono />
+                </div>
+              ))}
             </div>
           </div>
         </div>

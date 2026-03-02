@@ -111,8 +111,8 @@ export const FLAVOR_COLORS: Record<string, string> = {
   Hot: '#b93b35',
   Mild: '#3ca44f',
   Mango: '#d98095',
-  Truffle: '#000000',
-  Sriracha: '#3568B2',
+  Truffle: '#c9a96e',
+  Sriracha: '#3b7dd8',
   Thai: '#774684',
 }
 
