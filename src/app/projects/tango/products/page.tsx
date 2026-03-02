@@ -5,82 +5,74 @@ import { Search, Copy, Check } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { FLAVOR_COLORS } from '@/data/tango-constants'
 
-// ── Types ─────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────
 
-interface FlavorData {
+interface PackData {
   upc?: string
   amzSku?: string
   asin?: string
   fnsku?: string
-  unfiItem?: string
-  unfiSku?: string
   amzPrice?: string
 }
 
-interface PackSection {
-  pack: string
-  flavors: Record<string, FlavorData>
+interface FlavorProduct {
+  flavor: string
+  unfiItem?: string
+  unfiSku?: string
+  single: PackData
+  twoPack: PackData
+  threePack: PackData
+  casePack: PackData   // 6-pack case
 }
 
-// ── Data ──────────────────────────────────────────────────────────
-
-const FLAVORS = ['Hot', 'Mild', 'Truffle', 'Mango', 'Thai', 'Sriracha'] as const
-
-const PACKS: PackSection[] = [
+const PRODUCTS: FlavorProduct[] = [
   {
-    pack: 'Single (8 oz)',
-    flavors: {
-      Hot:      { upc: '196852546671', amzSku: 'HOT-TANGO',    asin: 'B07VXY26C6', fnsku: 'X002QOIWJF', unfiItem: '224132', unfiSku: 'HOTT', amzPrice: '$10.99' },
-      Mild:     { upc: '196852812899', amzSku: 'MILD-TANGO',   asin: 'B07WW1NFH9', fnsku: 'X002QOSLCN', unfiItem: '224137', unfiSku: 'MILD', amzPrice: '$10.99' },
-      Truffle:  { upc: '871661003842', amzSku: 'TRUFFLETANGO', asin: 'B07WWYQ44K', fnsku: 'X002UJ4RDL',                     unfiSku: 'TRUF', amzPrice: '$17.99' },
-      Mango:    { upc: '195893424436', amzSku: 'MANGO-TANGO',  asin: 'B09NQHPCS3',                                          unfiSku: 'MANG', amzPrice: '$10.99' },
-      Thai:     { upc: '195893449477', amzSku: 'THAI-TANGO',   asin: 'B09NQHHWVR',                                          unfiSku: 'THAI', amzPrice: '$10.99' },
-      Sriracha: { upc: '198168929643',                                                                                                         amzPrice: '$10.99' },
-    },
+    flavor: 'Hot',
+    unfiItem: '224132', unfiSku: 'HOTT',
+    single:    { upc: '196852546671', amzSku: 'HOT-TANGO',  asin: 'B07VXY26C6', fnsku: 'X002QOIWJF', amzPrice: '$10.99' },
+    twoPack:   { upc: '198168271391', amzSku: 'HOTT2',      asin: 'B0CM877VR6', fnsku: 'X0041G8Y5N', amzPrice: '$19.99' },
+    threePack: { upc: '199284582309' },
+    casePack:  { upc: '195893456864' },
   },
   {
-    pack: '2-Pack',
-    flavors: {
-      Hot:      { upc: '198168271391', amzSku: 'HOTT2', asin: 'B0CM877VR6', fnsku: 'X0041G8Y5N', amzPrice: '$19.99' },
-      Mild:     { upc: '198168148358', amzSku: 'MILD2', asin: 'B0CM89191S', fnsku: 'X0041GFNQV', amzPrice: '$19.99' },
-      Truffle:  { upc: '198168989760', amzSku: 'TRUF2', asin: 'B0CM87YWJR', fnsku: 'X0041G8ZGV', amzPrice: '$29.99' },
-      Mango:    { upc: '198168818275', amzSku: 'MANG2', asin: 'B0CM81YRTQ', fnsku: 'X0041G8ZGL', amzPrice: '$19.99' },
-      Thai:     { upc: '198168289372', amzSku: 'THAI2', asin: 'B0CM7PLRPG', fnsku: 'X0041GAWMB', amzPrice: '$19.99' },
-      Sriracha: { upc: '199284382176' },
-    },
+    flavor: 'Mild',
+    unfiItem: '224137', unfiSku: 'MILD',
+    single:    { upc: '196852812899', amzSku: 'MILD-TANGO', asin: 'B07WW1NFH9', fnsku: 'X002QOSLCN', amzPrice: '$10.99' },
+    twoPack:   { upc: '198168148358', amzSku: 'MILD2',      asin: 'B0CM89191S', fnsku: 'X0041GFNQV', amzPrice: '$19.99' },
+    threePack: { upc: '199284808225' },
+    casePack:  { upc: '195893300969' },
   },
   {
-    pack: '3-Pack',
-    flavors: {
-      Hot:      { upc: '199284582309' },
-      Mild:     { upc: '199284808225' },
-      Truffle:  { upc: '199284317352' },
-      Mango:    { upc: '199284781962' },
-      Thai:     { upc: '199284887008' },
-      Sriracha: { upc: '199284005822' },
-    },
+    flavor: 'Truffle',
+    unfiSku: 'TRUF',
+    single:    { upc: '871661003842', amzSku: 'TRUFFLETANGO', asin: 'B07WWYQ44K', fnsku: 'X002UJ4RDL', amzPrice: '$17.99' },
+    twoPack:   { upc: '198168989760', amzSku: 'TRUF2',        asin: 'B0CM87YWJR', fnsku: 'X0041G8ZGV', amzPrice: '$29.99' },
+    threePack: { upc: '199284317352' },
+    casePack:  { upc: '195893555284' },
   },
   {
-    pack: '6-Pack (Case)',
-    flavors: {
-      Hot:     { upc: '195893456864' },
-      Mild:    { upc: '195893300969' },
-      Truffle: { upc: '195893555284' },
-      Mango:   { upc: '196852060641' },
-      Thai:    { upc: '196852257539' },
-      // Sriracha — no case UPC registered
-    },
+    flavor: 'Mango',
+    unfiSku: 'MANG',
+    single:    { upc: '195893424436', amzSku: 'MANGO-TANGO', asin: 'B09NQHPCS3', amzPrice: '$10.99' },
+    twoPack:   { upc: '198168818275', amzSku: 'MANG2',       asin: 'B0CM81YRTQ', fnsku: 'X0041G8ZGL', amzPrice: '$19.99' },
+    threePack: { upc: '199284781962' },
+    casePack:  { upc: '196852060641' },
   },
-]
-
-const ROWS: { key: keyof FlavorData; label: string }[] = [
-  { key: 'upc',      label: 'UPC' },
-  { key: 'amzSku',   label: 'AMZ SKU' },
-  { key: 'asin',     label: 'ASIN' },
-  { key: 'fnsku',    label: 'FNSKU' },
-  { key: 'unfiItem', label: 'UNFI Item #' },
-  { key: 'unfiSku',  label: 'UNFI SKU' },
-  { key: 'amzPrice', label: 'AMZ Price' },
+  {
+    flavor: 'Thai',
+    unfiSku: 'THAI',
+    single:    { upc: '195893449477', amzSku: 'THAI-TANGO', asin: 'B09NQHHWVR', amzPrice: '$10.99' },
+    twoPack:   { upc: '198168289372', amzSku: 'THAI2',      asin: 'B0CM7PLRPG', fnsku: 'X0041GAWMB', amzPrice: '$19.99' },
+    threePack: { upc: '199284887008' },
+    casePack:  { upc: '196852257539' },
+  },
+  {
+    flavor: 'Sriracha',
+    single:    { upc: '198168929643', amzPrice: '$10.99' },
+    twoPack:   { upc: '199284382176' },
+    threePack: { upc: '199284005822' },
+    casePack:  {},
+  },
 ]
 
 // ── Business IDs ──────────────────────────────────────────────────
@@ -103,24 +95,22 @@ const LEGACY_UPCS = [
 
 // ── Search ────────────────────────────────────────────────────────
 
-function packMatchesSearch(section: PackSection, q: string): boolean {
+function flavorMatchesSearch(product: FlavorProduct, q: string): boolean {
   const s = q.toLowerCase()
-  if (section.pack.toLowerCase().includes(s)) return true
-  for (const flavor of FLAVORS) {
-    if (flavor.toLowerCase().includes(s)) return true
-    const data = section.flavors[flavor]
-    if (!data) continue
-    for (const row of ROWS) {
-      const val = data[row.key]
-      if (val && val.toLowerCase().includes(s)) return true
-    }
-  }
-  return false
+  if (product.flavor.toLowerCase().includes(s)) return true
+  const allVals = [
+    product.unfiItem, product.unfiSku,
+    ...Object.values(product.single),
+    ...Object.values(product.twoPack),
+    ...Object.values(product.threePack),
+    ...Object.values(product.casePack),
+  ]
+  return allVals.some(v => typeof v === 'string' && v.toLowerCase().includes(s))
 }
 
 // ── Copy Cell ─────────────────────────────────────────────────────
 
-function CopyCell({ value }: { value?: string }) {
+function CopyCell({ value, label }: { value?: string; label?: string }) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = useCallback(() => {
@@ -130,14 +120,15 @@ function CopyCell({ value }: { value?: string }) {
     setTimeout(() => setCopied(false), 1500)
   }, [value])
 
-  if (!value) return <span className="text-muted-foreground/15">—</span>
+  if (!value) return <span className="text-muted-foreground/15 text-[10px]">—</span>
 
   return (
     <button
       onClick={handleCopy}
-      className="group/copy inline-flex items-center gap-1 font-mono hover:text-orange-400 transition-colors text-left"
+      className="group/copy flex items-center gap-1.5 font-mono text-xs hover:text-orange-400 transition-colors text-left w-full"
       title="Click to copy"
     >
+      {label && <span className="text-[10px] text-muted-foreground/40 uppercase w-14 shrink-0 font-sans">{label}</span>}
       <span className="truncate">{value}</span>
       {copied ? (
         <Check className="size-3 text-green-400 shrink-0" />
@@ -148,18 +139,95 @@ function CopyCell({ value }: { value?: string }) {
   )
 }
 
+// ── Row helper ────────────────────────────────────────────────────
+
+function DataRow({ label, value }: { label: string; value?: string }) {
+  if (!value) return null
+  return (
+    <div className="py-1">
+      <CopyCell value={value} label={label} />
+    </div>
+  )
+}
+
+function PackBlock({ title, data }: { title: string; data: PackData }) {
+  const hasData = Object.values(data).some(Boolean)
+  if (!hasData) return null
+
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground/50 font-medium mb-0.5">{title}</div>
+      <div className="space-y-0">
+        <DataRow label="UPC" value={data.upc} />
+        <DataRow label="SKU" value={data.amzSku} />
+        <DataRow label="ASIN" value={data.asin} />
+        <DataRow label="FNSKU" value={data.fnsku} />
+        {data.amzPrice && (
+          <div className="py-1 flex items-center gap-1.5">
+            <span className="text-[10px] text-muted-foreground/40 uppercase w-14 shrink-0">Price</span>
+            <span className="text-xs text-muted-foreground">{data.amzPrice}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Flavor Card ───────────────────────────────────────────────────
+
+function FlavorCard({ product }: { product: FlavorProduct }) {
+  const color = FLAVOR_COLORS[product.flavor] || '#999'
+  const isDark = product.flavor === 'Truffle'
+
+  return (
+    <div className="border border-border rounded-lg overflow-hidden flex flex-col">
+      {/* Flavor header */}
+      <div
+        className="px-4 py-3 flex items-center gap-2"
+        style={{
+          background: `${color}15`,
+          borderBottom: `2px solid ${color}40`,
+        }}
+      >
+        <span
+          className="inline-block w-3 h-3 rounded-full shrink-0"
+          style={{ background: color, border: isDark ? '1px solid #444' : undefined }}
+        />
+        <h3 className="text-sm font-semibold">{product.flavor}</h3>
+      </div>
+
+      <div className="p-4 space-y-4 flex-1">
+        {/* UNFI IDs (flavor-level) */}
+        {(product.unfiItem || product.unfiSku) && (
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground/50 font-medium mb-0.5">UNFI</div>
+            <DataRow label="Item #" value={product.unfiItem} />
+            <DataRow label="SKU" value={product.unfiSku} />
+          </div>
+        )}
+
+        {/* Pack sections */}
+        <PackBlock title="Single (8 oz)" data={product.single} />
+        <PackBlock title="2-Pack" data={product.twoPack} />
+        <PackBlock title="3-Pack" data={product.threePack} />
+        <PackBlock title="6-Pack (Case)" data={product.casePack} />
+      </div>
+    </div>
+  )
+}
+
 // ── Component ─────────────────────────────────────────────────────
 
 export default function ProductsPage() {
   const [search, setSearch] = useState('')
 
   const filtered = search.trim()
-    ? PACKS.filter(p => packMatchesSearch(p, search.trim()))
-    : PACKS
+    ? PRODUCTS.filter(p => flavorMatchesSearch(p, search.trim()))
+    : PRODUCTS
 
   return (
     <>
-      <PageHeader title="Products" />
+      <PageHeader title="Products" count={6} />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
         {/* Search bar */}
@@ -174,64 +242,10 @@ export default function ProductsPage() {
           />
         </div>
 
-        {/* Pack sections — flavors as columns */}
-        <div className="space-y-6">
-          {filtered.map(section => (
-            <div key={section.pack} className="border border-border rounded-lg overflow-hidden">
-              {/* Pack header */}
-              <div className="px-4 py-3 bg-muted/10 border-b border-border">
-                <h3 className="text-sm font-semibold">{section.pack}</h3>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  {/* Flavor column headers */}
-                  <thead>
-                    <tr className="border-b border-border/50">
-                      <th className="px-3 py-2.5 text-left text-[10px] uppercase tracking-wider text-muted-foreground w-24 shrink-0" />
-                      {FLAVORS.map(flavor => {
-                        const color = FLAVOR_COLORS[flavor] || '#999'
-                        const isDark = flavor === 'Truffle'
-                        return (
-                          <th key={flavor} className="px-3 py-2.5 text-left">
-                            <div className="flex items-center gap-1.5">
-                              <span
-                                className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
-                                style={{ background: color, border: isDark ? '1px solid #444' : undefined }}
-                              />
-                              <span className="text-xs font-semibold" style={{ color }}>{flavor}</span>
-                            </div>
-                          </th>
-                        )
-                      })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ROWS.map((row, i) => {
-                      // Skip rows where no flavor has data for this pack
-                      const hasAny = FLAVORS.some(f => section.flavors[f]?.[row.key])
-                      if (!hasAny) return null
-
-                      return (
-                        <tr
-                          key={row.key}
-                          className={`border-t border-border/20 ${i % 2 === 1 ? 'bg-muted/5' : ''}`}
-                        >
-                          <td className="px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium whitespace-nowrap">
-                            {row.label}
-                          </td>
-                          {FLAVORS.map(flavor => (
-                            <td key={flavor} className="px-3 py-2 whitespace-nowrap">
-                              <CopyCell value={section.flavors[flavor]?.[row.key]} />
-                            </td>
-                          ))}
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+        {/* 6 flavor columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map(product => (
+            <FlavorCard key={product.flavor} product={product} />
           ))}
         </div>
 
