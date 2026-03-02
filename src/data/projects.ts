@@ -87,6 +87,7 @@ export const PROJECTS: Project[] = [
     tools: [
       { href: '/projects/tango/orders', label: 'Ops', icon: 'Package' },
       { href: '/projects/tango/recipes', label: 'Recipes', icon: 'CookingPot' },
+      { href: '/projects/tango/products', label: 'Products', icon: 'Barcode' },
     ],
   },
   {

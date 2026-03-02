@@ -13,6 +13,7 @@ import {
   Package,
   Tv,
   CookingPot,
+  Barcode,
   type LucideIcon,
 } from 'lucide-react'
 import {
@@ -39,6 +40,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Package,
   Tv,
   CookingPot,
+  Barcode,
 }
 
 const TOOL_COLOR = '#c2956a'  // muted warm — visually distinct from bright channel colors
