@@ -14,7 +14,7 @@ interface FlavorProduct {
   tagline: string
   description: string
   heat: string
-  ingredients: string
+  ingredients: string[]
   claims: string[]
   cogs: string
 
@@ -49,7 +49,7 @@ interface FlavorProduct {
   caseUpc?: string
 
   // Recipe (per batch)
-  recipe: string
+  recipe: string[]
 }
 
 const PRODUCTS: FlavorProduct[] = [
@@ -58,7 +58,7 @@ const PRODUCTS: FlavorProduct[] = [
     tagline: 'Smooth & Spicy',
     description: 'The crowd favorite. Signature delicious Tango flavor with the perfect amount of heat. If you love hot sauce, start with Hot Tango.',
     heat: 'Hot',
-    ingredients: 'Carrots, Garlic, Limes, Habanero, Sawtooth Cilantro, Apple Cider Vinegar, Sea Salt',
+    ingredients: ['Carrots', 'Garlic', 'Limes', 'Habanero', 'Sawtooth Cilantro', 'Apple Cider Vinegar', 'Sea Salt'],
     claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
     cogs: '$3.49',
     amazonSingle: 'https://amazon.com/dp/B07VXY26C6',
@@ -70,14 +70,14 @@ const PRODUCTS: FlavorProduct[] = [
     twoPackUpc: '198168271391', twoPackAmzSku: 'HOTT2', twoPackAsin: 'B0CM877VR6', twoPackFnsku: 'X0041G8Y5N', twoPackPrice: '$19.99',
     threePackUpc: '199284582309',
     caseUpc: '195893456864',
-    recipe: '26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 3.75 lb culantro, 2.2 lb habanero, 3 gal ACV, 4.85 lb salt',
+    recipe: ['26.5 lb Carrots', '8.8 lb Garlic', '1.45 gal Lime Juice', '3.75 lb Culantro', '2.2 lb Habanero', '3 gal ACV', '4.85 lb Salt'],
   },
   {
     flavor: 'Mild',
     tagline: 'Flavor-First, Low Heat',
     description: 'The perfect hot sauce for beginners. Subtle sweetness of carrots and gentle spiciness of scotch bonnet. Kids love it. Great on salads.',
     heat: 'Mild',
-    ingredients: 'Carrots, Garlic, Limes, Habanero, Sawtooth Cilantro, Apple Cider Vinegar, Sea Salt',
+    ingredients: ['Carrots', 'Garlic', 'Limes', 'Habanero', 'Sawtooth Cilantro', 'Apple Cider Vinegar', 'Sea Salt'],
     claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
     cogs: '$3.37',
     amazonSingle: 'https://amazon.com/dp/B07WW1NFH9',
@@ -89,14 +89,14 @@ const PRODUCTS: FlavorProduct[] = [
     twoPackUpc: '198168148358', twoPackAmzSku: 'MILD2', twoPackAsin: 'B0CM89191S', twoPackFnsku: 'X0041GFNQV', twoPackPrice: '$19.99',
     threePackUpc: '199284808225',
     caseUpc: '195893300969',
-    recipe: '26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 3.1 lb culantro, 1.1 lb habanero, 3 gal ACV, 4.4 lb salt',
+    recipe: ['26.5 lb Carrots', '8.8 lb Garlic', '1.45 gal Lime Juice', '3.1 lb Culantro', '1.1 lb Habanero', '3 gal ACV', '4.4 lb Salt'],
   },
   {
     flavor: 'Truffle',
     tagline: 'Award-Winning Gourmet',
     description: 'The original award-winning collaboration with The Truffleist. Exceptional spicy truffle flavor in a healthful hot sauce guaranteed to take all your meals to the next level.',
     heat: 'Medium',
-    ingredients: 'Carrots, Garlic, Limes, Chile Peppers, Sawtooth Cilantro, Truffle Flavoring, Apple Cider Vinegar, Sea Salt',
+    ingredients: ['Carrots', 'Garlic', 'Limes', 'Chile Peppers', 'Sawtooth Cilantro', 'Truffle Flavoring', 'Apple Cider Vinegar', 'Sea Salt'],
     claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
     cogs: '$3.34',
     amazonSingle: 'https://amazon.com/dp/B07WWYQ44K',
@@ -108,14 +108,14 @@ const PRODUCTS: FlavorProduct[] = [
     twoPackUpc: '198168989760', twoPackAmzSku: 'TRUF2', twoPackAsin: 'B0CM87YWJR', twoPackFnsku: 'X0041G8ZGV', twoPackPrice: '$29.99',
     threePackUpc: '199284317352',
     caseUpc: '195893555284',
-    recipe: 'Mild recipe + truffle oil added right after cooking',
+    recipe: ['Mild recipe base', '+ Truffle oil after cooking'],
   },
   {
     flavor: 'Mango',
     tagline: 'Sweet & Spicy Tropical',
     description: 'After years in the making. Indulge in an exotic new world of sweet spicy Mango Tango flavor. Fragrant ripe mangoes, limes, hot peppers, and a touch of agave in this Caribbean-inspired Tango.',
     heat: 'Mild',
-    ingredients: 'Mangos, Carrots, Garlic, Limes, Habanero, Sawtooth Cilantro, Agave Nectar, Apple Cider Vinegar, Sea Salt',
+    ingredients: ['Mangos', 'Carrots', 'Garlic', 'Limes', 'Habanero', 'Sawtooth Cilantro', 'Agave Nectar', 'Apple Cider Vinegar', 'Sea Salt'],
     claims: ['Plant-Based', 'Gluten-Free', 'Paleo', 'No Preservatives', 'Cold-Fill Certified'],
     cogs: '$3.31',
     amazonSingle: 'https://amazon.com/dp/B09NQHPCS3',
@@ -127,14 +127,14 @@ const PRODUCTS: FlavorProduct[] = [
     twoPackUpc: '198168818275', twoPackAmzSku: 'MANG2', twoPackAsin: 'B0CM81YRTQ', twoPackFnsku: 'X0041G8ZGL', twoPackPrice: '$19.99',
     threePackUpc: '199284781962',
     caseUpc: '196852060641',
-    recipe: '50 lb mango, 26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 4.4 lb culantro, 1.1 lb habanero, 2.2 lb agave, 3 gal ACV, 4.85 lb salt',
+    recipe: ['50 lb Mango', '26.5 lb Carrots', '8.8 lb Garlic', '1.45 gal Lime Juice', '4.4 lb Culantro', '1.1 lb Habanero', '2.2 lb Agave', '3 gal ACV', '4.85 lb Salt'],
   },
   {
     flavor: 'Thai',
     tagline: 'Clean Heat, No Linger',
     description: 'The hottest sauce we\'ve made yet. Fresh, spicy, sweet Tango with the heat turned all the way up. Thai chilies deliver a beautiful spicy flavor that doesn\'t linger on the tongue.',
     heat: 'Hot',
-    ingredients: 'Carrots, Garlic, Limes, Habanero, Thai Chilies, Sawtooth Cilantro, Apple Cider Vinegar, Sea Salt',
+    ingredients: ['Carrots', 'Garlic', 'Limes', 'Habanero', 'Thai Chilies', 'Sawtooth Cilantro', 'Apple Cider Vinegar', 'Sea Salt'],
     claims: ['Plant-Based', 'Gluten-Free', 'Keto', 'No Sugar Added', 'No Preservatives', 'Cold-Fill Certified'],
     cogs: '$3.42',
     amazonSingle: 'https://amazon.com/dp/B09NQHHWVR',
@@ -146,14 +146,14 @@ const PRODUCTS: FlavorProduct[] = [
     twoPackUpc: '198168289372', twoPackAmzSku: 'THAI2', twoPackAsin: 'B0CM7PLRPG', twoPackFnsku: 'X0041GAWMB', twoPackPrice: '$19.99',
     threePackUpc: '199284887008',
     caseUpc: '196852257539',
-    recipe: '26.5 lb carrots, 8.8 lb garlic, 1.45 gal lime, 4.4 lb culantro, 4.4 lb habanero, 6.6 lb thai chili, 3 gal ACV, 4.85 lb salt',
+    recipe: ['26.5 lb Carrots', '8.8 lb Garlic', '1.45 gal Lime Juice', '4.4 lb Culantro', '4.4 lb Habanero', '6.6 lb Thai Chilies', '3 gal ACV', '4.85 lb Salt'],
   },
   {
     flavor: 'Sriracha',
     tagline: 'Clean & Simple',
     description: 'As close as we could get to the perfect Sriracha flavor we all love, while using only clean, simple ingredients.',
     heat: 'Hot',
-    ingredients: 'Red Jalapeno, Garlic, White Vinegar, Cane Sugar, Sea Salt',
+    ingredients: ['Red Jalapeno', 'Garlic', 'White Vinegar', 'Cane Sugar', 'Sea Salt'],
     claims: ['Plant-Based', 'Gluten-Free', 'No Preservatives', 'Cold-Fill Certified'],
     cogs: '$2.74',
     shopify: 'https://tangochilesauce.com/products/sriracha-tango',
@@ -161,7 +161,7 @@ const PRODUCTS: FlavorProduct[] = [
     singleUpc: '198168929643', singlePrice: '$10.99',
     twoPackUpc: '199284382176',
     threePackUpc: '199284005822',
-    recipe: '25 lb red jalapeno, 13 lb garlic, 11 lb white vinegar, 4 lb sugar, 3 lb salt',
+    recipe: ['25 lb Red Jalapeno', '13 lb Garlic', '11 lb White Vinegar', '4 lb Cane Sugar', '3 lb Salt'],
   },
 ]
 
@@ -188,7 +188,8 @@ const LEGACY_UPCS = [
 function matchesSearch(p: FlavorProduct, q: string): boolean {
   const s = q.toLowerCase()
   const all = [
-    p.flavor, p.tagline, p.description, p.ingredients, p.heat,
+    p.flavor, p.tagline, p.description, p.heat,
+    ...p.ingredients, ...p.recipe,
     p.unfiItem, p.unfiSku,
     p.singleUpc, p.singleAmzSku, p.singleAsin, p.singleFnsku,
     p.twoPackUpc, p.twoPackAmzSku, p.twoPackAsin, p.twoPackFnsku,
@@ -455,7 +456,14 @@ export default function ProductsPage() {
                 <Row label="Ingredients">
                   {filtered.map(p => (
                     <Cell key={p.flavor} wrap>
-                      <span className="text-muted-foreground leading-relaxed">{p.ingredients}</span>
+                      <ul className="space-y-0.5 text-muted-foreground">
+                        {p.ingredients.map(ing => (
+                          <li key={ing} className="flex items-start gap-1.5">
+                            <span className="text-muted-foreground/25 mt-px">&#8226;</span>
+                            <span>{ing}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </Cell>
                   ))}
                 </Row>
@@ -463,7 +471,14 @@ export default function ProductsPage() {
                 <Row label="Recipe / Batch">
                   {filtered.map(p => (
                     <Cell key={p.flavor} wrap>
-                      <span className="text-muted-foreground/60 leading-relaxed">{p.recipe}</span>
+                      <ul className="space-y-0.5 text-muted-foreground/60">
+                        {p.recipe.map(line => (
+                          <li key={line} className="flex items-start gap-1.5">
+                            <span className="text-muted-foreground/20 mt-px">&#8226;</span>
+                            <span>{line}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </Cell>
                   ))}
                 </Row>
